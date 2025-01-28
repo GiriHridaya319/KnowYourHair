@@ -10,12 +10,6 @@ def hair_fall_prediction(request):
 
 
 def blog(request):
-    return render(request, 'base/HairFallRiskPrediction.html', {'title': 'Prediction'})
+    return render(request, 'base/Blog.html', {'title': 'Prediction'})
 
 
-def login(request):
-    return render(request, 'base/HairFallRiskPrediction.html', {'title': 'Prediction'})
-
-
-def registration(request):
-    return render(request, 'base/HairFallRiskPrediction.html', {'title': 'Prediction'})
