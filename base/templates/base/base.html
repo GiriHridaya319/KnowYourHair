@@ -10,6 +10,27 @@
 </head>
 <body>
 
+<header class="site-header">
+<nav>
+    <ul class="nav-links">
+        <li><a href="{% url 'KnowYourHair-home' %}" class="Home">Home</a></li>
+        <li><a href="{% url 'KnowYourHair-hairfallprediction' %}" class="Prediction">Prediction</a></li>
+    </ul>
+    <div class="auth-buttons">
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="Home">Profile</a>
+            <a href="{% url 'logout' %}" class="register">Logout</a>
+
+        {% else %}
+            <a href="{% url 'login' %}" class="login">Login</a>
+            <a href="{% url 'registration' %}" class="register">Register</a>
+
+        {% endif %}
+    </div>
+</nav>
+
+ </header>
+
 <div class = "container" >
         {% block content %}{% endblock %}
     </div>

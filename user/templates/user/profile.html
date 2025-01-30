@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="content-section">
+    <div class="media">
+      <div class="col-md-4">
+        <form method="POST" aria-label="Profile Update Form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Profile Info</legend>
+            <div class="form-group">
+              <label for="id_image">Profile Image</label>
+              <div>
+                {% if user.profile.image %}
+                  <img src="{{ user.profile.image.url }}" alt="Profile Image" class="img-fluid" style="max-width: 100px;">
+                {% else %}
+                  <p>No image uploaded</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Displaying non-field errors -->
+            {% if u_form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ u_form.non_field_errors }}
+                {{ p_form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Form for updating user and profile info -->
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+
+            <!-- Display current profile image -->
+
+          </fieldset>
+
+          <!-- Update button -->
+          <div class="form-group">
+            <button class="btn btn-info btn-block" type="submit">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
