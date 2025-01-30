@@ -1,34 +1,76 @@
-{% extends "base/base.html" %}
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block login_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/login.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Register</h1>
+<div class="container register-page-container">
+    <div class="login">
+        <h1 style="color: #000;">Register</h1>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="file" name="image" placeholder="Profile Image"><br>
-    <input type="text" name="phone_number" placeholder="Phone Number"><br>
-    <input type="text" name="address" placeholder="Address"><br>
-    <input type="text" name="gender" placeholder="Gender"><br>
-    <input type="number" name="age" placeholder="Age"><br>
+        <div class="container">
 
-    <h2>Register as:</h2>
-    <input type="radio" name="user_type" value="agent" required> Agent<br>
-    <input type="radio" name="user_type" value="customer" required> Customer<br>
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert {% if message.tags == 'success' %}alert-success
-        {% elif message.tags == 'error' %}alert-danger{% endif %}">
-            {{ message }}
+
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required><br>
+                <input type="password" name="password" placeholder="Password" required><br>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
+                <input type="email" name="email" placeholder="Email" required><br>
+                <input type="file" name="image" placeholder="Profile Image"><br>
+                <input type="text" name="phone_number" placeholder="Phone Number"><br>
+                <input type="text" name="address" placeholder="Address"><br>
+                <input type="number" name="age" placeholder="Age"><br>
+
+                <div class="gender-container">
+                <strong style="color: #000; font-size: 16px;">Gender:</strong>
+                <label for="male" style="font-size: 16px; color: #333;">
+                    <input type="radio" name="gender" value="Male" id="male" required> Male
+                </label>
+                <label for="female" style="font-size: 16px; color: #333;">
+                    <input type="radio" name="gender" value="Female" id="female" required> Female
+                </label>
+            </div><br>
+
+            <div class="user-type-container">
+                <strong style="color: #000; font-size: 16px;">Register as:</strong>
+                <label for="agent" style="font-size: 16px; color: #333;">
+                    <input type="radio" name="user_type" value="agent" id="agent" required> Agent
+                </label>
+                <label for="customer" style="font-size: 16px; color: #333;">
+                    <input type="radio" name="user_type" value="customer" id="customer" required> Customer
+                </label>
+            </div><br>
+
+
+                <button type="submit">Register</button>
+            </form>
+
         </div>
-    {% endfor %}
-{% endif %}
-    <button type="submit">Register</button>
-</form>
+    </div>
 
-
-<br>
-<a href="{% url 'login' %}">Already have an account? Login</a>
-{% endblock content %}
+    <div class="clearfix"></div>
+      <div class="register">
+        <div class="container">
+            <i class="fas fa-user-plus fa-5x"></i>
+            <h2>Hello, friend!</h2>
+            <p>Enter your personal details and start journey with us</p>
+            <a href="{% url 'login' %}">
+                <button>Register <i class="fas fa-arrow-circle-right"></i></button>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

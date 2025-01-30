@@ -1,17 +1,5 @@
 /*Start Global Style*/
-*{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-body{
-    background:#e9ebee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height:100vh;
-    font-family: sans-serif;
-}
+
 .container{
     width: 80%;
     margin: auto;
@@ -35,7 +23,7 @@ body{
     font-size: 2.5em;
 }
 
-input[type="text"] , input[type="password"]{
+input[type="text"] , input[type="password"], input[type="file"], input[type="number"], input[type="email"]{
     width: 100%;
     padding: 10px;
     margin-bottom: 30px;

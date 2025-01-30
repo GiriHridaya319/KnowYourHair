@@ -11,12 +11,19 @@
         <title>KnowYourHair</title>
     {% endif %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-     <link rel="stylesheet" type="text/css" href="{% static 'base/css/login.css' %}">
 
+{% block login_css %}
+    <!-- Navbar specific CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/login.css' %}">
+    {% endblock %}
+{% block navbar_css %}
+    <!-- Navbar specific CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/navbar.css' %}">
+    {% endblock %}
 </head>
 <body>
-
-
+    <!-- Include the navbar -->
+    {% include 'base/navbar.html' %}
 
 <div class = "container" >
         {% block content %}{% endblock %}
