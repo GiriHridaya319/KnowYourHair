@@ -16,6 +16,10 @@
     <!-- Navbar specific CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/login.css' %}">
     {% endblock %}
+    {% block footer_css %}
+    <!-- Navbar specific CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/footer.css' %}">
+    {% endblock %}
 {% block navbar_css %}
     <!-- Navbar specific CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'base/css/navbar.css' %}">
@@ -29,6 +33,6 @@
         {% block content %}{% endblock %}
     </div>
 
-
 </body>
+
 </html>
