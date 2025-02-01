@@ -1,34 +1,34 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Product
+from .models import Clinic
 
 
-class ProductListView(ListView):
-    model = Product
-    template_name = 'product/product_page.html'
-    context_object_name = 'products'
+class ClinicListView(ListView):
+    model = Clinic
+    template_name = 'clinic/clinic_page.html'
+    context_object_name = 'clinics'
     ordering = ['-date_posted']  # - to set newest product first
 
 
-class ProductDetailView(DetailView):
-    model = Product
-    template_name = 'product/product_detail.html'
+class ClinicDetailView(DetailView):
+    model = Clinic
+    template_name = 'clinic/clinic_detail.html'
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
-    model = Product
-    fields = ['name', 'description','image','price','stock']
-    template_name = 'product/product_add_form.html'
+class ClinicCreateView(LoginRequiredMixin, CreateView):
+    model = Clinic
+    fields = ['name', 'description','image','opening_time','closing_time', 'phoneNum','address']
+    template_name = 'clinic/clinic_add_form.html'
 
     def form_valid(self, form):  # setting the form author to the current logged in user
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
-    model = Product
-    fields = ['name', 'description','image','price','stock']
+class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
+    model = Clinic
+    fields = ['name', 'description','image','opening_time','closing_time', 'phoneNum','address']
 
     def form_valid(self, form):  # setting the form author to the current logged in user
         form.instance.author = self.request.user
@@ -41,10 +41,10 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
         return False
 
 
-class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Product
-    template_name = 'product/product_confirm_delete.html'
-    success_url = '/'  # redirect to product page after deleting the product
+class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Clinic
+    template_name = 'clinic/clinic_confirm_delete.html'
+    success_url = '/'  # redirect to clinic page after deleting the clinic
 
     def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
         post = self.get_object()  # get the post trying to update
