@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from product import views as product_view
+from clinic import views as clinic_view
 from user import views as user_view
 from django.conf import settings
 from django.conf.urls.static import static
@@ -27,6 +29,8 @@ urlpatterns = [
     path('login/', user_view.login_view, name='login'),  # Change to login_view
     path('registration/', user_view.register, name='registration'),
     path('logout/', user_view.custom_logout, name='logout'),
+    path('product/', product_view.ProductListView, name='product'),
+    path('clinic/', clinic_view.ClinicListView, name='clinic'),
 ]
 
 # if the project is in development mode, then add the following line to the urlpatterns

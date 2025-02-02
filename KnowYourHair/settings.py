@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'product.apps.ProductConfig',
-    'clinic..apps.ClinicConfig',
+    'clinic.apps.ClinicConfig',
     'user.apps.UserConfig',
     'base.apps.BaseConfig',
     'django.contrib.admin',
