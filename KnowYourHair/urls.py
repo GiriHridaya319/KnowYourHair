@@ -29,8 +29,8 @@ urlpatterns = [
     path('login/', user_view.login_view, name='login'),  # Change to login_view
     path('registration/', user_view.register, name='registration'),
     path('logout/', user_view.custom_logout, name='logout'),
-    path('product/', product_view.ProductListView, name='product'),
-    path('clinic/', clinic_view.ClinicListView, name='clinic'),
+    path('product/', product_view.ProductListView.as_view(), name='product'),
+    path('clinic/', clinic_view.ClinicListView.as_view(), name='clinic'),
 ]
 
 # if the project is in development mode, then add the following line to the urlpatterns

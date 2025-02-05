@@ -21,14 +21,7 @@ body {
     color: #f0f0f0; /* Light gray text for better contrast */
 }
 
-a {
-    color: #9526a9; /* Soft purple link color */
-    text-decoration: none;
-}
 
-a:hover {
-    color: #ffffff; /* White on hover */
-}
 
 .container {
     width: 1152px;
