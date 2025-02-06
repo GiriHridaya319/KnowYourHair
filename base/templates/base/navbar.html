@@ -7,7 +7,7 @@
 <nav>
     <div class="nav__header ">
         <div class="nav__logo">
-            <a href="{% url 'KnowYourHair-home' %}">Know<span>YourHair</span>.</a>
+            <a href="{% url 'KnowYourHair-home' %}">Know<span>YourHair</span></a>
         </div>
         <div class="nav__menu__btn" id="menu-btn">
             <span><i class="ri-menu-line"></i></span>
@@ -20,15 +20,15 @@
             <a href="{% url 'KnowYourHair-blog' %}">Prevention</a>
 
         </li>
-        <li><a href="{% url 'KnowYourHair-blog' %}">Product</a></li>
-        <li><a href="{% url 'KnowYourHair-blog' %}">Clinics</a></li>
+        <li><a href="{% url 'KnowYourHair-product' %}">Product</a></li>
+        <li><a href="{% url 'KnowYourHair-clinic' %}">Clinics</a></li>
         <li><a href="{% url 'KnowYourHair-blog' %}">Blog</a></li>
         <li><a href="{% url 'KnowYourHair-blog' %}">Contact Us</a></li>
     </ul>
     <div class="nav__btns">
         {% if user.is_authenticated %}
-            <a href="{% url 'profile' %}" class="btn sign__in">Profile</a>
-            <a href="{% url 'logout' %}" class="btn sign__up">Logout</a>
+            <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
+            <a href="{% url 'logout' %}" class="btn sign__in">Logout</a>
         {% else %}
             <a href="{% url 'login' %}" class="btn sign__in">Login</a>
             <a href="{% url 'registration' %}" class="btn sign__up">Register</a>

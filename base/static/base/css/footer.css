@@ -10,10 +10,10 @@ html, body {
 .footer {
   margin-top: auto; /* Push footer to bottom */
   width: 100%;
-  background: var(--dark); /* Updated Background */
+  background: #ffff; /* Updated Background */
   border-radius: 0;
   padding-bottom: 20px;
-  color: #f0f0f0; /* Updated Text Color */
+  color: #000000;  /* Updated Text Color to Black */
 }
 
 .footer .footer-row {
@@ -25,7 +25,7 @@ html, body {
 }
 
 .footer-row .footer-col h4 {
-  color: #f0f0f0; /* Updated Text Color */
+  color: #000000; /* Updated Text Color to Black */
   font-size: 1.2rem;
   font-weight: 400;
 }
@@ -41,16 +41,16 @@ html, body {
 
 .footer-col .links li a {
   text-decoration: none;
-  color: #f0f0f0; /* Updated Text Color */
+  color: #000000; /* Updated Text Color to Black */
 }
 
 .footer-col .links li a:hover {
-  color: #fff;
+  color: #333333; /* Slightly darker shade of black for hover */
 }
 
 .footer-col p {
   margin: 20px 0;
-  color: #f0f0f0; /* Updated Text Color */
+  color: #000000; /* Updated Text Color to Black */
   max-width: 300px;
 }
 
@@ -66,13 +66,13 @@ html, body {
   width: 100%;
   outline: none;
   border: 1px solid #7489C6;
-  caret-color: #fff;
-  color: #f0f0f0; /* Updated Text Color */
+  caret-color: #000000; /* Updated Caret Color to Black */
+  color: #000000; /* Updated Input Text Color to Black */
   padding-left: 10px;
 }
 
 .footer-col input::placeholder {
-  color: #ccc;
+  color: #666666; /* Slightly lighter black for placeholder text */
 }
 
 .footer-col form button {
@@ -98,11 +98,11 @@ html, body {
 }
 
 .footer-col .icons i {
-  color: #f0f0f0; /* Updated Icon Color */
+  color: #000000; /* Updated Icon Color to Black */
 }
 
 .footer-col .icons i:hover {
-  color: #fff;
+  color: #333333; /* Slightly darker shade of black for hover */
 }
 
 /* Responsive Design */
