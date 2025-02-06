@@ -180,7 +180,7 @@ nav {
 }
 
 .header__content h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
   font-size: 5rem;
   font-weight: 400;
   font-family: var(--header-font);
@@ -188,6 +188,18 @@ nav {
   line-height: 5.5rem;
   text-align: center;
 }
+
+.header__content h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 400;
+  font-family: var(--header-font);
+  color: var(--text-dark);
+  line-height: 5.5rem;
+  text-align: left;  /* Changed from center to left */
+}
+
+
 
 .header__content h1 span {
   color: var(--primary-color);

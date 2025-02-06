@@ -1,0 +1,156 @@
+.clinic-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.appointment-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-section h2 {
+    font-size: 1.8rem;
+    color: #2d3748;
+    margin: 0;
+}
+
+.book-appointment-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.book-appointment-btn:hover {
+    background: #2563eb;
+}
+
+.clinic-image-section {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clinic-image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.clinic-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clinic-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.clinic-header h1 {
+    font-size: 2.5rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.clinic-meta {
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.clinic-description {
+    margin-bottom: 2rem;
+}
+
+.clinic-description h3 {
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+.clinic-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.detail-box {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.detail-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.detail-box h4 {
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #f0f0f0;
+}
+
+.action-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.action-btn.edit {
+    background: #3b82f6;
+    color: white;
+}
+
+.action-btn.edit:hover {
+    background: #2563eb;
+}
+
+.action-btn.delete {
+    background: #ef4444;
+    color: white;
+}
+
+.action-btn.delete:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .clinic-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clinic-header h1 {
+        font-size: 2rem;
+    }
+
+    .clinic-image-section {
+        height: 300px;
+    }
+}

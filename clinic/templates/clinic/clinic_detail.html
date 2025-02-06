@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block clinic_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'clinic/css/clinic_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="clinic-container">
+    <div class="appointment-section">
+        <h2>Want to book appointment?</h2>
+        <button class="book-appointment-btn">Book Now</button>
+    </div>
+
+    <div class="clinic-image-section">
+        <img src="{{ object.image.url }}" alt="{{ object.name }}">
+    </div>
+
+    <div class="clinic-content">
+        <div class="clinic-header">
+            <h1>{{ object.name }}</h1>
+            <p class="clinic-meta">Posted by {{ object.author.username }} on {{ object.date_posted }}</p>
+        </div>
+
+        <div class="clinic-description">
+            <h3>About Us</h3>
+            <p>{{ object.description }}</p>
+        </div>
+
+        <div class="clinic-details-grid">
+            <div class="detail-box">
+                <div class="detail-icon">⏰</div>
+                <h4>Opening Hours</h4>
+                <p>{{ object.opening_time }} - {{ object.closing_time }}</p>
+            </div>
+
+            <div class="detail-box">
+                <div class="detail-icon">📍</div>
+                <h4>Location</h4>
+                <p>{{ object.address }}</p>
+            </div>
+
+            <div class="detail-box">
+                <div class="detail-icon">📞</div>
+                <h4>Contact</h4>
+                <p>{{ object.phoneNum }}</p>
+            </div>
+        </div>
+
+        {% if user == object.author %}
+        <div class="action-buttons">
+            <a href="{% url 'clinic-update' object.pk %}" class="action-btn edit">Edit Details</a>
+            <a href="{% url 'clinic-delete' object.pk %}" class="action-btn delete">Delete Listing</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
