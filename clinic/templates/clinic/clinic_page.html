@@ -1,17 +1,44 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-
-
-{% block login_css %}
-
+{% block clinic_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'clinic/css/clinic.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>
+<div class="title">CLINIC LIST</div>
+    <div class="clinic-card-container">
+        {% for clinic in clinics %}
+            <div class="clinic-card">
+                <div class="clinic-image">
+                    <img src="{{ clinic.image.url }}" alt="{{ clinic.name }}">
+                </div>
 
-    Welcome to the Clinic listing page
+                <div class="clinic-details">
+                    <h2>{{ clinic.name }}</h2>
 
+                    <div class="clinic-info">
+                        <div class="info-section">
+                            <p class="info-title">Hours:</p>
+                            <p>{{ clinic.opening_time }} - {{ clinic.closing_time }}</p>
+                        </div>
+                        <div class="info-section">
+                            <p class="info-title">Address:</p>
+                            <p>{{ clinic.address }}</p>
+                        </div>
+                        <div class="info-section">
+                            <p class="info-title">Phone:</p>
+                            <p>{{ clinic.phoneNum }}</p>
+                        </div>
+                        <div class="info-section">
+                            <p class="info-title">Description:</p>
+                            <p>{{ clinic.description|truncatewords:20 }}</p>
+                        </div>
+                    </div>
 
-</h1>
+                    <a href="{% url 'clinic-detail' clinic.id %}" class="book-btn">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -30,7 +30,7 @@ urlpatterns = [
     path('registration/', user_view.register, name='registration'),
     path('logout/', user_view.custom_logout, name='logout'),
     path('product/', include('product.urls')),
-    path('clinic/', clinic_view.ClinicListView.as_view(), name='KnowYourHair-clinic'),
+    path('clinic/', include('clinic.urls')),
 ]
 
 # if the project is in development mode, then add the following line to the urlpatterns

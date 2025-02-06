@@ -13,7 +13,7 @@
                 <a href="{% url 'product-detail' product.id %}" class="item">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}">
                     <h2>{{ product.name }}</h2>
-                    <div class="price">${{ product.price }}</div>
+                    <div class="price">NRs. {{ product.price }}</div>
                 </a>
             {% endfor %}
         </div>

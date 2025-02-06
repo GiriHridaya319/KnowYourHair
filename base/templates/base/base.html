@@ -12,16 +12,16 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+     <link rel="stylesheet" type="text/css" href="{% static 'base/css/footer.css' %}">
 
 
     {% block login_css %}
     {% endblock %}
 
-        <link rel="stylesheet" type="text/css" href="{% static 'base/css/footer.css' %}">
-
-
+    {% block clinic_css %} {% endblock %}
     {% block product_css %}{% endblock %}
     {% block home_css %}{% endblock %}
+
 
 </head>
 <body>
