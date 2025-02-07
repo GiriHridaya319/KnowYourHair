@@ -1,0 +1,59 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block profile_css %}
+<link rel="stylesheet" href="{% static 'user/css/profile.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+    <div class="form-section">
+        <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend>Update Profile</legend>
+
+                <!-- Profile Image Preview -->
+                <div class="text-center mb-4">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" alt="Current Profile Image" class="profile-image-preview">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" alt="Default Profile Image" class="profile-image-preview">
+                    {% endif %}
+                </div>
+
+                <!-- Display form errors if any -->
+                {% if u_form.non_field_errors or p_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ u_form.non_field_errors }}
+                        {{ p_form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- User Form -->
+                {{ u_form|crispy }}
+
+                <!-- Profile Form -->
+                {{ p_form|crispy }}
+            </fieldset>
+
+            <div class="profile-actions">
+                <button type="submit" class="btn-profile btn-profile-primary">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+                <a href="{% url 'profile' %}" class="btn-profile btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

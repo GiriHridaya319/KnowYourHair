@@ -25,12 +25,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('base.urls')),
-    path('profile/', user_view.profile, name='profile'),
-    path('login/', user_view.login_view, name='login'),  # Change to login_view
-    path('registration/', user_view.register, name='registration'),
-    path('logout/', user_view.custom_logout, name='logout'),
+
     path('product/', include('product.urls')),
     path('clinic/', include('clinic.urls')),
+    path('user/', include('user.urls')),
+
 ]
 
 # if the project is in development mode, then add the following line to the urlpatterns

@@ -1,50 +1,115 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block footer %}{% endblock %}
 
 {% load crispy_forms_tags %}
 
+{% block profile_css %}
+<link rel="stylesheet" href="{% static 'user/css/profile.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-  <div class="content-section">
-    <div class="media">
-      <div class="col-md-4">
-        <form method="POST" aria-label="Profile Update Form" enctype="multipart/form-data">
-          {% csrf_token %}
-          <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>
-            <div class="form-group">
-              <label for="id_image">Profile Image</label>
-              <div>
-                {% if user.profile.image %}
-                  <img src="{{ user.profile.image.url }}" alt="Profile Image" class="img-fluid" style="max-width: 100px;">
-                {% else %}
-                  <p>No image uploaded</p>
-                {% endif %}
-              </div>
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-picture-container">
+            {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile Picture" class="profile-picture">
+            {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Profile Picture" class="profile-picture">
+            {% endif %}
+        </div>
+        <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+        <p class="profile-username">@{{ user.username }}</p>
+    </div>
+
+    <div class="profile-content">
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="info-title">Email</h3>
+                </div>
+                <div class="info-value">{{ user.email }}</div>
             </div>
 
-            <!-- Displaying non-field errors -->
-            {% if u_form.non_field_errors %}
-              <div class="alert alert-danger">
-                {{ u_form.non_field_errors }}
-                {{ p_form.non_field_errors }}
-              </div>
+            {% if user.profile.phone_number %}
+            <div class="info-card">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3 class="info-title">Phone</h3>
+                </div>
+                <div class="info-value">{{ user.profile.phone_number }}</div>
+            </div>
             {% endif %}
 
-            <!-- Form for updating user and profile info -->
-            {{ u_form|crispy }}
-            {{ p_form|crispy }}
+            {% if user.profile.address %}
+            <div class="info-card">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <h3 class="info-title">Address</h3>
+                </div>
+                <div class="info-value">{{ user.profile.address }}</div>
+            </div>
+            {% endif %}
 
-            <!-- Display current profile image -->
+            {% if user.profile.bio %}
+            <div class="info-card">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="info-title">Bio</h3>
+                </div>
+                <div class="info-value">{{ user.profile.bio }}</div>
+            </div>
+            {% endif %}
+        </div>
+      <div class="profile-actions">
+            <a href="{% url 'profile-update' %}" class="btn-profile btn-profile-primary">
 
-          </fieldset>
+                <i class="fas fa-edit"></i>
+                Edit Profile
+            </a>
+        </div>
+        <div class="profile-actions">
+            <a href="{% url 'change-password' %}" class="btn-profile btn-profile-primary">
 
-          <!-- Update button -->
-          <div class="form-group">
-            <button class="btn btn-info btn-block" type="submit">Update</button>
-          </div>
-        </form>
-      </div>
+                <i class="fas fa-edit"></i>
+                Change Password
+            </a>
+        </div>
+
+
     </div>
-  </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+    // Add hover animation for info cards
+    document.querySelectorAll('.info-card').forEach(card => {
+        card.addEventListener('mouseover', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        card.addEventListener('mouseout', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+</script>
+{% endblock %}

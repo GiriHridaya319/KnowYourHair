@@ -104,3 +104,49 @@ def profile(request):
         'p_form': p_form
     }
     return render(request, 'user/profile.html', context)
+
+
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been updated Successfully!')
+            return redirect('profile')
+    # instance to get the current user information
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'user/profile_update.html', context)
+
+
+@login_required
+def password(request):
+    if request.method == 'POST':
+        old_password = request.POST['old_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match!")
+            return redirect('profile-update')
+
+        user = authenticate(request, username=request.user.username, password=old_password)
+
+        if user:
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "Password changed successfully!")
+            return redirect('profile-update')
+        else:
+            messages.error(request, "Invalid password!")
+            return redirect('profile-update')
+
+    return render(request, 'user/changePassword.html')
