@@ -10,7 +10,7 @@
         <div class="title">PRODUCT LIST</div>
         <div class="listProduct">
             {% for product in products %}
-                <a href="{% url 'product-detail' product.id %}" class="item">
+                <a href="{% url 'product-detail' product.name %}" class="item">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}">
                     <div class="separator-box"></div>  <!-- Box between image and name -->
                     <h2>{{ product.name }}</h2>

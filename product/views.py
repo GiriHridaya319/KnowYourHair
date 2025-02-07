@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Product
@@ -14,6 +14,9 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'product/product_detail.html'
+
+    def get_object(self):
+        return get_object_or_404(Product, name=self.kwargs['name'])
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):

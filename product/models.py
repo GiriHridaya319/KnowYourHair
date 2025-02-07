@@ -26,7 +26,7 @@ class Product(models.Model):
         return f"{self.name} - {self.status}"
 
     def get_absolute_url(self):
-        return reverse('product-detail', kwargs={'pk': self.pk})
+        return reverse('product-detail', kwargs={'name': self.name})
 
     def save(self):
         super().save()  # run the save method of the parent class

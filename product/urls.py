@@ -13,7 +13,8 @@ urlpatterns = [
     # Remove 'product/' from the start of these paths since it's already included in main urls.py
     path('', ProductListView.as_view(), name='KnowYourHair-product'),
     path('<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
-    path('<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('<str:name>/', ProductDetailView.as_view(), name='product-detail'),
+
     path('new/', ProductCreateView.as_view(), name='product-create'),
     path('<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
 ]
