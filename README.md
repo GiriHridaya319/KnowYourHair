@@ -1,4 +1,4 @@
-# **KnowYourHair – Hair Loss Risk Prediction Web Application**  
+# **KnowYourHair – Hair Loss Risk Prediction and Prevention Web Application**  
 🚧 **Status:** Currently Working On It 🚧  
 
 ## **Overview**  
