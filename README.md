@@ -67,3 +67,4 @@ To develop a **web application** that predicts hair loss risk early and provides
 ✔ **Web UI Enhancement (django-Based Dashboard)**  
 ✔ **Improved AI Model Accuracy**  
 ✔ **Hair Loss Progression Tracking System**  
+
