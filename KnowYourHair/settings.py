@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'hairfallprediction.apps.HairfallpredictionConfig',
     'product.apps.ProductConfig',
     'clinic.apps.ClinicConfig',
     'user.apps.UserConfig',

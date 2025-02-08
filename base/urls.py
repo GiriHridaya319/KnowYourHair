@@ -4,6 +4,6 @@ from . import views
 # home is the function created in views
 urlpatterns = [
     path('', views.home, name='KnowYourHair-home'),
-    path('hairfallprediction/', views.hair_fall_prediction, name='KnowYourHair-hairfallprediction'),
+
     path('Blog/', views.blog, name='KnowYourHair-blog'),
 ]
