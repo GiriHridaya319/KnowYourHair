@@ -30,21 +30,21 @@
                         <div class="option-card">
                             <input type="radio" id="gender-0" name="Gender" value="0" required>
                             <label for="gender-0">
-                                <img src="/api/placeholder/200/200" alt="Female">
+                                <img src="{% static 'hairfallprediction/images/female.png' %}" alt="Female">
                                 <span>Female</span>
                             </label>
                         </div>
                         <div class="option-card">
                             <input type="radio" id="gender-1" name="Gender" value="1">
                             <label for="gender-1">
-                                <img src="/api/placeholder/200/200" alt="Male">
+                                <img src="{% static 'hairfallprediction/images/male.png' %}" alt="Male">
                                 <span>Male</span>
                             </label>
                         </div>
                         <div class="option-card">
                             <input type="radio" id="gender-2" name="Gender" value="2">
                             <label for="gender-2">
-                                <img src="/api/placeholder/200/200" alt="Other">
+                                <img src="{% static 'hairfallprediction/images/other.png' %}" alt="other">
                                 <span>Other</span>
                             </label>
                         </div>
@@ -106,9 +106,18 @@
                             </label>
                         </div>
 
+                        <div class="pattern-card" data-value="5">
+                            <input type="radio" id="hairline-5" name="Hairline_Pattern" value="5">
+                            <label for="hairline-5">
+                                <img src="/api/placeholder/200/200" alt="Pattern 5">
+                                <span>Pattern 5</span>
+                            </label>
+                        </div>
+
                         <!-- Additional hairline patterns -->
                     </div>
                 </section>
+
 
                 <!-- Hair Fall Rate Section -->
                 <section class="survey-section" id="hairfall-section">
