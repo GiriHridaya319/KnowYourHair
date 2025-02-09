@@ -12,244 +12,625 @@
 {% endblock %}
 
 {% block content %}
-<div class="progress-bar"></div>
-    <div class="slider-container"></div>
+<div class="container">
+    <br>
+    <br>
 
-    <script>
-        const questions = [
-            {
-                title: "What is your gender?",
-                description: "Select your gender identity",
-                type: "select",
-                options: ["Female", "Male", "Other"],
-                icon: "fas fa-venus-mars",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "What is your age?",
-                description: "Enter your current age",
-                type: "number",
-                placeholder: "Enter age",
-                icon: "fas fa-user-clock",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Hairline Pattern",
-                description: "Select your current hairline pattern",
-                type: "select",
-                options: ["Normal", "Receding", "Type 2", "Type 3", "Type 4", "Type 5"],
-                icon: "fas fa-user",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Hair Fall Rate",
-                description: "Daily hair fall count",
-                type: "number",
-                placeholder: "Strands per day",
-                icon: "fas fa-chart-line",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Nutrition Level",
-                description: "Rate your nutrition from 1-10",
-                type: "number",
-                placeholder: "1-10",
-                icon: "fas fa-apple-whole",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Chemical Product Usage",
-                description: "Rate your chemical product usage",
-                type: "select",
-                options: ["No Usage", "Light Usage", "Moderate Usage", "Heavy Usage"],
-                icon: "fas fa-spray-can",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Family History",
-                description: "Family history of hair loss",
-                type: "select",
-                options: ["No History", "Some History", "Strong History"],
-                icon: "fas fa-users",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Past Chronic Illness",
-                description: "History of chronic illness",
-                type: "select",
-                options: ["None", "Yes", "Severe"],
-                icon: "fas fa-hospital",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Sleep Disturbance",
-                description: "Rate your sleep quality",
-                type: "select",
-                options: ["No Issues", "Some Issues", "Severe Issues"],
-                icon: "fas fa-moon",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Water Quality",
-                description: "Rate your water quality",
-                type: "select",
-                options: ["Good", "Poor", "Very Poor"],
-                icon: "fas fa-water",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Stress Levels",
-                description: "Rate your stress levels",
-                type: "select",
-                options: ["Low", "Medium", "High", "Extreme"],
-                icon: "fas fa-brain",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Food Habits",
-                description: "Rate your eating habits",
-                type: "select",
-                options: ["Healthy", "Moderate", "Unhealthy", "Very Unhealthy"],
-                icon: "fas fa-utensils",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Hormonal Changes",
-                description: "Any hormonal imbalances?",
-                type: "select",
-                options: ["No", "Yes"],
-                icon: "fas fa-chart-bar",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Hair Care Habits",
-                description: "Rate your hair care routine",
-                type: "select",
-                options: ["Good", "Poor"],
-                icon: "fas fa-pump-soap",
-                background: "/api/placeholder/800/600"
-            },
-            {
-                title: "Smoking Habits",
-                description: "Do you smoke?",
-                type: "select",
-                options: ["No", "Yes"],
-                icon: "fas fa-smoking",
-                background: "/api/placeholder/800/600"
+        <form id="hairAnalysisForm">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+
+            <div class="survey-slides">
+                <!-- Gender Section -->
+                <section class="survey-section" id="gender-section">
+                    <h2><i class="fas fa-venus-mars"></i> Gender</h2>
+                    <div class="option-cards">
+                        <div class="option-card">
+                            <input type="radio" id="gender-0" name="Gender" value="0" required>
+                            <label for="gender-0">
+                                <img src="/api/placeholder/200/200" alt="Female">
+                                <span>Female</span>
+                            </label>
+                        </div>
+                        <div class="option-card">
+                            <input type="radio" id="gender-1" name="Gender" value="1">
+                            <label for="gender-1">
+                                <img src="/api/placeholder/200/200" alt="Male">
+                                <span>Male</span>
+                            </label>
+                        </div>
+                        <div class="option-card">
+                            <input type="radio" id="gender-2" name="Gender" value="2">
+                            <label for="gender-2">
+                                <img src="/api/placeholder/200/200" alt="Other">
+                                <span>Other</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Age Section -->
+                <section class="survey-section" id="age-section">
+                    <h2><i class="fas fa-user-clock"></i> Age</h2>
+                    <div class="range-input">
+                        <input type="range" id="Age" name="Age" min="1" max="100" value="25" required>
+                        <output for="Age">25</output>
+                        <div class="range-labels">
+                            <span>1</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Hairline Pattern Section -->
+                <section class="survey-section" id="hairline-section">
+                    <h2><i class="fas fa-user"></i> Hairline Pattern</h2>
+                    <div class="image-grid">
+                        <div class="pattern-card" data-value="0">
+                            <input type="radio" id="hairline-0" name="Hairline_Pattern" value="0" required>
+                            <label for="hairline-0">
+                                <img src="/api/placeholder/200/200" alt="Normal">
+                                <span>Normal</span>
+                            </label>
+                        </div>
+                        <div class="pattern-card" data-value="1">
+                            <input type="radio" id="hairline-1" name="Hairline_Pattern" value="1">
+                            <label for="hairline-1">
+                                <img src="/api/placeholder/200/200" alt="Pattern 1">
+                                <span>Pattern 1 </span>
+                            </label>
+                        </div>
+                        <div class="pattern-card" data-value="2">
+                            <input type="radio" id="hairline-2" name="Hairline_Pattern" value="2">
+                            <label for="hairline-2">
+                                <img src="/api/placeholder/200/200" alt="Pattern 2">
+                                <span>Pattern 2</span>
+                            </label>
+                        </div>
+
+                        <div class="pattern-card" data-value="3">
+                            <input type="radio" id="hairline-3" name="Hairline_Pattern" value="3">
+                            <label for="hairline-3">
+                                <img src="/api/placeholder/200/200" alt="Pattern 3">
+                                <span>Pattern 3</span>
+                            </label>
+                        </div>
+                        <div class="pattern-card" data-value="4">
+                            <input type="radio" id="hairline-4" name="Hairline_Pattern" value="4">
+                            <label for="hairline-4">
+                                <img src="/api/placeholder/200/200" alt="Pattern 4">
+                                <span>Pattern 4</span>
+                            </label>
+                        </div>
+
+                        <!-- Additional hairline patterns -->
+                    </div>
+                </section>
+
+                <!-- Hair Fall Rate Section -->
+                <section class="survey-section" id="hairfall-section">
+                    <h2><i class="fas fa-chart-line"></i> Hair Fall Rate</h2>
+                    <div class="range-input">
+                        <input type="range" id="Hair_Fall_Rate" name="Hair_Fall_Rate" min="0" max="200" step="1" value="50" required>
+                        <output for="Hair_Fall_Rate">50 strands/day</output>
+                    </div>
+                </section>
+
+
+               <section class="survey-section" id="nutrition-section">
+    <h2><i class="fas fa-apple-whole"></i> Nutrition Level</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you rate your daily nutrition intake?
+    </p>
+    <p class="question-description">
+        Consider your daily intake of proteins, vitamins, minerals, and overall balanced diet.
+    </p>
+    <div class="nutrition-slider">
+        <div class="slider-container">
+            <input type="range" id="Nutrition" name="Nutrition" min="1" max="10" value="5" required>
+            <div class="nutrition-value">5</div>
+            <div class="nutrition-labels">
+                <span>Poor (1)</span>
+                <span>Average (5)</span>
+                <span>Excellent (10)</span>
+            </div>
+            <p class="nutrition-description">
+                1 = Poor nutrition, 10 = Excellent balanced diet
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Chemical Product Usage Section -->
+<section class="survey-section" id="chemical-section">
+    <h2><i class="fas fa-spray-can"></i> Chemical Product Usage</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How frequently do you use chemical hair products?
+    </p>
+    <p class="question-description">
+        This includes hair dyes, chemical treatments, relaxers, or harsh styling products.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="chemical-0" name="Chemical_Product_Usage" value="0" required>
+            <label for="chemical-0">Never - I avoid chemical products</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="chemical-1" name="Chemical_Product_Usage" value="1">
+            <label for="chemical-1">Occasionally - A few times a year</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="chemical-2" name="Chemical_Product_Usage" value="2">
+            <label for="chemical-2">Regularly - Monthly use</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="chemical-3" name="Chemical_Product_Usage" value="3">
+            <label for="chemical-3">Frequently - Weekly use</label>
+        </div>
+    </div>
+    <p class="help-text">Select the option that best describes your chemical product usage pattern</p>
+</section>
+
+
+
+
+<!-- Family History Section -->
+<section class="survey-section" id="genetics-section">
+    <h2><i class="fas fa-users"></i> Family History</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        Is there a history of hair loss in your immediate family?
+    </p>
+    <p class="question-description">
+        Consider parents, siblings, and grandparents when answering.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="genetics-0" name="Genetics" value="0" required>
+            <label for="genetics-0">No family history of hair loss</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="genetics-1" name="Genetics" value="1">
+            <label for="genetics-1">Some relatives have hair loss</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="genetics-2" name="Genetics" value="2">
+            <label for="genetics-2">Strong family history of hair loss</label>
+        </div>
+    </div>
+</section>
+
+<!-- Past Chronic Illness Section -->
+<section class="survey-section" id="illness-section">
+    <h2><i class="fas fa-hospital"></i> Medical History</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        Have you experienced any chronic illnesses in the past?
+    </p>
+    <p class="question-description">
+        This includes conditions like thyroid disorders, autoimmune diseases, or other long-term health issues.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="illness-0" name="Past_Chronic_Illness" value="0" required>
+            <label for="illness-0">No chronic illness history</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="illness-1" name="Past_Chronic_Illness" value="1">
+            <label for="illness-1">Yes, mild conditions</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="illness-2" name="Past_Chronic_Illness" value="2">
+            <label for="illness-2">Yes, severe conditions</label>
+        </div>
+    </div>
+</section>
+
+<!-- Sleep Section -->
+<section class="survey-section" id="sleep-section">
+    <h2><i class="fas fa-moon"></i> Sleep Patterns</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you describe your sleep quality?
+    </p>
+    <p class="question-description">
+        Consider your average sleep duration and quality over the past month.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="sleep-0" name="Sleep_Disturbance" value="0" required>
+            <label for="sleep-0">Regular, restful sleep (7-9 hours)</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="sleep-1" name="Sleep_Disturbance" value="1">
+            <label for="sleep-1">Occasional sleep issues</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="sleep-2" name="Sleep_Disturbance" value="2">
+            <label for="sleep-2">Frequent sleep problems</label>
+        </div>
+    </div>
+</section>
+
+<!-- Water Quality Section -->
+<section class="survey-section" id="water-section">
+    <h2><i class="fas fa-water"></i> Water Quality</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you rate the water quality you use for hair washing?
+    </p>
+    <p class="question-description">
+        Consider hardness, mineral content, and any water treatment systems you use.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="water-0" name="Water_Quality_Issue" value="0" required>
+            <label for="water-0">Excellent - Soft or filtered water</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="water-1" name="Water_Quality_Issue" value="1">
+            <label for="water-1">Moderate - Some mineral content</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="water-2" name="Water_Quality_Issue" value="2">
+            <label for="water-2">Poor - Hard water with high mineral content</label>
+        </div>
+    </div>
+</section>
+
+<!-- Stress Level Section -->
+<section class="survey-section" id="stress-section">
+    <h2><i class="fas fa-brain"></i> Stress Levels</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you rate your current stress levels?
+    </p>
+    <p class="question-description">
+        Consider your work, personal life, and overall daily stress exposure.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="stress-0" name="Stress" value="0" required>
+            <label for="stress-0">Minimal - Well managed stress</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="stress-1" name="Stress" value="1">
+            <label for="stress-1">Moderate - Occasional stress</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="stress-2" name="Stress" value="2">
+            <label for="stress-2">High - Frequent stress</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="stress-3" name="Stress" value="3">
+            <label for="stress-3">Severe - Constant stress</label>
+        </div>
+    </div>
+</section>
+
+<!-- Food Habits Section -->
+<section class="survey-section" id="food-section">
+    <h2><i class="fas fa-utensils"></i> Dietary Habits</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you describe your eating habits?
+    </p>
+    <p class="question-description">
+        Consider your typical daily diet and nutritional choices.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="food-0" name="Food_Habit" value="0" required>
+            <label for="food-0">Balanced - Regular nutritious meals</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="food-1" name="Food_Habit" value="1">
+            <label for="food-1">Moderate - Occasionally skip meals</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="food-2" name="Food_Habit" value="2">
+            <label for="food-2">Poor - Frequent fast food</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="food-3" name="Food_Habit" value="3">
+            <label for="food-3">Very Poor - Irregular eating patterns</label>
+        </div>
+    </div>
+</section>
+
+<!-- Smoking Section -->
+<section class="survey-section" id="smoking-section">
+    <h2><i class="fas fa-smoking"></i> Smoking Habits</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        Do you smoke tobacco products?
+    </p>
+    <p class="question-description">
+        Smoking can affect hair health and growth patterns.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="smoking-0" name="Smoking" value="0" required>
+            <label for="smoking-0">No - Never smoked</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="smoking-1" name="Smoking" value="1">
+            <label for="smoking-1">Yes - Regular smoker</label>
+        </div>
+    </div>
+</section>
+
+<!-- Hair Care Habits Section -->
+<section class="survey-section" id="haircare-section">
+    <h2><i class="fas fa-pump-soap"></i> Hair Care Routine</h2>
+    <p class="question-text">
+        <i class="fas fa-question-circle"></i>
+        How would you rate your hair care routine?
+    </p>
+    <p class="question-description">
+        Consider your washing schedule, product usage, and general hair maintenance.
+    </p>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" id="haircare-0" name="Hair_Care_Habits" value="0" required>
+            <label for="haircare-0">Excellent - Regular gentle care routine</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="haircare-1" name="Hair_Care_Habits" value="1">
+            <label for="haircare-1">Inadequate - Irregular or harsh care routine</label>
+        </div>
+    </div>
+</section>
+
+<!-- Form Navigation -->
+<div class="form-navigation">
+    <button type="button" class="prev-btn" disabled>
+        <i class="fas fa-arrow-left"></i> Previous
+    </button>
+    <button type="button" class="next-btn">
+        Next <i class="fas fa-arrow-right"></i>
+    </button>
+    <button type="submit" class="submit-btn" style="display: none;">
+        Submit <i class="fas fa-check"></i>
+    </button>
+</div>
+<script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+    // Initialize variables
+    const form = document.getElementById('hairAnalysisForm');
+    const sections = Array.from(document.querySelectorAll('.survey-section'));
+    const progressBar = document.querySelector('.progress-fill');
+    const prevButton = document.querySelector('.prev-btn');
+    const nextButton = document.querySelector('.next-btn');
+    const submitButton = document.querySelector('.submit-btn');
+    let currentSection = 0;
+
+    // Initialize the form
+    function initializeForm() {
+        sections[0].classList.add('active');
+        updateProgressBar();
+        setupRangeInputs();
+        setupImageSelection();
+    }
+
+    // Update progress bar
+    function updateProgressBar() {
+        const progress = ((currentSection + 1) / sections.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    // Setup range input listeners
+    function setupRangeInputs() {
+        const rangeInputs = document.querySelectorAll('input[type="range"]');
+        rangeInputs.forEach(input => {
+            const output = input.nextElementSibling;
+
+            // Update output value
+            input.addEventListener('input', (e) => {
+                if (input.id === 'Hair_Fall_Rate') {
+                    output.value = `${e.target.value} strands/day`;
+                } else {
+                    output.value = e.target.value;
+                }
+            });
+
+            // Add smooth sliding animation
+            input.addEventListener('mousedown', () => {
+                input.classList.add('sliding');
+            });
+
+            input.addEventListener('mouseup', () => {
+                input.classList.remove('sliding');
+            });
+        });
+    }
+
+    // Setup image selection animation
+    function setupImageSelection() {
+        const optionCards = document.querySelectorAll('.option-card');
+        optionCards.forEach(card => {
+            const input = card.querySelector('input[type="radio"]');
+            const label = card.querySelector('label');
+
+            label.addEventListener('click', () => {
+                // Remove selected class from all cards in the same group
+                const groupCards = document.querySelectorAll(`input[name="${input.name}"]`)
+                    .forEach(radio => radio.closest('.option-card')
+                        .classList.remove('selected'));
+
+                // Add selected class to clicked card
+                card.classList.add('selected');
+            });
+        });
+    }
+
+    // Validate current section
+    function validateSection(section) {
+        const inputs = section.querySelectorAll('input[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (input.type === 'radio') {
+                const radioGroup = section.querySelectorAll(`input[name="${input.name}"]`);
+                const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                if (!isChecked) {
+                    isValid = false;
+                    showError(input, 'Please select an option');
+                }
+            } else if (!input.value) {
+                isValid = false;
+                showError(input, 'This field is required');
             }
-        ];
-
-        // Rest of the JavaScript remains the same as in your original code
-        let currentSlide = 0;
-        const sliderContainer = document.querySelector('.slider-container');
-        const progressBar = document.querySelector('.progress-bar');
-
-        // Create slides (same as your original code)
-        questions.forEach((question, index) => {
-            const slide = document.createElement('div');
-            slide.className = `slide ${index === 0 ? 'active' : ''}`;
-
-            const visualSection = document.createElement('div');
-            visualSection.className = 'visual-section';
-
-            const iconContainer = document.createElement('div');
-            iconContainer.className = 'icon-container';
-            iconContainer.innerHTML = `<i class="${question.icon}"></i>`;
-
-            const imageContainer = document.createElement('div');
-            imageContainer.className = 'image-container';
-            imageContainer.innerHTML = `<img src="${question.background}" alt="Question illustration">`;
-
-            visualSection.appendChild(iconContainer);
-            visualSection.appendChild(imageContainer);
-
-            const questionSection = document.createElement('div');
-            questionSection.className = 'question-section';
-
-            const questionContainer = document.createElement('div');
-            questionContainer.className = 'question-container';
-
-            const title = document.createElement('h2');
-            title.textContent = question.title;
-
-            const description = document.createElement('div');
-            description.className = 'description';
-            description.textContent = question.description;
-
-            const inputContainer = document.createElement('div');
-            inputContainer.className = 'input-container';
-
-            if (question.type === 'select') {
-                const select = document.createElement('select');
-                question.options.forEach((option, i) => {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = i;
-                    optionElement.textContent = option;
-                    select.appendChild(optionElement);
-                });
-                inputContainer.appendChild(select);
-            } else {
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.placeholder = question.placeholder;
-                inputContainer.appendChild(input);
-            }
-
-            const navigation = document.createElement('div');
-            navigation.className = 'navigation';
-
-            if (index > 0) {
-                const prevButton = document.createElement('button');
-                prevButton.textContent = 'Previous';
-                prevButton.onclick = () => navigateSlide(-1);
-                navigation.appendChild(prevButton);
-            }
-
-            if (index < questions.length - 1) {
-                const nextButton = document.createElement('button');
-                nextButton.textContent = 'Next';
-                nextButton.onclick = () => navigateSlide(1);
-                navigation.appendChild(nextButton);
-            } else {
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Submit';
-                submitButton.onclick = handleSubmit;
-                navigation.appendChild(submitButton);
-            }
-
-            questionContainer.appendChild(title);
-            questionContainer.appendChild(description);
-            questionContainer.appendChild(inputContainer);
-            questionContainer.appendChild(navigation);
-            questionSection.appendChild(questionContainer);
-
-            slide.appendChild(visualSection);
-            slide.appendChild(questionSection);
-            sliderContainer.appendChild(slide);
         });
 
-        function navigateSlide(direction) {
-            const slides = document.querySelectorAll('.slide');
-            slides[currentSlide].classList.remove('active');
-            currentSlide += direction;
-            slides[currentSlide].classList.add('active');
-            updateProgressBar();
+        return isValid;
+    }
+
+    // Show error message
+    function showError(input, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+
+        // Remove existing error message if any
+        const existingError = input.parentElement.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
         }
 
-        function updateProgressBar() {
-            const progress = ((currentSlide + 1) / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
+        // Add new error message
+        input.parentElement.appendChild(errorDiv);
 
-        function handleSubmit() {
-            const answers = {};
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach((input, index) => {
-                answers[questions[index].title] = input.value;
-            });
-            console.log('Submitted answers:', answers);
+        // Remove error message when user interacts with the input
+        input.addEventListener('input', () => {
+            errorDiv.remove();
+        }, { once: true });
+    }
+
+    // Navigation functions
+    function showSection(index) {
+        sections.forEach(section => section.classList.remove('active'));
+        sections[index].classList.add('active');
+
+        // Smooth scroll to top of form
+        form.scrollIntoView({ behavior: 'smooth' });
+
+        // Update buttons
+        prevButton.disabled = index === 0;
+        if (index === sections.length - 1) {
+            nextButton.style.display = 'none';
+            submitButton.style.display = 'block';
+        } else {
+            nextButton.style.display = 'block';
+            submitButton.style.display = 'none';
         }
 
         updateProgressBar();
+    }
+
+    // Event Listeners
+    prevButton.addEventListener('click', () => {
+        if (currentSection > 0) {
+            currentSection--;
+            showSection(currentSection);
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (validateSection(sections[currentSection])) {
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (validateSection(sections[currentSection])) {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Show success message
+                showSuccessMessage();
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                showError(submitButton, 'Something went wrong. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+            }
+        }
+    });
+
+    // Success message
+    function showSuccessMessage() {
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.innerHTML = `
+            <div class="success-content">
+                <i class="fas fa-check-circle"></i>
+                <h3>Thank You!</h3>
+                <p>Your hair analysis survey has been submitted successfully.</p>
+                <button onclick="location.reload()">Start New Survey</button>
+            </div>
+        `;
+
+        // Replace form with success message
+        form.innerHTML = '';
+        form.appendChild(successMessage);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            if (currentSection === sections.length - 1) {
+                submitButton.click();
+            } else {
+                nextButton.click();
+            }
+        }
+    });
+
+    // Handle star rating interaction
+    const starRating = document.querySelector('.star-rating');
+    if (starRating) {
+        const stars = starRating.querySelectorAll('input');
+        stars.forEach(star => {
+            star.addEventListener('change', () => {
+                const rating = star.value;
+                stars.forEach(s => {
+                    const label = s.nextElementSibling;
+                    if (s.value <= rating) {
+                        label.classList.add('active');
+                    } else {
+                        label.classList.remove('active');
+                    }
+                });
+            });
+        });
+    }
+
+    // Initialize form when DOM is loaded
+    initializeForm();
+});
     </script>
 {% endblock content %}
