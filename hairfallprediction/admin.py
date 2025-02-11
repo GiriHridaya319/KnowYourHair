@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import HairfallData, Product
 
-# Register your models here.
+
+admin.site.register(HairfallData)
+admin.site.register(Product)
