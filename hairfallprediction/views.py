@@ -13,7 +13,7 @@ def survey(request):
 
 
 def result(request):
-    return render(request, 'base/resultPage.html', {'title': 'Result'})
+    return render(request, 'hairfallprediction/resultPage.html', {'title': 'Result'})
 
 
 # Initialize the predictor and recommender
@@ -22,9 +22,7 @@ predictor = HairfallPredictor()
 recommender = ProductRecommender()
 
 
-def prediction_form(request):
-    """Render the prediction form."""
-    return render(request, 'hairfallprediction/prediction_form.html')
+
 
 
 def predict_risk(request):
@@ -61,6 +59,6 @@ def predict_risk(request):
             'recommendations': recommendations,
         }
 
-        return render(request, 'hairfallprediction/prediction_result.html', context)
+        return render(request, 'hairfallprediction/resultPage.html', context)
 
-    return redirect('prediction_form')
+    return redirect('survey')
