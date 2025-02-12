@@ -16,7 +16,8 @@
     <br>
     <br>
 
-        <form id="hairAnalysisForm">
+        <form id="hairAnalysisForm" method="POST" action="{% url 'result' %}">
+            {% csrf_token %}
             <!-- Progress Bar -->
             <div class="progress-bar">
                 <div class="progress-fill"></div>
@@ -114,7 +115,6 @@
                             </label>
                         </div>
 
-                        <!-- Additional hairline patterns -->
                     </div>
                 </section>
 
@@ -409,9 +409,7 @@
     </button>
 </div>
 <script>
-
-      document.addEventListener('DOMContentLoaded', function() {
-    // Initialize variables
+document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('hairAnalysisForm');
     const sections = Array.from(document.querySelectorAll('.survey-section'));
     const progressBar = document.querySelector('.progress-fill');
@@ -425,7 +423,7 @@
         sections[0].classList.add('active');
         updateProgressBar();
         setupRangeInputs();
-        setupImageSelection();
+        setupOptionCards();
     }
 
     // Update progress bar
@@ -434,46 +432,31 @@
         progressBar.style.width = `${progress}%`;
     }
 
-    // Setup range input listeners
+    // Setup range inputs with live update
     function setupRangeInputs() {
         const rangeInputs = document.querySelectorAll('input[type="range"]');
         rangeInputs.forEach(input => {
             const output = input.nextElementSibling;
-
-            // Update output value
             input.addEventListener('input', (e) => {
-                if (input.id === 'Hair_Fall_Rate') {
-                    output.value = `${e.target.value} strands/day`;
-                } else {
-                    output.value = e.target.value;
-                }
-            });
-
-            // Add smooth sliding animation
-            input.addEventListener('mousedown', () => {
-                input.classList.add('sliding');
-            });
-
-            input.addEventListener('mouseup', () => {
-                input.classList.remove('sliding');
+                const value = e.target.value;
+                output.value = input.id === 'Hair_Fall_Rate'
+                    ? `${value} strands/day`
+                    : value;
             });
         });
     }
 
-    // Setup image selection animation
-    function setupImageSelection() {
+    // Setup card selection
+    function setupOptionCards() {
         const optionCards = document.querySelectorAll('.option-card');
         optionCards.forEach(card => {
             const input = card.querySelector('input[type="radio"]');
             const label = card.querySelector('label');
 
             label.addEventListener('click', () => {
-                // Remove selected class from all cards in the same group
-                const groupCards = document.querySelectorAll(`input[name="${input.name}"]`)
+                document.querySelectorAll(`input[name="${input.name}"]`)
                     .forEach(radio => radio.closest('.option-card')
                         .classList.remove('selected'));
-
-                // Add selected class to clicked card
                 card.classList.add('selected');
             });
         });
@@ -481,69 +464,29 @@
 
     // Validate current section
     function validateSection(section) {
-        const inputs = section.querySelectorAll('input[required]');
-        let isValid = true;
-
-        inputs.forEach(input => {
+        const requiredInputs = section.querySelectorAll('input[required]');
+        return Array.from(requiredInputs).every(input => {
             if (input.type === 'radio') {
-                const radioGroup = section.querySelectorAll(`input[name="${input.name}"]`);
-                const isChecked = Array.from(radioGroup).some(radio => radio.checked);
-                if (!isChecked) {
-                    isValid = false;
-                    showError(input, 'Please select an option');
-                }
-            } else if (!input.value) {
-                isValid = false;
-                showError(input, 'This field is required');
+                return document.querySelector(`input[name="${input.name}"]:checked`);
             }
+            return input.value.trim() !== '';
         });
-
-        return isValid;
     }
 
-    // Show error message
-    function showError(input, message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-
-        // Remove existing error message if any
-        const existingError = input.parentElement.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        // Add new error message
-        input.parentElement.appendChild(errorDiv);
-
-        // Remove error message when user interacts with the input
-        input.addEventListener('input', () => {
-            errorDiv.remove();
-        }, { once: true });
-    }
-
-    // Navigation functions
+    // Show section
     function showSection(index) {
         sections.forEach(section => section.classList.remove('active'));
         sections[index].classList.add('active');
 
-        // Smooth scroll to top of form
-        form.scrollIntoView({ behavior: 'smooth' });
-
-        // Update buttons
         prevButton.disabled = index === 0;
-        if (index === sections.length - 1) {
-            nextButton.style.display = 'none';
-            submitButton.style.display = 'block';
-        } else {
-            nextButton.style.display = 'block';
-            submitButton.style.display = 'none';
-        }
+        nextButton.style.display = index === sections.length - 1 ? 'none' : 'block';
+        submitButton.style.display = index === sections.length - 1 ? 'block' : 'none';
 
         updateProgressBar();
+        form.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Event Listeners
+    // Navigation event listeners
     prevButton.addEventListener('click', () => {
         if (currentSection > 0) {
             currentSection--;
@@ -560,85 +503,20 @@
         }
     });
 
-    // Handle form submission
-    form.addEventListener('submit', async (e) => {
+    // Form submission
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
 
         if (validateSection(sections[currentSection])) {
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-            try {
-                // Show loading state
-                submitButton.disabled = true;
-                submitButton.textContent = 'Submitting...';
-
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // Show success message
-                showSuccessMessage();
-
-            } catch (error) {
-                console.error('Submission error:', error);
-                showError(submitButton, 'Something went wrong. Please try again.');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit';
-            }
+            // Submit the form
+            this.submit();
         }
     });
 
-    // Success message
-    function showSuccessMessage() {
-        const successMessage = document.createElement('div');
-        successMessage.className = 'success-message';
-        successMessage.innerHTML = `
-            <div class="success-content">
-                <i class="fas fa-check-circle"></i>
-                <h3>Thank You!</h3>
-                <p>Your hair analysis survey has been submitted successfully.</p>
-                <button onclick="location.reload()">Start New Survey</button>
-            </div>
-        `;
-
-        // Replace form with success message
-        form.innerHTML = '';
-        form.appendChild(successMessage);
-    }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-            if (currentSection === sections.length - 1) {
-                submitButton.click();
-            } else {
-                nextButton.click();
-            }
-        }
-    });
-
-    // Handle star rating interaction
-    const starRating = document.querySelector('.star-rating');
-    if (starRating) {
-        const stars = starRating.querySelectorAll('input');
-        stars.forEach(star => {
-            star.addEventListener('change', () => {
-                const rating = star.value;
-                stars.forEach(s => {
-                    const label = s.nextElementSibling;
-                    if (s.value <= rating) {
-                        label.classList.add('active');
-                    } else {
-                        label.classList.remove('active');
-                    }
-                });
-            });
-        });
-    }
-
-    // Initialize form when DOM is loaded
+    // Initialize the form
     initializeForm();
 });
     </script>

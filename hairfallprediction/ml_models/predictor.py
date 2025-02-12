@@ -6,8 +6,7 @@ import pandas as pd
 
 class HairfallPredictor:
     def __init__(self):
-        self.model = joblib.load('hairfallprediction/models/hairfall_model.pkl')
-        self.scaler = joblib.load('hairfallprediction/models/scaler.pkl')
+        self.model = joblib.load('hairfallprediction/models/hair_fall_risk_model_tuned.pkl')
 
         # Get training data from database for age predictions
         self.training_data = pd.DataFrame(
