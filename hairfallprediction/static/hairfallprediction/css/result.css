@@ -1,23 +1,11 @@
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
 
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 40px;
-        }
-
-        .container {
+        .container-result {
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 60px auto; /* Adds 100px space above and below */
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
             gap: 30px;
-        }
+}
 
         /* Risk Assessment Section (Left) */
         .risk-section {

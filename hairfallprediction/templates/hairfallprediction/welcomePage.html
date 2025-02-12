@@ -1,15 +1,142 @@
 {% extends "base/base.html" %}
 
+{% load static %}
 
+{% block footer %}{% endblock %}
+
+{% block welcome_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'hairfallprediction/css/welcome.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h2> Ready to begin </h2>
-<div class="profile-actions">
-            <a href="{% url 'survey' %}" class="btn-profile btn-profile-primary">
 
-                Let's Begin
-            </a>
+
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Future Hair loss Risk, Analysis and  Prediction</h1>
+            <p>Discover personalized solutions for your hair health journey</p>
         </div>
 
+        <div class="services-grid">
+            <div class="service-card" onclick="showDetails('prediction')">
+                <div class="service-icon">🔮</div>
+                <h3>Future Hair Loss Prediction</h3>
+                <p>Advanced AI analysis to predict potential hair loss patterns and risk factors</p>
+            </div>
 
+            <div class="service-card" onclick="showDetails('age')">
+                <div class="service-icon">⏳</div>
+                <h3>Age Prediction Analysis</h3>
+                <p>Estimate the age when hair loss might begin based on multiple factors</p>
+            </div>
+
+            <div class="service-card" onclick="showDetails('prevention')">
+                <div class="service-icon">🛡️</div>
+                <h3>Prevention Strategy</h3>
+                <p>Customized prevention tips and lifestyle recommendations</p>
+            </div>
+
+            <div class="service-card" onclick="showDetails('products')">
+                <div class="service-icon">🎯</div>
+                <h3>Product Recommendations</h3>
+                <p>Personalized product suggestions based on your unique needs</p>
+            </div>
+
+            <div class="service-card" onclick="showDetails('analysis')">
+                <div class="service-icon">📊</div>
+                <h3>Advanced Analysis</h3>
+                <p>Comprehensive hair health analysis using multiple data points</p>
+            </div>
+
+            <div class="service-card" onclick="showDetails('consultation')">
+                <div class="service-icon">👨‍⚕️</div>
+                <h3>Expert Consultation</h3>
+                <p>Connect with hair care specialists for personalized advice</p>
+            </div>
+        </div>
+
+        <div class="cta-container">
+            <h2 class="cta-heading">Ready to Discover Your Hair Health Profile?</h2>
+            <p class="cta-text">Take our comprehensive assessment to receive personalized insights and recommendations</p>
+
+            <div class="survey-benefits">
+                <div class="benefit-badge">⚡ 5-Minute Assessment</div>
+                <div class="benefit-badge">🎯 Personalized Results</div>
+                <div class="benefit-badge">📊 Detailed Analysis</div>
+                <div class="benefit-badge">💡 Expert Recommendations</div>
+            </div>
+
+            <a href="{% url 'survey' %}" class="start-survey-btn ">Begin Assessment</a>
+        </div>
+    </div>
+
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const details = {
+            prediction: {
+                title: "Future Hair Loss Prediction",
+                icon: "🔮",
+                content: "Our AI-powered system analyzes multiple factors including genetic predisposition, current hair density, scalp condition, lifestyle factors, and hormonal impact to provide comprehensive predictions and recommendations."
+            },
+            age: {
+                title: "Age Prediction Analysis",
+                icon: "⏳",
+                content: "We analyze family history, current hair health, hormonal patterns, and environmental factors to help understand and prepare for potential timeline of changes."
+            },
+            prevention: {
+                title: "Prevention Strategy",
+                icon: "🛡️",
+                content: "Get personalized prevention strategies including dietary recommendations, stress management techniques, hair care routines, and supplement suggestions."
+            },
+            products: {
+                title: "Product Recommendations",
+                icon: "🎯",
+                content: "Receive tailored product suggestions based on your hair type, condition, sensitivity, and treatment goals."
+            },
+            analysis: {
+                title: "Advanced Analysis",
+                icon: "📊",
+                content: "Comprehensive assessment including scalp condition mapping, hair density measurement, growth pattern analysis, and environmental impact evaluation."
+            },
+            consultation: {
+                title: "Expert Consultation",
+                icon: "👨‍⚕️",
+                content: "Connect with trichologists, dermatologists, and hair care specialists for personalized treatment plans and ongoing support."
+            }
+        };
+
+        function showDetails(type) {
+            const modal = document.getElementById('detailModal');
+            const modalContent = document.getElementById('modalContent');
+            const detail = details[type];
+
+            modalContent.innerHTML = `
+                <div class="service-icon" style="font-size: 3rem;">${detail.icon}</div>
+                <h2 style="color: var(--deep-blue); margin-bottom: 2rem;">${detail.title}</h2>
+                <p>${detail.content}</p>
+            `;
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 {% endblock content %}
