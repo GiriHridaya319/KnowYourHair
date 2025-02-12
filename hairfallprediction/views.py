@@ -11,18 +11,14 @@ def welcome(request):
 def survey(request):
     return render(request, 'hairfallprediction/survey.html', {'title': 'survey'})
 
-
 def result(request):
-    return render(request, 'hairfallprediction/resultPage.html', {'title': 'Result'})
+    return render(request, 'hairfallprediction/resultPage.html', {'title': 'result'})
 
 
 # Initialize the predictor and recommender
 
 predictor = HairfallPredictor()
 recommender = ProductRecommender()
-
-
-
 
 
 def predict_risk(request):
@@ -55,7 +51,8 @@ def predict_risk(request):
 
         # Prepare context for the template
         context = {
-            'prediction_result': prediction_result,
+            'prediction_result': prediction_result['risk_level'],
+            'age_prediction': prediction_result['age_prediction'],
             'recommendations': recommendations,
         }
 

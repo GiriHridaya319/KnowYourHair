@@ -20,6 +20,7 @@
                 <p>Your personalized hair health analysis</p>
             </div>
 
+            {% if prediction_result == 'High Risk' %}
             <div class="risk-showcase">
                 <div class="risk-icon">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -27,11 +28,29 @@
                 <div class="risk-level">HIGH RISK</div>
                 <p>Your assessment indicates a significant risk of hair loss</p>
             </div>
+            {% elif prediction_result == 'Medium Risk' %}
+            <div class="risk-showcase">
+                <div class="risk-icon">
+                     <i class="fas fa-exclamation" style="color: #ffbb33;"></i>
+                </div>
+                <div class="risk-level">MEDIUM RISK</div>
+                <p>Your assessment indicates a medium risk of hair loss</p>
+            </div>
+            {% else %}
+            <div class="risk-showcase">
+                <div class="risk-icon">
+                     <i class="fas fa-info-circle" style="color: #00C851;"></i>
+                </div>
+                <div class="risk-level">LOW RISK</div>
+                <p>Your assessment indicates a Low risk of hair loss</p>
+            </div>
+            {% endif %}
+
 
             <div class="age-prediction">
                 <i class="fas fa-calendar-alt" style="font-size: 1.5em; color: #4682b4;"></i>
                 <h2>Predicted Hair Loss Onset</h2>
-                <div class="age-number">Age 35</div>
+                <div class="age-number">Age {% age_prediction %}</div>
                 <p>Based on current hair health patterns</p>
             </div>
 
@@ -40,7 +59,7 @@
                     <div class="metric-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>Severity</h3>
+                    <h3>Severity</h3>z
                     <p>High</p>
                 </div>
                 <div class="metric-card">
