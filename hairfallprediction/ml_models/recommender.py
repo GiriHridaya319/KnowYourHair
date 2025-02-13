@@ -8,7 +8,7 @@ from ..models import Product
 class ProductRecommender:
     def __init__(self):
         self.product_data = pd.DataFrame(
-            Product.objects.all().values('name', 'cost', 'feedback', 'details')
+            Product.objects.all().values('name', 'cost', 'feedback', 'details','image')
         )
         self.vectorizer = TfidfVectorizer(stop_words='english')
 
@@ -23,7 +23,7 @@ class ProductRecommender:
         avg_scores = similarity_scores.mean(axis=0)
 
         # Get top 5 products
-        top_indices = np.argsort(avg_scores)[::-1][:4]
+        top_indices = np.argsort(avg_scores)[::-1][:5]
 
         initial_recommendations = []
         for idx in top_indices:
@@ -32,7 +32,8 @@ class ProductRecommender:
                 'name': product['name'],
                 'cost': product['cost'],
                 'feedback': product['feedback'],
-                'details': product['details']
+                'details': product['details'],
+                'image': f"/media/product_images/{product['image']}"
             })
 
         return initial_recommendations, top_indices

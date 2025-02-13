@@ -215,11 +215,16 @@
                     <i class="fas fa-pills"></i> Daily Support
                     {% endif %}
                 </span>
-                <img src="/api/placeholder/180/180" alt="{{ product.name }}" class="product-image">
+               {% if product.image %}
+    <img src="{{ product.image }}" alt="{{ product.name }}">
+{% else %}
+    <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
+{% endif %}
+
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.details|truncatewords:10 }}</p>
                 <p class="product-price">${{ product.cost }}</p>
-                <p class="product-feedback">{{ product.feedback|truncatewords:10}}</p>
+                <p class="product-feedback">{{ product.feedback }}</p>
             </div>
             {% endfor %}
         </div>

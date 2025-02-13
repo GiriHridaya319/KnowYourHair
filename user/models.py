@@ -5,7 +5,7 @@ from PIL import Image
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg' , upload_to='profiles/')
+    image = models.ImageField(default='default_user.jpg' , upload_to='profiles/')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
@@ -17,11 +17,11 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         # Check if no image is uploaded and set the default image
         if not self.image:
-            self.image = 'profiles/default.jpg'
+            self.image = 'profiles/default_user.jpg'
         super().save(*args, **kwargs)  # Call the parent class's save method
 
         # Resize image if needed
-        if self.image and self.image != 'profiles/default.jpg':
+        if self.image and self.image != 'profiles/default_user.jpg':
             img = Image.open(self.image.path)
             if img.height > 300 or img.width > 300:
                 output_size = (300, 300)
