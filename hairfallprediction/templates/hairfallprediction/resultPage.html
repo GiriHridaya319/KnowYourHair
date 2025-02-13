@@ -195,46 +195,33 @@
         <div class="products-section">
             <div class="products-header">
                 <h2>Recommended Products</h2>
-                <p>Specially selected for your High Risk profile</p>
+                <p>Specially selected for your {{ prediction_result }} profile</p>
                 <div class="risk-tag">
-                    <i class="fas fa-tag"></i> High Risk Treatment Plan
+                    <i class="fas fa-tag"></i> {{ prediction_result }} Treatment Plan
                 </div>
             </div>
 
-            <div class="products-grid">
-                <div class="product-card">
-                    <span class="recommendation-badge">
-                        <i class="fas fa-star"></i> Top Recommended
-                    </span>
-                    <img src="/api/placeholder/180/180" alt="Anti-Hair Fall Shampoo" class="product-image">
-                    <h3>Anti-Hair Fall Shampoo</h3>
-                    <p>Advanced formula with biotin</p>
-                </div>
-                <div class="product-card">
-                    <span class="recommendation-badge">
-                        <i class="fas fa-check-circle"></i> Essential
-                    </span>
-                    <img src="/api/placeholder/180/180" alt="Scalp Treatment" class="product-image">
-                    <h3>Scalp Treatment</h3>
-                    <p>Deep nourishing therapy</p>
-                </div>
-                <div class="product-card">
-                    <span class="recommendation-badge">
-                        <i class="fas fa-leaf"></i> Natural Care
-                    </span>
-                    <img src="/api/placeholder/180/180" alt="Hair Growth Serum" class="product-image">
-                    <h3>Growth Serum</h3>
-                    <p>With natural growth factors</p>
-                </div>
-                <div class="product-card">
-                    <span class="recommendation-badge">
-                        <i class="fas fa-pills"></i> Daily Support
-                    </span>
-                    <img src="/api/placeholder/180/180" alt="Hair Vitamins" class="product-image">
-                    <h3>Hair Vitamins</h3>
-                    <p>Complete nutrient complex</p>
-                </div>
+             <div class="products-grid">
+            {% for product in recommendations %}
+            <div class="product-card">
+                <span class="recommendation-badge">
+                    {% if forloop.first %}
+                    <i class="fas fa-star"></i> Top Recommended
+                    {% elif forloop.counter == 2 %}
+                    <i class="fas fa-check-circle"></i> Essential
+                    {% elif forloop.counter == 3 %}
+                    <i class="fas fa-leaf"></i> Natural Care
+                    {% else %}
+                    <i class="fas fa-pills"></i> Daily Support
+                    {% endif %}
+                </span>
+                <img src="/api/placeholder/180/180" alt="{{ product.name }}" class="product-image">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.details|truncatewords:10 }}</p>
+                <p class="product-price">${{ product.cost }}</p>
+                <p class="product-feedback">{{ product.feedback|truncatewords:10}}</p>
             </div>
+            {% endfor %}
         </div>
     </div>
 

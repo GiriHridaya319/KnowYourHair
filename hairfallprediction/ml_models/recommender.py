@@ -13,7 +13,8 @@ class ProductRecommender:
         self.vectorizer = TfidfVectorizer(stop_words='english')
 
     def get_recommendations_risk(self, risk_level):
-        product_vectors = self.vectorizer.fit_transform(self.product_data['Details' ])
+        data = self.product_data['details']
+        product_vectors = self.vectorizer.fit_transform(self.product_data['details'])
         risk_keywords = self._get_risk_keywords(risk_level)
         keyword_vector = self.vectorizer.transform(risk_keywords)
 
@@ -22,16 +23,16 @@ class ProductRecommender:
         avg_scores = similarity_scores.mean(axis=0)
 
         # Get top 5 products
-        top_indices = np.argsort(avg_scores)[::-1][:5]
+        top_indices = np.argsort(avg_scores)[::-1][:4]
 
         initial_recommendations = []
         for idx in top_indices:
             product = self.product_data.iloc[idx]
             initial_recommendations.append({
-                'name': product['ProductsName'],
-                'cost': product['Product Cost'],
-                'feedback': product['Feedbacks'],
-                'details': product['Details']
+                'name': product['name'],
+                'cost': product['cost'],
+                'feedback': product['feedback'],
+                'details': product['details']
             })
 
         return initial_recommendations, top_indices
