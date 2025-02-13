@@ -3,126 +3,194 @@
 
 {% block footer %}{% endblock %}
 
-
-
 {% block result_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'hairfallprediction/css/result.css' %}">
 {% endblock %}
 
-
 {% block content %}
-
 <div class="container-result">
-        <!-- Left: Risk Assessment -->
-        <div class="risk-section">
-            <div class="risk-header">
-                <h1>Hair Fall Risk Assessment</h1>
-                <p>Your personalized hair health analysis</p>
-            </div>
+    <!-- Left: Risk Assessment -->
+    <div class="risk-section">
+        <div class="risk-header">
+            <h1>Hair Fall Risk Assessment</h1>
+            <p>Your personalized hair health analysis</p>
+        </div>
 
+        {% if prediction_result == 'High Risk' %}
+        <div class="risk-showcase">
+            <div class="risk-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="risk-level">HIGH RISK</div>
+            <p>Your assessment indicates a significant risk of hair loss</p>
+        </div>
+        {% elif prediction_result == 'Medium Risk' %}
+        <div class="risk-showcase">
+            <div class="risk-icon">
+                <i class="fas fa-exclamation" style="color: #ffbb33;"></i>
+            </div>
+            <div class="risk-level">MEDIUM RISK</div>
+            <p>Your assessment indicates a medium risk of hair loss</p>
+        </div>
+        {% else %}
+        <div class="risk-showcase">
+            <div class="risk-icon">
+                <i class="fas fa-info-circle" style="color: #00C851;"></i>
+            </div>
+            <div class="risk-level">LOW RISK</div>
+            <p>Your assessment indicates a Low risk of hair loss</p>
+        </div>
+        {% endif %}
+
+        {% if prediction_result != 'Low Risk' %}
+        <div class="age-prediction">
+            <i class="fas fa-calendar-alt" style="font-size: 1.5em; color: #4682b4;"></i>
+            <h2>Predicted Hair Loss Onset</h2>
+            <div class="age-number">Age {{ age_prediction.years }}</div>
+            <p>Based on current hair health patterns</p>
+        </div>
+        {% else %}
+        <div class="low-risk-message">
+            <p>Based on your current hair health patterns, no age prediction is necessary as you are at low risk for hair loss.</p>
+        </div>
+        {% endif %}
+
+        <div class="risk-metrics">
             {% if prediction_result == 'High Risk' %}
-            <div class="risk-showcase">
-                <div class="risk-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="risk-level">HIGH RISK</div>
-                <p>Your assessment indicates a significant risk of hair loss</p>
+                <h3>Severity</h3>
+                <p>High</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Progression</h3>
+                <p>Rapid</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Treatment</h3>
+                <p>Urgent</p>
             </div>
             {% elif prediction_result == 'Medium Risk' %}
-            <div class="risk-showcase">
-                <div class="risk-icon">
-                     <i class="fas fa-exclamation" style="color: #ffbb33;"></i>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="risk-level">MEDIUM RISK</div>
-                <p>Your assessment indicates a medium risk of hair loss</p>
+                <h3>Severity</h3>
+                <p>Moderate</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Progression</h3>
+                <p>Gradual</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Treatment</h3>
+                <p>Recommended</p>
             </div>
             {% else %}
-            <div class="risk-showcase">
-                <div class="risk-icon">
-                     <i class="fas fa-info-circle" style="color: #00C851;"></i>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="risk-level">LOW RISK</div>
-                <p>Your assessment indicates a Low risk of hair loss</p>
+                <h3>Severity</h3>
+                <p>Low</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Progression</h3>
+                <p>Minimal</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Treatment</h3>
+                <p>Preventive</p>
             </div>
             {% endif %}
+        </div>
+    </div>
 
-            <div class="age-prediction">
-                <i class="fas fa-calendar-alt" style="font-size: 1.5em; color: #4682b4;"></i>
-                <h2>Predicted Hair Loss Onset</h2>
-                <div class="age-number">Age {% age_prediction %}</div>
-                <p>Based on current hair health patterns</p>
-            </div>
-
-
-            <div class="risk-metrics">
-                <div class="metric-card">
-                    <div class="metric-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Severity</h3>z
-                    <p>High</p>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3>Progression</h3>
-                    <p>Rapid</p>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h3>Treatment</h3>
-                    <p>Urgent</p>
-                </div>
-            </div>
+    <!-- Right: Prevention Tips -->
+    <div class="tips-section">
+        <div class="tips-header">
+            <h2>Prevention Tips</h2>
+            <p>Recommended actions for your hair care routine</p>
         </div>
 
-        <!-- Right: Prevention Tips -->
-        <div class="tips-section">
-            <div class="tips-header">
-                <h2>Prevention Tips</h2>
-                <p>Recommended actions for your hair care routine</p>
-            </div>
-
-            <div class="tip-item">
-                <i class="fas fa-utensils tip-icon"></i>
-                <div>
-                    <h3>Balanced Diet</h3>
-                    <p>Maintain a diet rich in proteins and vitamins</p>
-                </div>
-            </div>
-            <div class="tip-item">
-                <i class="fas fa-ban tip-icon"></i>
-                <div>
-                    <h3>Avoid Chemicals</h3>
-                    <p>Stay away from harsh chemical treatments</p>
-                </div>
-            </div>
-            <div class="tip-item">
-                <i class="fas fa-pump-soap tip-icon"></i>
-                <div>
-                    <h3>Gentle Products</h3>
-                    <p>Use mild, hair-friendly products</p>
-                </div>
-            </div>
-            <div class="tip-item">
-                <i class="fas fa-spa tip-icon"></i>
-                <div>
-                    <h3>Stress Management</h3>
-                    <p>Practice stress-reducing activities</p>
-                </div>
-            </div>
-            <div class="tip-item">
-                <i class="fas fa-hand-holding tip-icon"></i>
-                <div>
-                    <h3>Scalp Care</h3>
-                    <p>Regular scalp massage and maintenance</p>
-                </div>
+        {% if prediction_result == 'High Risk' %}
+        <div class="tip-item">
+            <i class="fas fa-user-md tip-icon"></i>
+            <div>
+                <h3>Consult Specialist</h3>
+                <p>Schedule an appointment with a trichologist</p>
             </div>
         </div>
+        <div class="tip-item">
+            <i class="fas fa-pills tip-icon"></i>
+            <div>
+                <h3>Medical Treatment</h3>
+                <p>Consider prescribed medications and treatments</p>
+            </div>
+        </div>
+        {% endif %}
 
+        <div class="tip-item">
+            <i class="fas fa-utensils tip-icon"></i>
+            <div>
+                <h3>Balanced Diet</h3>
+                {% if prediction_result == 'High Risk' %}
+                <p>Include biotin, iron, and protein-rich foods daily</p>
+                {% elif prediction_result == 'Medium Risk' %}
+                <p>Focus on hair-healthy nutrients and vitamins</p>
+                {% else %}
+                <p>Maintain a healthy diet with balanced nutrients</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="tip-item">
+            <i class="fas fa-ban tip-icon"></i>
+            <div>
+                <h3>Avoid Chemicals</h3>
+                {% if prediction_result == 'High Risk' %}
+                <p>Strictly avoid chemical treatments and harsh styling</p>
+                {% elif prediction_result == 'Medium Risk' %}
+                <p>Minimize use of chemical treatments and heat styling</p>
+                {% else %}
+                <p>Use natural products and gentle styling methods</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="tip-item">
+            <i class="fas fa-spa tip-icon"></i>
+            <div>
+                <h3>Stress Management</h3>
+                {% if prediction_result == 'High Risk' %}
+                <p>Implement daily stress-reduction techniques</p>
+                {% elif prediction_result == 'Medium Risk' %}
+                <p>Regular exercise and relaxation practices</p>
+                {% else %}
+                <p>Maintain a balanced lifestyle and good sleep habits</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
         <!-- Bottom: Product Recommendations -->
         <div class="products-section">
             <div class="products-header">

@@ -13,7 +13,7 @@ class ProductRecommender:
         self.vectorizer = TfidfVectorizer(stop_words='english')
 
     def get_recommendations_risk(self, risk_level):
-        product_vectors = self.vectorizer.fit_transform(self.product_data['Details'])
+        product_vectors = self.vectorizer.fit_transform(self.product_data['Details' ])
         risk_keywords = self._get_risk_keywords(risk_level)
         keyword_vector = self.vectorizer.transform(risk_keywords)
 
