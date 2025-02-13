@@ -11,8 +11,7 @@ def welcome(request):
 def survey(request):
     return render(request, 'hairfallprediction/survey.html', {'title': 'survey'})
 
-def result(request):
-    return render(request, 'hairfallprediction/resultPage.html', {'title': 'result'})
+
 
 
 # Initialize the predictor and recommender
@@ -38,7 +37,7 @@ def predict_risk(request):
             'Water Quality Issue': int(request.POST.get('Water_Quality_Issue')),
             'Stress': int(request.POST.get('Stress')),
             'Food Habit': int(request.POST.get('Food_Habit')),
-            'Hormonal Changes': int(request.POST.get('Hormonal_Changes')),
+            'Hormonal Changes': int(request.POST.get('Hormonal_Change')),
             'Hair Care Habits': int(request.POST.get('Hair_Care_Habits')),
             'Smoking': int(request.POST.get('Smoking')),
         }

@@ -20,9 +20,7 @@ class HairfallPredictor:
                 'Sleep Disturbance', 'Water Quality Issue', 'Stress', 'Food Habit',
                 'Hormonal Changes', 'Hair Care Habits', 'Smoking'
             ]
-            input_array_from_user = np.array([user_data[feature] for feature in feature_order])
-            if self.scaler:
-                input_array = self.scaler.transform(input_array_from_user)
+            input_array_from_user = np.array([user_data[feature] for feature in feature_order]).reshape(1, -1)
 
             prediction = self.model.predict(input_array_from_user)[0]
 
