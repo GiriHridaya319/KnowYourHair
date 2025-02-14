@@ -203,6 +203,7 @@
 
              <div class="products-grid">
             {% for product in recommendations %}
+                 <a href="{% url 'recom-product-detail' product.name %}" class="item">
             <div class="product-card">
                 <span class="recommendation-badge">
                     {% if forloop.first %}
@@ -221,11 +222,12 @@
     <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
 {% endif %}
 
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.details|truncatewords:10 }}</p>
+                <h3>{{ product.name |truncatewords:5  }}</h3>
+
                 <p class="product-price">${{ product.cost }}</p>
-                <p class="product-feedback">{{ product.feedback }}</p>
+
             </div>
+                     </a>
             {% endfor %}
         </div>
     </div>

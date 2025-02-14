@@ -1,7 +1,9 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .ml_models.predictor import HairfallPredictor
 from .ml_models.recommender import ProductRecommender
+from .models import Product
 
 
 def welcome(request):
@@ -58,3 +60,11 @@ def predict_risk(request):
         return render(request, 'hairfallprediction/resultPage.html', context)
 
     return redirect('survey')
+
+
+class RecomProductDetailView(DetailView):
+    model = Product
+    template_name = 'hairfallprediction/recom_product_detail.html'
+
+    def get_object(self):
+        return get_object_or_404(Product, name=self.kwargs['name'])

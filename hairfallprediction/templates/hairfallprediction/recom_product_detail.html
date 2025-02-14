@@ -1,0 +1,156 @@
+{% extends "base/base.html" %}
+{%load static%}
+
+{% block footer %}{% endblock %}
+
+{% block recom_prod_detail_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'hairfallprediction/css/recom_product.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container_product-pred">
+    <div class="product-container">
+        <div class="product-image">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
+            {% endif %}
+            <div class="zoom-icon" onclick="openModal()">
+                <i class="fas fa-search-plus"></i>
+            </div>
+        </div>
+        <div class="product-details">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="product-price">₹{{ product.cost }}</div>
+
+            <div class="details-section">
+                <p class="product-description">{{ product.details }}</p>
+            </div>
+
+            <div class="feedback-section">
+                <h3>Feedback from recent users</h3>
+                <div class="feedback-container">
+                    <p class="product-description">{{ product.feedback }}</p>
+                </div>
+            </div>
+
+            <div class="product-actions">
+                <button class="btn btn-primary">Add to Cart</button>
+                <button class="btn btn-secondary">Add to Wishlist</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for zoomed image -->
+    <div class="modal" onclick="closeModal()">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
+        {% endif %}
+    </div>
+
+     <!-- hybrid recommendation -->
+    <div class="recommendations">
+    <h2>Similar products you might like</h2>
+    <div class="slider-container">
+      <button class="slider-button prev">
+        <svg class="button-icon" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
+      <div class="slider">
+        <div class="product-card-recom">
+          <div class="product-image-recom"></div>
+          <div class="product-title-recom">Wireless Headphones</div>
+          <div class="product-price-recom">$129.99</div>
+        </div>
+        <div class="product-card-recom">
+          <div class="product-image-recom"></div>
+          <div class="product-title-recom">Smart Watch Series 5</div>
+          <div class="product-price-recom">$299.99</div>
+        </div>
+        <div class="product-card-recom">
+          <div class="product-image-recom"></div>
+          <div class="product-title-recom">Bluetooth Speaker</div>
+          <div class="product-price-recom">$79.99</div>
+        </div>
+        <div class="product-card-recom">
+          <div class="product-image-recom"></div>
+          <div class="product-title-recom">Wireless Earbuds</div>
+          <div class="product-price-recom">$159.99</div>
+        </div>
+        <div class="product-card-recom">
+          <div class="product-image-recom"></div>
+          <div class="product-title-recom">Power Bank 20000mAh</div>
+          <div class="product-price-recom">$49.99</div>
+        </div>
+      </div>
+      <button class="slider-button next">
+        <svg class="button-icon" viewBox="0 0 24 24">
+          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+    <script>
+        function openModal() {
+            document.querySelector('.modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.querySelector('.modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Prevent scroll when modal is open
+        document.querySelector('.modal').addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+
+        const slider = document.querySelector('.slider');
+const prevButton = document.querySelector('.prev');
+const nextButton = document.querySelector('.next');
+const cards = document.querySelectorAll('.product-card-recom'); // Fixed selector
+const cardWidth = cards[0].offsetWidth + 24; // Including the gap
+let currentPosition = 0;
+const maxPosition = -(cardWidth * (cards.length - 3)); // Adjust for visible items
+
+function updateSliderPosition() {
+  slider.style.transform = `translateX(${currentPosition}px)`;
+
+  // Update button states
+  prevButton.style.opacity = currentPosition === 0 ? '0.5' : '1';
+  nextButton.style.opacity = currentPosition <= maxPosition ? '0.5' : '1';
+}
+
+prevButton.addEventListener('click', () => {
+  if (currentPosition === 0) return;
+  currentPosition = Math.min(currentPosition + cardWidth, 0);
+  updateSliderPosition();
+});
+
+nextButton.addEventListener('click', () => {
+  if (currentPosition <= maxPosition) return;
+  currentPosition = Math.max(currentPosition - cardWidth, maxPosition);
+  updateSliderPosition();
+});
+
+// Initialize button states
+updateSliderPosition();
+
+    </script>
+</div>
+{% endblock content %}
+
