@@ -57,45 +57,45 @@ class ProductRecommender:
 
     def _get_content_recommendations(self, product_name, n_recommendations=5):
         """Content-based recommendations"""
-        item_features = self.vectorizer.fit_transform(self.product_data['Details'])
+        item_features = self.vectorizer.fit_transform(self.product_data['details'])
         item_similarity = cosine_similarity(item_features)
 
         item_similarity_df = pd.DataFrame(
             item_similarity,
-            index=self.product_data['ProductsName'],
-            columns=self.product_data['ProductsName']
+            index=self.product_data['name'],
+            columns=self.product_data['name']
         )
 
         similar_scores = item_similarity_df[product_name].sort_values(ascending=False)
         similar_products = similar_scores.index[1:n_recommendations + 1].tolist()
 
         recommendations = self.product_data[
-            self.product_data['ProductsName'].isin(similar_products)
+            self.product_data['name'].isin(similar_products)
         ].copy()
-        recommendations['SimilarityScore'] = recommendations['ProductsName'].map(similar_scores)
+        recommendations['SimilarityScore'] = recommendations['name'].map(similar_scores)
 
         return recommendations
 
     def _get_collaborative_recommendations(self, product_name, n_recommendations=5):
         """Collaborative filtering recommendations"""
         feedback_features = self.vectorizer.fit_transform(
-            self.product_data['Feedbacks'].astype(str)
+            self.product_data['feedback'].astype(str)
         )
 
         feedback_similarity = cosine_similarity(feedback_features)
         feedback_similarity_df = pd.DataFrame(
             feedback_similarity,
-            index=self.product_data['ProductsName'],
-            columns=self.product_data['ProductsName']
+            index=self.product_data['name'],
+            columns=self.product_data['name']
         )
 
         similar_scores = feedback_similarity_df[product_name].sort_values(ascending=False)
         similar_products = similar_scores.index[1:n_recommendations + 1].tolist()
 
         recommendations = self.product_data[
-            self.product_data['ProductsName'].isin(similar_products)
+            self.product_data['name'].isin(similar_products)
         ].copy()
-        recommendations['CollaborativeScore'] = recommendations['ProductsName'].map(similar_scores)
+        recommendations['CollaborativeScore'] = recommendations['name'].map(similar_scores)
 
         return recommendations
 
@@ -111,8 +111,8 @@ class ProductRecommender:
 
         # Combine recommendations
         hybrid_recommendations = pd.concat([
-            content_recs[['ProductsName', 'NormalizedContentScore']],
-            collab_recs[['ProductsName', 'NormalizedCollabScore']]
+            content_recs[['name', 'NormalizedContentScore']],
+            collab_recs[['name', 'NormalizedCollabScore']]
         ], axis=0)
 
         # Calculate hybrid score
@@ -123,7 +123,7 @@ class ProductRecommender:
 
         # Get unique products with highest scores
         hybrid_recommendations = (
-            hybrid_recommendations.groupby('ProductsName')['HybridScore']
+            hybrid_recommendations.groupby('name')['HybridScore']
             .max()
             .reset_index()
             .sort_values('HybridScore', ascending=False)
@@ -131,11 +131,11 @@ class ProductRecommender:
 
         # Get full product details
         final_recommendations = self.product_data[
-            self.product_data['ProductsName'].isin(hybrid_recommendations['ProductsName'])
+            self.product_data['name'].isin(hybrid_recommendations['name'])
         ].copy()
 
-        final_recommendations['HybridScore'] = final_recommendations['ProductsName'].map(
-            hybrid_recommendations.set_index('ProductsName')['HybridScore']
+        final_recommendations['HybridScore'] = final_recommendations['name'].map(
+            hybrid_recommendations.set_index('name')['HybridScore']
         )
 
         return final_recommendations.sort_values('HybridScore', ascending=False)

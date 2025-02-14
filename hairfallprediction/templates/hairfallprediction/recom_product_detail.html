@@ -52,48 +52,38 @@
     </div>
 
      <!-- hybrid recommendation -->
-    <div class="recommendations">
+<div class="recommendations">
     <h2>Similar products you might like</h2>
     <div class="slider-container">
-      <button class="slider-button prev">
-        <svg class="button-icon" viewBox="0 0 24 24">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-      </button>
-      <div class="slider">
-        <div class="product-card-recom">
-          <div class="product-image-recom"></div>
-          <div class="product-title-recom">Wireless Headphones</div>
-          <div class="product-price-recom">$129.99</div>
+        <button class="slider-button prev">
+            <svg class="button-icon" viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+        </button>
+        <div class="slider">
+            {% for product in recommendations %}
+                <div class="product-card-recom">
+                    <div class="product-image-recom">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
+                        {% endif %}
+                    </div>
+                    <div class="product-title-recom">{{ product.name }}</div>
+                    <div class="product-price-recom">₹{{ product.details }}</div>
+                    <div class="product-price-recom">₹{{ product.cost }}</div>
+                </div>
+            {% endfor %}
         </div>
-        <div class="product-card-recom">
-          <div class="product-image-recom"></div>
-          <div class="product-title-recom">Smart Watch Series 5</div>
-          <div class="product-price-recom">$299.99</div>
-        </div>
-        <div class="product-card-recom">
-          <div class="product-image-recom"></div>
-          <div class="product-title-recom">Bluetooth Speaker</div>
-          <div class="product-price-recom">$79.99</div>
-        </div>
-        <div class="product-card-recom">
-          <div class="product-image-recom"></div>
-          <div class="product-title-recom">Wireless Earbuds</div>
-          <div class="product-price-recom">$159.99</div>
-        </div>
-        <div class="product-card-recom">
-          <div class="product-image-recom"></div>
-          <div class="product-title-recom">Power Bank 20000mAh</div>
-          <div class="product-price-recom">$49.99</div>
-        </div>
-      </div>
-      <button class="slider-button next">
-        <svg class="button-icon" viewBox="0 0 24 24">
-          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
-        </svg>
-      </button>
+        <button class="slider-button next">
+            <svg class="button-icon" viewBox="0 0 24 24">
+                <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+            </svg>
+        </button>
     </div>
-  </div>
+</div>
+
 
 
     <script>

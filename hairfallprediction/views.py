@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .ml_models.predictor import HairfallPredictor
 from .ml_models.recommender import ProductRecommender
 from .models import Product
+from django.contrib import messages
 
 
 def welcome(request):
@@ -17,7 +18,6 @@ def survey(request):
 
 
 # Initialize the predictor and recommender
-
 predictor = HairfallPredictor()
 recommender = ProductRecommender()
 
@@ -62,9 +62,55 @@ def predict_risk(request):
     return redirect('survey')
 
 
+def recommendation_hybrid(request):
+    """Display hybrid recommendations for a selected product."""
+    if request.method == 'POST':
+        try:
+            # Get the selected product name
+            product_name = request.POST.get('name')
+            if not product_name:
+                messages.error(request, 'Please select a product')
+                return render(request, 'hairfallprediction/recom_product_detail.html')
+
+            # Get recommendations based on the selected product
+            recommendations = recommender.get_hybrid_recommendations(product_name)
+
+            context = {
+                'selected_product': product_name,
+                'recommendations': recommendations,
+            }
+
+            return render(request, 'hairfallprediction/recom_product_detail.html', context)
+
+        except Exception as e:
+            messages.error(request, 'Error generating recommendations')
+            return render(request, 'hairfallprediction/recom_product_detail.html')
+
+    # If GET request, show the product selection form
+    return render(request, 'hairfallprediction/recom_product_detail.html')
+
+
 class RecomProductDetailView(DetailView):
     model = Product
     template_name = 'hairfallprediction/recom_product_detail.html'
+    context_object_name = 'product'  # This will be the name of the object in the template
 
     def get_object(self):
+        # Retrieve the product based on the name passed in the URL
         return get_object_or_404(Product, name=self.kwargs['name'])
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super().get_context_data(**kwargs)
+
+        # Get the product object
+        product = self.get_object()
+
+        # Get the hybrid recommendations for the product
+        recommendations = recommender.get_hybrid_recommendations(product.name)
+
+        # Add the recommendations to the context
+        context['recommendations'] = recommendations
+        context['selected_product'] = product.name
+
+        return context

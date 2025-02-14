@@ -252,11 +252,13 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       padding: 16px;
-      transition: transform 0.2s;
+      transition: transform 0.3s;
+      cursor: pointer;
+
     }
 
     .product-card-recom:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
     }
 
     .product-image-recom {
@@ -265,6 +267,8 @@
       background: #f4f4f5;
       border-radius: 4px;
       margin-bottom: 16px;
+      overflow: hidden;
+        border-radius: 8px;
     }
 
     .product-title-recom {
