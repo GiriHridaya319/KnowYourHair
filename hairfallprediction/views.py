@@ -93,38 +93,27 @@ def recommendation_hybrid(request):
 class RecomProductDetailView(DetailView):
     model = Product
     template_name = 'hairfallprediction/recom_product_detail.html'
-    context_object_name = 'product'  # This will be the name of the object in the template
+    context_object_name = 'product'
 
     def get_object(self):
-        # Retrieve the product based on the name passed in the URL
         return get_object_or_404(Product, name=self.kwargs['name'])
 
     def get_context_data(self, **kwargs):
-
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
 
-        # Get the product object
-        product = self.get_object()
+        try:
+            # Get the product object
+            product = self.get_object()
 
-        # Get the hybrid recommendations for the product
-        recommendations = recommender.get_hybrid_recommendations(product.name)
-        print("Recommendations structure:", recommendations)
+            # Get the hybrid recommendations for the product
+            recommendations = recommender.get_hybrid_recommendations(product.name)
+            context['recommendations'] = recommendations
+            context['selected_product'] = product.name
 
-        if hasattr(recommendations, 'to_dict'):
-            recommendations = recommendations.to_dict('records')
-        formatted_recommendations = []
-        for rec in recommendations:
-            formatted_rec = {
-                'name': rec.get('name', ''),
-                'image': rec.get('image', ''),
-                'details': rec.get('details', ''),
-                'cost': rec.get('cost', ''),
-                'HybridScore': rec.get('HybridScore', 0)
-            }
-            formatted_recommendations.append(formatted_rec)
-
-        context['recommendations'] = formatted_recommendations
-        context['selected_product'] = product.name
+        except Exception as e:
+            print(f"Error in get_context_data: {str(e)}")
+            context['recommendations'] = []
+            context['error_message'] = str(e)
 
         return context

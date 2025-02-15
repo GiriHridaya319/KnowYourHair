@@ -62,12 +62,14 @@
         </button>
         <div class="slider">
             {% for product in recommendations %}
+            <a href="{% url 'recom-product-detail' product.name %}" class="item">
                 <div class="product-card-recom">
                     <div class="product-image-recom">
                         {% if product.image %}
                             <img src="{{ product.image}}" alt="{{ product.name }}">
+
                         {% else %}
-                            <img src="{% static 'media/default-product.jpg' %}" alt="Default Product Image">
+                             <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
                         {% endif %}
                     </div>
                     <div class="product-title-recom">{{ product.name }}</div>

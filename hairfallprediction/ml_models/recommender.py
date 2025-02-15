@@ -53,7 +53,23 @@ class ProductRecommender:
             weight_content=0.5
         )
 
-        return hybrid_recommendations
+        # Convert DataFrame to records if necessary
+        if hasattr(hybrid_recommendations, 'to_dict'):
+            hybrid_recommendations = hybrid_recommendations.to_dict('records')
+
+        # Format recommendations with proper image paths
+        formatted_recommendations = []
+        for rec in hybrid_recommendations:
+            formatted_rec = {
+                'name': rec['name'].strip(),
+                'image': f"/media/product_images/{rec['image']}" if rec['image'] else None,
+                'details': rec['details'],
+                'cost': rec['cost'],
+                'HybridScore': rec['HybridScore']
+            }
+            formatted_recommendations.append(formatted_rec)
+
+        return formatted_recommendations
 
     def _get_content_recommendations(self, product_name, n_recommendations=5):
         """Content-based recommendations"""
