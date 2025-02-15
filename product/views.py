@@ -1,14 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Product
+from hairfallprediction.models import Product
 
 
 class ProductListView(ListView):
     model = Product
     template_name = 'product/product_page.html'
     context_object_name = 'products'
-    ordering = ['-date_posted']  # - to set newest product first
 
 
 class ProductDetailView(DetailView):
@@ -16,7 +15,7 @@ class ProductDetailView(DetailView):
     template_name = 'product/product_detail.html'
 
     def get_object(self):
-        return get_object_or_404(Product, name=self.kwargs['name'])
+        return get_object_or_404(Product, name=self.kwargs['slug'])
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):

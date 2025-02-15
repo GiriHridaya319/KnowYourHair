@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from django.utils.text import slugify
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from ..models import Product
@@ -30,6 +31,7 @@ class ProductRecommender:
             product = self.product_data.iloc[idx]
             initial_recommendations.append({
                 'name': product['name'],
+                'slug': slugify(product['name']),
                 'cost': product['cost'],
                 'feedback': product['feedback'],
                 'details': product['details'],
@@ -62,6 +64,7 @@ class ProductRecommender:
         for rec in hybrid_recommendations:
             formatted_rec = {
                 'name': rec['name'].strip(),
+                'slug': slugify(rec['name']),
                 'image': f"/media/product_images/{rec['image']}" if rec['image'] else None,
                 'details': rec['details'],
                 'cost': rec['cost'],

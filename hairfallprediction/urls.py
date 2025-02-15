@@ -8,7 +8,7 @@ urlpatterns = [
     path('', user_view.welcome, name='KnowYourHair-hairfallprediction'),
     path('survey/', user_view.survey, name='survey'),
     path('result/', user_view.predict_risk, name='result'),
-    path('<str:name>/', RecomProductDetailView.as_view(), name='recom-product-detail'),
+    path('<slug:slug>/', RecomProductDetailView.as_view(), name='recom-product-detail'),
 
 ]
 if settings.DEBUG:

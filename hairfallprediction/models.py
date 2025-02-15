@@ -1,8 +1,12 @@
+from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class HairfallData(models.Model):
+
     gender = models.IntegerField()
     age = models.IntegerField()
     hairline_pattern = models.IntegerField()
@@ -25,11 +29,30 @@ class HairfallData(models.Model):
 
 
 class Product(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
     name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     feedback = models.TextField()
     details = models.TextField()
     image = models.ImageField(default='default_user.jpg', upload_to='product_images/')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    stock = models.PositiveIntegerField(default=0)  # New stock column added
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)  # Generate a slug automatically
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.status}"
+
+    def get_absolute_url(self):
+        return reverse('recom-product-detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
         # Check if no image is uploaded and set the default image
@@ -48,5 +71,3 @@ class Product(models.Model):
     class Meta:
         db_table = 'products'
 
-    def __str__(self):
-        return self.name

@@ -6,18 +6,59 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+     <div class="container">
         <div class="title">PRODUCT LIST</div>
         <div class="listProduct">
             {% for product in products %}
-                <a href="{% url 'product-detail' product.name %}" class="item">
+                <a href="{% url 'recom-product-detail' product.slug %}" class="item">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    <div class="separator-box"></div>  <!-- Box between image and name -->
-                    <h2>{{ product.name }}</h2>
-                    <div class="separator-box"></div>  <!-- Box between name and price -->
-                    <div class="price">NRs. {{ product.price }}</div>
+                    <div class="item-content">
+                        <h2>{{ product.name |truncatewords:10 }}</h2>
+                        <div class="separator-box"></div>
+                        <div class="price">NRs. {{ product.cost }}</div>
+                        {% if product.stock > 0 %}
+                            <div class="stock-badge">In Stock</div>
+                        {% else %}
+                            <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
+                        {% endif %}
+                    </div>
                 </a>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation for items as they come into view
+            const items = document.querySelectorAll('.item');
+
+            // Check if IntersectionObserver is supported
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = 1;
+                            entry.target.style.transform = 'translateY(0)';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.1
+                });
+
+                items.forEach(item => {
+                    item.style.opacity = 0;
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    observer.observe(item);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                items.forEach(item => {
+                    item.style.opacity = 1;
+                    item.style.transform = 'translateY(0)';
+                });
+            }
+        });
+    </script>
 {% endblock %}

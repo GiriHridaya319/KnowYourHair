@@ -62,7 +62,7 @@
         </button>
         <div class="slider">
             {% for product in recommendations %}
-            <a href="{% url 'recom-product-detail' product.name %}" class="item">
+            <a href="{% url 'recom-product-detail' product.slug %}" class="item">
                 <div class="product-card-recom">
                     <div class="product-image-recom">
                         {% if product.image %}

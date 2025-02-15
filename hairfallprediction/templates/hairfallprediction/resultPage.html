@@ -203,7 +203,7 @@
 
              <div class="products-grid">
             {% for product in recommendations %}
-                 <a href="{% url 'recom-product-detail' product.name %}" class="item">
+                 <a href="{% url 'recom-product-detail' product.slug %}" class="item">
             <div class="product-card">
                 <span class="recommendation-badge">
                     {% if forloop.first %}

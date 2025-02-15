@@ -15,8 +15,6 @@ def survey(request):
     return render(request, 'hairfallprediction/survey.html', {'title': 'survey'})
 
 
-
-
 # Initialize the predictor and recommender
 predictor = HairfallPredictor()
 recommender = ProductRecommender()
@@ -86,6 +84,9 @@ def recommendation_hybrid(request):
             messages.error(request, 'Error generating recommendations')
             return render(request, 'hairfallprediction/recom_product_detail.html')
 
+    def get_object(self):
+        return get_object_or_404(Product, name=self.kwargs['slug'])
+
     # If GET request, show the product selection form
     return render(request, 'hairfallprediction/recom_product_detail.html')
 
@@ -96,7 +97,7 @@ class RecomProductDetailView(DetailView):
     context_object_name = 'product'
 
     def get_object(self):
-        return get_object_or_404(Product, name=self.kwargs['name'])
+        return get_object_or_404(Product, slug=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
