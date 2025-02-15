@@ -20,12 +20,7 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['name', 'description','image','price','stock']
-    template_name = 'product/product_add_form.html'
-
-    def form_valid(self, form):  # setting the form author to the current logged in user
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    template_name = 'product_add_form.html'
 
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):

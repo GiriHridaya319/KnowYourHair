@@ -7,6 +7,7 @@
 
 {% block content %}
      <div class="container">
+         <a href="{% url 'product-create' %}" class="start-survey-btn ">ADD</a>
         <div class="title">PRODUCT LIST</div>
         <div class="listProduct">
             {% for product in products %}
