@@ -65,14 +65,14 @@
                 <div class="product-card-recom">
                     <div class="product-image-recom">
                         {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            <img src="{{ product.image}}" alt="{{ product.name }}">
                         {% else %}
-                            <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
+                            <img src="{% static 'media/default-product.jpg' %}" alt="Default Product Image">
                         {% endif %}
                     </div>
                     <div class="product-title-recom">{{ product.name }}</div>
-                    <div class="product-price-recom">₹{{ product.details }}</div>
                     <div class="product-price-recom">₹{{ product.cost }}</div>
+
                 </div>
             {% endfor %}
         </div>

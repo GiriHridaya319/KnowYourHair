@@ -100,6 +100,7 @@ class RecomProductDetailView(DetailView):
         return get_object_or_404(Product, name=self.kwargs['name'])
 
     def get_context_data(self, **kwargs):
+
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
 
@@ -108,9 +109,22 @@ class RecomProductDetailView(DetailView):
 
         # Get the hybrid recommendations for the product
         recommendations = recommender.get_hybrid_recommendations(product.name)
+        print("Recommendations structure:", recommendations)
 
-        # Add the recommendations to the context
-        context['recommendations'] = recommendations
+        if hasattr(recommendations, 'to_dict'):
+            recommendations = recommendations.to_dict('records')
+        formatted_recommendations = []
+        for rec in recommendations:
+            formatted_rec = {
+                'name': rec.get('name', ''),
+                'image': rec.get('image', ''),
+                'details': rec.get('details', ''),
+                'cost': rec.get('cost', ''),
+                'HybridScore': rec.get('HybridScore', 0)
+            }
+            formatted_recommendations.append(formatted_rec)
+
+        context['recommendations'] = formatted_recommendations
         context['selected_product'] = product.name
 
         return context
