@@ -5,10 +5,18 @@
 <link rel="stylesheet" type="text/css" href="{% static 'product/css/main_product.css' %}">
 {% endblock %}
 
+{% block search_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/searchBar.css' %}">
+{% endblock %}
+
 {% block content %}
      <div class="container">
-         <a href="{% url 'product-create' %}" class="start-survey-btn ">ADD</a>
+
+
         <div class="title">PRODUCT LIST</div>
+         <button class="price start-survey-btn" onclick="window.location.href='{% url 'product-create' %}';">
+    ADD NEW PRODUCT
+</button>
          <div class="pro_search_wrapper">
     <div class="pro_search_container">
         <input type="text" class="pro_search_input" placeholder="Search products...">
@@ -38,8 +46,30 @@
                     </div>
                 </a>
             {% endfor %}
+
         </div>
     </div>
+{% if is_paginated %}
+    <div class="pagination-container">
+        {% if page_obj.has_previous %}
+            <a class="pagination-link" href="?page=1">First</a>
+            <a class="pagination-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="pagination-link active" href="?page={{num}}">{{num}}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="pagination-link" href="?page={{num}}">{{num}}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="pagination-link" href="?page={{page_obj.next_page_number}}">Next</a>
+            <a class="pagination-link" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+        {% endif %}
+    </div>
+{% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -5,8 +5,17 @@
 <link rel="stylesheet" type="text/css" href="{% static 'clinic/css/clinic.css' %}">
 {% endblock %}
 
+{% block search_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/searchBar.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="title">CLINIC LIST</div>
+
+
+<div class="title">CLINIC LIST
+
+</div>
+
     <div class="clinic-card-container">
         {% for clinic in clinics %}
             <div class="clinic-card">
