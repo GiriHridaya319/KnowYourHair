@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block footer %}{% endblock %}
+
+{% block deleteConfirm %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/deleteConfirm.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <p>This action cannot be undone.</p>
+            <fieldset class="form-group">
+
+                <legend class="border-bottom">Delete Product</legend>
+                <div class="warning-icon">⚠️</div>
+                <h2>Are you sure you want to delete the product "{{ product.name }}"?</h2>
+
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+                <a class="btn btn-outline-secondary" href="{% url 'KnowYourHair-product' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

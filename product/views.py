@@ -50,7 +50,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'product/product_confirm_delete.html'
-    success_url = '/'  # redirect to product page after deleting the product
+    success_url = '/product'  # redirect to product page after deleting the product
 
     def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
         post = self.get_object()  # get the post trying to update

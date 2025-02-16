@@ -9,7 +9,7 @@ class ClinicListView(ListView):
     template_name = 'clinic/clinic_page.html'
     context_object_name = 'clinics'
     ordering = ['-date_posted']
-    paginate_by = 4 # - to set newest product first
+    paginate_by = 3 # - to set newest product first
 
 
 class ClinicDetailView(DetailView):
@@ -42,6 +42,7 @@ class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == post.author:
             return True
         return False
+
 
 class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Clinic
