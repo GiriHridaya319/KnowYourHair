@@ -23,7 +23,7 @@ class ProductDetailView(DetailView):
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'product/productadd.html'
-    fields = ['name', 'cost', 'feedback', 'details', 'image']
+    fields = ['name', 'cost', 'feedback', 'details', 'image', 'stock']
     success_url = reverse_lazy('KnowYourHair-product')  # Redirect to list view after creation
 
     def form_valid(self, form):
@@ -33,15 +33,16 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
     model = Product
-    fields = ['name', 'description','image','price','stock']
+    fields = ['name', 'cost', 'feedback', 'details', 'image', 'stock']
+    template_name = 'product/productadd.html'
 
     def form_valid(self, form):  # setting the form author to the current logged in user
         form.instance.author = self.request.user
         return super().form_valid(form)
 
     def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
-        post = self.get_object()  # get the post trying to update
-        if self.request.user == post.author:  # check if the current user is the author of the post
+        product = self.get_object()  # get the post trying to update
+        if self.request.user == product.author:  # check if the current user is the author of the post
             return True
         return False
 

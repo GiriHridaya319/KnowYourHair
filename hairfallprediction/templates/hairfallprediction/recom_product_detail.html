@@ -40,7 +40,17 @@
                 <button class="btn btn-secondary">Add to Wishlist</button>
             </div>
         </div>
+        {% if user == product.author %}
+<div class="action-buttons" style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+    <a href="{% url 'product-update' object.pk %}" class="action-btn edit" style="background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Edit Details</a>
+
+    <a href="{% url 'product-delete' object.pk %}" class="action-btn delete" style="background-color: #f44336; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Delete Listing</a>
+
+    <a href="{% url 'product-create' %}" class="action-btn create" style="background-color: #2196F3; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Create New</a>
+</div>
+{% endif %}
     </div>
+
 
     <!-- Modal for zoomed image -->
     <div class="modal" onclick="closeModal()">
@@ -85,6 +95,8 @@
         </button>
     </div>
 </div>
+
+
 
 
 

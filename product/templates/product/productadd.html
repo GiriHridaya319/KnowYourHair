@@ -20,7 +20,12 @@
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">
-        <h1>ADD NEW PRODUCT</h1>
+        {% if object %}
+            <h1>UPDATE PRODUCT</h1>
+        {% else %}
+            <h1>ADD NEW PRODUCT</h1>
+        {% endif %}
+
         {% csrf_token %}
 
         {% if form %}
@@ -36,7 +41,7 @@
                     {{ field }}
                     <div class="image-preview">
                         <span class="image-preview-text">Click to upload image or drag and drop</span>
-                        <img id="preview-img" src="#" alt="Preview">
+                        <img id="preview-img" src="{% if object.image %}{{ object.image.url }}{% else %}#{% endif %}" alt="Preview" {% if object.image %}style="display: block"{% endif %}>
                     </div>
                 {% else %}
                     {{ field }}
@@ -88,7 +93,13 @@
             </div>
         {% endif %}
 
-        <button type="submit" class="btn-submit">Add Product</button>
+        <button type="submit" class="btn-submit">
+            {% if object %}
+                Update Product
+            {% else %}
+                Add Product
+            {% endif %}
+        </button>
     </form>
 </div>
 
@@ -110,6 +121,15 @@ document.getElementById('id_image').onchange = function(e) {
         preview.style.display = 'none';
         preview.src = '#';
         previewText.style.display = 'block';
+    }
+};
+
+// Hide preview text if image exists on page load
+window.onload = function() {
+    const preview = document.getElementById('preview-img');
+    const previewText = document.querySelector('.image-preview-text');
+    if (preview.src && preview.src !== window.location.href) {
+        previewText.style.display = 'none';
     }
 };
 </script>

@@ -9,10 +9,10 @@ from .views import ClinicUpdateView, ClinicDeleteView, ClinicCreateView, ClinicL
 # home is the function created in views
 urlpatterns = [
     path('', ClinicListView.as_view(), name='KnowYourHair-clinic'),
-    path('clinic/<int:pk>/delete', ClinicDeleteView.as_view(), name='clinic-delete'),
+    path('<int:pk>/delete', ClinicDeleteView.as_view(), name='clinic-delete'),
     path('<int:pk>/', ClinicDetailView.as_view(), name='clinic-detail'),
-    path('clinic/new/', ClinicCreateView.as_view(), name='clinic-create'),
-    path('clinic/<int:pk>/update', ClinicUpdateView.as_view(), name='clinic-update'),
+    path('new/', ClinicCreateView.as_view(), name='clinic-create'),
+    path('<int:pk>/update', ClinicUpdateView.as_view(), name='clinic-update'),
 ]
 
 # if the project is in development mode, then add the following line to the urlpatterns

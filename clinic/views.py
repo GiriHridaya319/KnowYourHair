@@ -29,6 +29,8 @@ class ClinicCreateView(LoginRequiredMixin, CreateView):
 class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
     model = Clinic
     fields = ['name', 'description','image','opening_time','closing_time', 'phoneNum','address']
+    template_name = 'clinic/clinic_update_form.html'
+    success_url = '/'  # redirect to clinic page after deleting the clinic
 
     def form_valid(self, form):  # setting the form author to the current logged in user
         form.instance.author = self.request.user
