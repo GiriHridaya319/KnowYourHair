@@ -8,7 +8,8 @@ class ClinicListView(ListView):
     model = Clinic
     template_name = 'clinic/clinic_page.html'
     context_object_name = 'clinics'
-    ordering = ['-date_posted']  # - to set newest product first
+    ordering = ['-date_posted']
+    paginate_by = 4 # - to set newest product first
 
 
 class ClinicDetailView(DetailView):
@@ -26,22 +27,21 @@ class ClinicCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
+class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Clinic
     fields = ['name', 'description','image','opening_time','closing_time', 'phoneNum','address']
-    template_name = 'clinic/clinic_update_form.html'
-    success_url = '/'  # redirect to clinic page after deleting the clinic
+    template_name = 'clinic/clinic_add_form.html'  # Add this line
+    success_url = '/'
 
-    def form_valid(self, form):  # setting the form author to the current logged in user
+    def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-    def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
-        post = self.get_object()  # get the post trying to update
-        if self.request.user == post.author:  # check if the current user is the author of the post
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
             return True
         return False
-
 
 class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Clinic

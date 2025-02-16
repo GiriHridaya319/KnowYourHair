@@ -51,6 +51,7 @@
         <div class="action-buttons">
             <a href="{% url 'clinic-update' object.pk %}" class="action-btn edit">Edit Details</a>
             <a href="{% url 'clinic-delete' object.pk %}" class="action-btn delete">Delete Listing</a>
+            <a href="{% url 'clinic-create' %}" class="action-btn delete">Create New </a>
         </div>
         {% endif %}
     </div>
