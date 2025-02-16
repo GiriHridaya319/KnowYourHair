@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from hairfallprediction.models import Product
 
@@ -20,7 +21,13 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    template_name = 'product_add_form.html'
+    template_name = 'product/productadd.html'
+    fields = ['name', 'cost', 'feedback', 'details', 'image']
+    success_url = reverse_lazy('KnowYourHair-product')  # Redirect to list view after creation
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):

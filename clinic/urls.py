@@ -10,7 +10,7 @@ from .views import ClinicUpdateView, ClinicDeleteView, ClinicCreateView, ClinicL
 urlpatterns = [
     path('', ClinicListView.as_view(), name='KnowYourHair-clinic'),
     path('clinic/<int:pk>/delete', ClinicDeleteView.as_view(), name='clinic-delete'),
-    path('clinic/<int:pk>/', ClinicDetailView.as_view(), name='clinic-detail'),
+    path('<int:pk>/', ClinicDetailView.as_view(), name='clinic-detail'),
     path('clinic/new/', ClinicCreateView.as_view(), name='clinic-create'),
     path('clinic/<int:pk>/update', ClinicUpdateView.as_view(), name='clinic-update'),
 ]

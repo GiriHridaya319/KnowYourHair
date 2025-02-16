@@ -10,13 +10,14 @@ from .views import (
 )
 
 urlpatterns = [
-    # Put exact matches first
+    # Remove 'product/' from the start of these paths since it's already included in main urls.py
     path('', ProductListView.as_view(), name='KnowYourHair-product'),
-    path('product/new/', ProductCreateView.as_view(), name='product-create'),  # Move this before the slug pattern
-    path('<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
     path('<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
-    # Put the slug pattern last since it's the most general
+    path('new/', ProductCreateView.as_view(), name='product-create'),
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
+
+
+    path('<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
 ]
 
 if settings.DEBUG:

@@ -8,18 +8,11 @@
             --border-color: #ddd;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            min-height: 100vh;
-        }
 
-        .container {
+
+        .container-add {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 70px auto;
             background: var(--form-bg-color);
             padding: 30px;
             border-radius: 12px;

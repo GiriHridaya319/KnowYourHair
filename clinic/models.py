@@ -28,7 +28,7 @@ class Clinic(models.Model):
         return f"{self.name} - {self.status}"
 
     def get_absolute_url(self):
-        return reverse('product-detail', kwargs={'pk': self.pk})
+        return reverse('clinic-detail', kwargs={'pk': self.pk})
 
 # Create your models here.
 
