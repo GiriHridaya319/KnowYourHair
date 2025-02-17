@@ -14,17 +14,14 @@ def ProductSearch(request):
 
         if not searched:
             messages.error(request, 'Please enter a valid search')
-            return render(request, 'product/product_page.html', {'products': products})
+            return render(request, 'product/product_page.html', {})
 
         # Case-insensitive search using icontains
         search_results = Product.objects.filter(name__icontains=searched)
 
         if not search_results.exists():
             messages.error(request, 'No products found')
-            return render(request, 'product/product_page.html', {
-                'products': products,
-                'searched_term': searched
-            })
+            return render(request, 'product/product_page.html', {})
 
         return render(request, 'product/product_page.html', {
             'searched': search_results,
@@ -34,6 +31,7 @@ def ProductSearch(request):
 
     # Handle GET requests
     return render(request, 'product/product_page.html', {'products': products})
+
 
 class ProductListView(ListView):
     model = Product

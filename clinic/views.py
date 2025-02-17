@@ -1,7 +1,35 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Clinic
+
+
+def ClinicSearch(request):
+    clinics = Clinic.objects.all()  # Default queryset for all products
+
+    if request.method == 'POST':
+        searched = request.POST.get('searched', '').strip()
+
+        if not searched:
+            messages.error(request, 'Please enter a valid search')
+            return render(request, 'clinic/clinic_page.html', {})
+
+        # Case-insensitive search using icontains
+        search_results = Clinic.objects.filter(name__icontains=searched)
+
+        if not search_results.exists():
+            messages.error(request, 'No clinic details found')
+            return render(request, 'clinic/clinic_page.html', {})
+
+        return render(request, 'clinic/clinic_page.html', {
+            'searched': search_results,
+            'products': clinics,
+            'searched_term': searched
+        })
+
+    # Handle GET requests
+    return render(request, 'clinic/clinic_page.html', {'products': clinics})
 
 
 class ClinicListView(ListView):
