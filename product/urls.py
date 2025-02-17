@@ -6,17 +6,16 @@ from .views import (
     ProductDeleteView,
     ProductCreateView,
     ProductListView,
-    ProductDetailView
+    ProductDetailView,
+    ProductSearch  # Add this import
 )
 
 urlpatterns = [
-    # Remove 'product/' from the start of these paths since it's already included in main urls.py
     path('', ProductListView.as_view(), name='KnowYourHair-product'),
+    path('search/', ProductSearch, name='product-search'),  # Add this new path
     path('<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
     path('new/', ProductCreateView.as_view(), name='product-create'),
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
-
-
     path('<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
 ]
 

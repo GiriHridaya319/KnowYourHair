@@ -1,9 +1,39 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from hairfallprediction.models import Product
 
+
+def ProductSearch(request):
+    products = Product.objects.all()  # Default queryset for all products
+
+    if request.method == 'POST':
+        searched = request.POST.get('searched', '').strip()
+
+        if not searched:
+            messages.error(request, 'Please enter a valid search')
+            return render(request, 'product/product_page.html', {'products': products})
+
+        # Case-insensitive search using icontains
+        search_results = Product.objects.filter(name__icontains=searched)
+
+        if not search_results.exists():
+            messages.error(request, 'No products found')
+            return render(request, 'product/product_page.html', {
+                'products': products,
+                'searched_term': searched
+            })
+
+        return render(request, 'product/product_page.html', {
+            'searched': search_results,
+            'products': products,
+            'searched_term': searched
+        })
+
+    # Handle GET requests
+    return render(request, 'product/product_page.html', {'products': products})
 
 class ProductListView(ListView):
     model = Product

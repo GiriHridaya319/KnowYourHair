@@ -11,23 +11,53 @@
 
 {% block content %}
      <div class="container">
+    <div class="title">PRODUCT LIST</div>
 
+    <form method="post" action="{% url 'product-search' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="pro_search_wrapper">
+            <div class="pro_search_container">
+                <input type="text" class="pro_search_input" placeholder="Search products..." name="searched">
+                <button class="pro_search_button">
+                    <svg class="pro_search_icon" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                </button>
+            </div>
+        </div>
+    </form>
 
-        <div class="title">PRODUCT LIST</div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-         <div class="pro_search_wrapper">
-    <div class="pro_search_container">
-        <input type="text" class="pro_search_input" placeholder="Search products...">
-        <button class="pro_search_button">
-            <svg class="pro_search_icon" viewBox="0 0 24 24">
-                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-            </svg>
-            <span>Search</span>
-        </button>
-    </div>
+    {% if searched %}
+        <div class="title">Search Results</div>
+        <div class="listProduct">
+            {% for product in searched %}
+                <a href="{% url 'recom-product-detail' product.slug %}" class="item">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="item-content">
+                        <h2>{{ product.name |truncatewords:10 }}</h2>
+                        <div class="separator-box"></div>
+                        <div class="price">NRs. {{ product.cost }}</div>
+                        {% if product.stock > 0 %}
+                            <div class="stock-badge">In Stock</div>
+                        {% else %}
+                            <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-
-</div>
+    {% if not searched %}
         <div class="listProduct">
             {% for product in products %}
                 <a href="{% url 'recom-product-detail' product.slug %}" class="item">
@@ -44,37 +74,35 @@
                     </div>
                 </a>
             {% endfor %}
-
         </div>
-    </div>
-{% if is_paginated %}
-    <div class="pagination-container">
-        {% if page_obj.has_previous %}
-            <a class="pagination-link" href="?page=1">First</a>
-            <a class="pagination-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <a class="pagination-link active" href="?page={{num}}">{{num}}</a>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <a class="pagination-link" href="?page={{num}}">{{num}}</a>
+    {% endif %}
+</div>
+    {% if is_paginated %}
+        <div class="pagination-container">
+            {% if page_obj.has_previous %}
+                <a class="pagination-link" href="?page=1">First</a>
+                <a class="pagination-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
             {% endif %}
-        {% endfor %}
 
-        {% if page_obj.has_next %}
-            <a class="pagination-link" href="?page={{page_obj.next_page_number}}">Next</a>
-            <a class="pagination-link" href="?page={{page_obj.paginator.num_pages}}">Last</a>
-        {% endif %}
-    </div>
-{% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="pagination-link active" href="?page={{num}}">{{num}}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="pagination-link" href="?page={{num}}">{{num}}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="pagination-link" href="?page={{page_obj.next_page_number}}">Next</a>
+                <a class="pagination-link" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+            {% endif %}
+        </div>
+    {% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Add animation for items as they come into view
             const items = document.querySelectorAll('.item');
 
-            // Check if IntersectionObserver is supported
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -95,7 +123,6 @@
                     observer.observe(item);
                 });
             } else {
-                // Fallback for browsers that don't support IntersectionObserver
                 items.forEach(item => {
                     item.style.opacity = 1;
                     item.style.transform = 'translateY(0)';
