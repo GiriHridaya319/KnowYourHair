@@ -6,6 +6,7 @@ urlpatterns = [
     path('profile/edit/', user_view.profile_update, name='profile-update'),
     path('profile/changePassword/', user_view.password, name='change-password'),# Profile update
     path('login/', user_view.login_view, name='login'),  # Login view
+    path('adminBoard/', user_view.adminDash, name='adminDash'),
     path('registration/', user_view.register, name='registration'),  # Registration view
     path('logout/', user_view.custom_logout, name='logout'),  # Logout view
 ]

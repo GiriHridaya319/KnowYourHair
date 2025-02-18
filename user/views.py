@@ -150,3 +150,8 @@ def password(request):
             return redirect('profile-update')
 
     return render(request, 'user/changePassword.html')
+
+
+def adminDash(request):
+    return render(request, 'user/adminDashBoard.html')
+
