@@ -10,46 +10,45 @@
 {% endblock %}
 
 {% block content %}
-
-     <div class="container">
+<div class="container">
     <div class="title">PRODUCT LIST</div>
 
-    <form method="post" action="{% url 'product-search' %}" enctype="multipart/form-data">
+     <form method="post" action="{% url 'product-search' %}" enctype="multipart/form-data" id="searchForm">
         {% csrf_token %}
         <div class="pro_search_wrapper">
             <div class="pro_search_container">
                 <input type="text" class="pro_search_input" placeholder="Search products..." name="searched">
-                <button class="pro_search_button">
+                <button type="submit" class="pro_search_button">
                     <svg class="pro_search_icon" viewBox="0 0 24 24">
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                     </svg>
                     <span>Search</span>
                 </button>
-
             </div>
 
             <div style="position: relative;">
-                    <button type="button" class="filter-button" onclick="toggleFilter()">
-                        <svg class="filter-icon" viewBox="0 0 24 24">
-                            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
-                        </svg>
-                        <span>Filter</span>
-                    </button>
-                    <div class="filter-options" id="filterOptions">
-                        <div class="filter-option">
-                            <select class="filter-select" name="sort_name">
-                                <option value="">Sort by Name</option>
-                                <option value="asc">A to Z</option>
-                                <option value="desc">Z to A</option>
-                            </select>
-                            <select class="filter-select" name="sort_price">
-                                <option value="">Sort by Price</option>
-                                <option value="low">Low to High</option>
-                                <option value="high">High to Low</option>
-                            </select>
-                        </div>
+                <button type="button" class="filter-button" onclick="toggleFilter()">
+                    <svg class="filter-icon" viewBox="0 0 24 24">
+                        <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                    </svg>
+                    <span>Filter</span>
+                </button>
+                <div class="filter-options" id="filterOptions">
+                    <div class="filter-option">
+                        <select class="filter-select" name="sort_name" onchange="handleSort()">
+                            <option value="">Sort by Name</option>
+                            <option value="asc">A to Z</option>
+                            <option value="desc">Z to A</option>
+                        </select>
+                        <select class="filter-select" name="sort_price" onchange="handleSort()">
+                            <option value="">Sort by Price</option>
+                            <option value="low">Low to High</option>
+                            <option value="high">High to Low</option>
+                        </select>
                     </div>
                 </div>
+            </div>
+
             <div class="filter-refresh-container">
                 <button type="button" class="refresh-button" onclick="window.location.href='/product';">
                     <svg class="refresh-icon" viewBox="0 0 24 24">
@@ -60,14 +59,6 @@
             </div>
         </div>
     </form>
-
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     {% if searched %}
         <div class="title">Search Results</div>
@@ -110,71 +101,44 @@
         </div>
     {% endif %}
 </div>
-    {% if is_paginated %}
-        <div class="pagination-container">
-            {% if page_obj.has_previous %}
-                <a class="pagination-link" href="?page=1">First</a>
-                <a class="pagination-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+
+{% if is_paginated %}
+    <div class="pagination-container">
+        {% if page_obj.has_previous %}
+            <a class="pagination-link" href="?page=1">First</a>
+            <a class="pagination-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="pagination-link active" href="?page={{num}}">{{num}}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="pagination-link" href="?page={{num}}">{{num}}</a>
             {% endif %}
+        {% endfor %}
 
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <a class="pagination-link active" href="?page={{num}}">{{num}}</a>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a class="pagination-link" href="?page={{num}}">{{num}}</a>
-                {% endif %}
-            {% endfor %}
+        {% if page_obj.has_next %}
+            <a class="pagination-link" href="?page={{page_obj.next_page_number}}">Next</a>
+            <a class="pagination-link" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+        {% endif %}
+    </div>
+{% endif %}
 
-            {% if page_obj.has_next %}
-                <a class="pagination-link" href="?page={{page_obj.next_page_number}}">Next</a>
-                <a class="pagination-link" href="?page={{page_obj.paginator.num_pages}}">Last</a>
-            {% endif %}
-        </div>
-    {% endif %}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const items = document.querySelectorAll('.item');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('filterOptions').style.display = 'none';
+});
 
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.style.opacity = 1;
-                            entry.target.style.transform = 'translateY(0)';
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, {
-                    threshold: 0.1
-                });
-
-                items.forEach(item => {
-                    item.style.opacity = 0;
-                    item.style.transform = 'translateY(20px)';
-                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    observer.observe(item);
-                });
-            } else {
-                items.forEach(item => {
-                    item.style.opacity = 1;
-                    item.style.transform = 'translateY(0)';
-                });
-            }
-        });
 function toggleFilter() {
-        const filterOptions = document.getElementById('filterOptions');
-        if (filterOptions.style.display === 'none' || filterOptions.style.display === '') {
-            filterOptions.style.display = 'block';
-        } else {
-            filterOptions.style.display = 'none';
-        }
-    }
+    const filterOptions = document.getElementById('filterOptions');
+    filterOptions.style.display = filterOptions.style.display === 'none' ? 'block' : 'none';
+}
 
-    // Update refresh button functionality
-    document.querySelector('.refresh-button').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = "{% url 'KnowYourHair-product' %}";
-    });
-    </script>
+function handleSort() {
+    document.getElementById('searchForm').submit();
+}
+
+
+</script>
 {% endblock %}

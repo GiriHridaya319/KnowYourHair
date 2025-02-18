@@ -323,3 +323,26 @@
     border-radius: 4px;
     font-size: 14px;
 }
+
+.combined-sort-container {
+    margin-left: 10px;
+}
+
+.combined-sort-select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    min-width: 200px;
+    cursor: pointer;
+}
+
+.combined-sort-select:hover {
+    border-color: #999;
+}
+
+.combined-sort-select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
+}
