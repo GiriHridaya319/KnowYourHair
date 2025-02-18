@@ -1,11 +1,14 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+from django.views.generic import ListView, TemplateView
 from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Profile, Agent, Customer
+from hairfallprediction.models import Product
+from clinic.models import Clinic
 
 
 def register(request):
@@ -152,6 +155,97 @@ def password(request):
     return render(request, 'user/changePassword.html')
 
 
-def adminDash(request):
-    return render(request, 'user/adminDashBoard.html')
+class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'user/adminDashBoard.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get all agents with their profiles and users
+        agents = Agent.objects.select_related('profile', 'profile__user').all()
+        context['agents'] = [{
+            'id': agent.id,
+            'username': agent.profile.user.username,
+            'email': agent.profile.user.email,
+            'phone': agent.profile.phone_number,
+            'address': agent.profile.address,
+            'gender': agent.profile.gender,
+            'image': agent.profile.image.url,
+        } for agent in agents]
+
+        # Get all customers with their profiles and users
+        customers = Customer.objects.select_related('profile', 'profile__user').all()
+        context['customers'] = [{
+            'id': customer.id,
+            'username': customer.profile.user.username,
+            'email': customer.profile.user.email,
+            'phone': customer.profile.phone_number,
+            'address': customer.profile.address,
+            'gender': customer.profile.gender,
+            'image': customer.profile.image.url,
+        } for customer in customers]
+        products = Product.objects.select_related('author').all()
+        context['products'] = [{
+            'id': product.id,
+            'name': product.name,
+            'cost': product.cost,
+            'stock': product.stock,
+            'status': product.status,
+            'author': product.author.username,
+            'feedback': product.feedback,
+            'details': product.details,
+            'image': product.image.url if product.image else None
+        } for product in products]
+
+        # Get all clinics
+        clinics = Clinic.objects.select_related('author').all()
+        context['clinics'] = [{
+            'name': clinic.name,
+            'address': clinic.address,
+            'description': clinic.description,
+            'opening_time': clinic.opening_time,
+            'closing_time': clinic.closing_time,
+            'phoneNum': clinic.phoneNum,
+            'status': clinic.status,
+            'author': clinic.author.username,
+            'image': clinic.image.url if clinic.image else None
+        } for clinic in clinics]
+
+        # Get pending approvals
+        context['approvals'] = []
+
+        # Add pending products
+        pending_products = Product.objects.filter(status='Pending')
+        for product in pending_products:
+            context['approvals'].append({
+                'name': product.name,
+                'cost': product.cost,
+                'stock': product.stock,
+                'status': product.status,
+                'author': product.author.username,
+                'feedback': product.feedback,
+                'details': product.details,
+                'image': product.image.url if product.image else None
+            })
+
+        # Add pending clinics
+        pending_clinics = Clinic.objects.filter(status='Pending')
+        for clinic in pending_clinics:
+            context['approvals'].append({
+                'name': clinic.name,
+                'address': clinic.address,
+                'description': clinic.description,
+                'opening_time': clinic.opening_time,
+                'closing_time': clinic.closing_time,
+                'phoneNum': clinic.phoneNum,
+                'status': clinic.status,
+                'author': clinic.author.username,
+                'image': clinic.image.url if clinic.image else None
+            })
+
+        return context
+
 

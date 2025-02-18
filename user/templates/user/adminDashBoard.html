@@ -8,215 +8,280 @@
 {% endblock %}
 
 {% block content %}
-
 <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="logo">AdminPanel</div>
-        <div class="nav-item active" onclick="showSection('dashboard')">
-            <i class="fas fa-home"></i>
-            Dashboard
+<div class="sidebar">
+    <div class="logo">AdminPanel</div>
+    <div class="nav-item active" onclick="showSection('dashboard')">
+        <i class="fas fa-home"></i>
+        Dashboard
+    </div>
+    <div class="nav-item" onclick="showSection('users')">
+        <i class="fas fa-users"></i>
+        Users & Agents
+    </div>
+    <div class="nav-item" onclick="showSection('products')">
+        <i class="fas fa-box"></i>
+        Products
+    </div>
+    <div class="nav-item" onclick="showSection('clinics')">
+        <i class="fas fa-clinic-medical"></i>
+        Clinics
+    </div>
+    <div class="nav-item" onclick="showSection('approvals')">
+        <i class="fas fa-check-circle"></i>
+        Approvals
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
         </div>
-        <div class="nav-item" onclick="showSection('users')">
-            <i class="fas fa-users"></i>
-            Users & Agents
-        </div>
-        <div class="nav-item" onclick="showSection('products')">
-            <i class="fas fa-box"></i>
-            Products
-        </div>
-        <div class="nav-item" onclick="showSection('clinics')">
-            <i class="fas fa-clinic-medical"></i>
-            Clinics
-        </div>
-        <div class="nav-item" onclick="showSection('approvals')">
-            <i class="fas fa-check-circle"></i>
-            Approvals
+        <div class="admin-profile">
+            <span>{{ request.user.username }}</span>
+            <img src="{{ request.user.profile.image.url }}" alt="Admin Profile">
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Navbar -->
-        <div class="top-navbar">
-            <div class="search-bar">
-                <input type="text" placeholder="Search...">
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section active">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Dashboard Overview</div>
             </div>
-            <div class="admin-profile">
-                <span>Admin User</span>
-                <img src="/api/placeholder/40/40" alt="Admin Profile">
-            </div>
-        </div>
-
-        <!-- Dashboard Section -->
-        <div id="dashboard" class="section active">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Dashboard Overview</div>
-                </div>
-                <div class="card-content">
-                    <p>Welcome to the Admin Dashboard. Use the sidebar navigation to manage different sections.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Users Section -->
-        <div id="users" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Users & Agents Management</div>
-                    <button class="btn">Add New User</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>Agent</td>
-                                <td>john@example.com</td>
-                                <td>Active</td>
-                                <td>
-                                    <button class="btn">Edit</button>
-                                    <button class="btn btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Section -->
-        <div id="products" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Product Management</div>
-                    <button class="btn">Add New Product</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Product XYZ</td>
-                                <td>Category A</td>
-                                <td>$99.99</td>
-                                <td>Active</td>
-                                <td>
-                                    <button class="btn">Edit</button>
-                                    <button class="btn btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Clinics Section -->
-        <div id="clinics" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Clinic Management</div>
-                    <button class="btn">Add New Clinic</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Clinic Name</th>
-                                <th>Location</th>
-                                <th>Contact</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>City Clinic</td>
-                                <td>New York</td>
-                                <td>contact@cityclinic.com</td>
-                                <td>Active</td>
-                                <td>
-                                    <button class="btn">Edit</button>
-                                    <button class="btn btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Approvals Section -->
-        <div id="approvals" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Pending Approvals</div>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Type</th>
-                                <th>Submitted By</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>New Product XYZ</td>
-                                <td>Product</td>
-                                <td>John Doe</td>
-                                <td>2024-02-18</td>
-                                <td>Pending</td>
-                                <td>
-                                    <button class="btn">Approve</button>
-                                    <button class="btn btn-danger">Reject</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="card-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Customers</h3>
+                        <p>{{ customers|length }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Agents</h3>
+                        <p>{{ agents|length }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Products</h3>
+                        <p>{{ products|length }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Clinics</h3>
+                        <p>{{ clinics|length }}</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
- <script>
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
+    <!-- Users Section -->
+    <div id="users" class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Users & Agents Management</div>
+                <button class="btn">Add New User</button>
+            </div>
+            <div class="table-container">
+                <h3>Customers</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Gender</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer.username }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{{ customer.address }}</td>
+                            <td>{{ customer.gender }}</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
+                <h3>Agents</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Gender</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agent in agents %}
+                        <tr>
+                            <td>{{ agent.username }}</td>
+                            <td>{{ agent.email }}</td>
+                            <td>{{ agent.phone }}</td>
+                            <td>{{ agent.address }}</td>
+                            <td>{{ agent.gender }}</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-            // Update active state in sidebar
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-        }
-    </script>
+    <!-- Products Section -->
+    <div id="products" class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Product Management</div>
+                <button class="btn">Add New Product</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Author</th>
+                            <th>Feedback</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>${{ product.cost }}</td>
+                            <td>{{ product.stock }}</td>
+                            <td>{{ product.status }}</td>
+                            <td>{{ product.author }}</td>
+                            <td>{{ product.feedback }}</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    <!-- Clinics Section -->
+    <div id="clinics" class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Clinic Management</div>
+                <button class="btn">Add New Clinic</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Opening Time</th>
+                            <th>Closing Time</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Author</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for clinic in clinics %}
+                        <tr>
+                            <td>{{ clinic.name }}</td>
+                            <td>{{ clinic.address }}</td>
+                            <td>{{ clinic.opening_time }}</td>
+                            <td>{{ clinic.closing_time }}</td>
+                            <td>{{ clinic.phoneNum }}</td>
+                            <td>{{ clinic.status }}</td>
+                            <td>{{ clinic.author }}</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approvals Section -->
+    <div id="approvals" class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Pending Approvals</div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for approval in approvals %}
+                        <tr>
+                            <td>{% if approval.cost %}Product{% else %}Clinic{% endif %}</td>
+                            <td>{{ approval.name }}</td>
+                            <td>{{ approval.author }}</td>
+                            <td>{{ approval.details }}</td>
+                            <td>{{ approval.status }}</td>
+                            <td>
+                                <button class="btn">Approve</button>
+                                <button class="btn btn-danger">Reject</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Update active state in sidebar
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+    }
+</script>
 {% endblock %}

@@ -6,7 +6,6 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from hairfallprediction.models import Product
 
 
-
 def ProductSearch(request):
     products = Product.objects.all()  # Default queryset for all products
 
