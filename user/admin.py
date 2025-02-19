@@ -8,11 +8,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class AgentAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'specialization')
+    list_display = ('profile', 'role')
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'preferences')
+    list_display = ('profile', 'role')
 
 
 admin.site.register(Profile, ProfileAdmin)

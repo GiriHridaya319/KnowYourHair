@@ -30,16 +30,17 @@ class Profile(models.Model):
 
 
 class Agent(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-    specialization = models.CharField(max_length=100, blank=True, null=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='agent')
+    role = models.CharField(max_length=100, blank=True, null=True, default='staff')  # Renamed from specialization
 
     def __str__(self):
         return self.profile.user.username
 
 
 class Customer(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-    preferences = models.TextField(blank=True, null=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='customer')
+    role = models.CharField(max_length=100, blank=True, null=True, default='customer')  # Renamed from preferences
 
     def __str__(self):
         return self.profile.user.username
+

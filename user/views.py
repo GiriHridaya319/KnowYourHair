@@ -46,11 +46,11 @@ def register(request):
 
         # Create the corresponding model (Agent or Customer)
         if user_type == 'customer':
-            customer = Customer(profile=profile, preferences='')
+            customer = Customer(profile=profile, role='customer')
             customer.save()
             messages.success(request, "Customer registered successfully! Please log in.")
         elif user_type == 'agent':
-            agent = Agent(profile=profile, specialization='')
+            agent = Agent(profile=profile, role='staff')
             agent.save()
             messages.success(request, "Agent registered successfully! Please log in.")
 
@@ -88,25 +88,35 @@ def custom_logout(request):
     return redirect('login')  # Redirect to login page after logging out
 
 
+
 @login_required
 def profile(request):
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, f'Your account has been updated Successfully!')
-            return redirect('profile')
-    # instance to get the current user information
+            messages.success(request, 'Your account has been updated successfully!')
+
+            # Check the user's role and redirect accordingly
+            user_role = request.user.profile.role  # This uses the role property in Profile model
+
+            if user_role == "staff":  # Agent role
+                return redirect('agent-profile')  # Replace with the actual agent profile URL name
+            else:
+                return redirect('profile')  # Regular user profile
+
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
+
     context = {
         'u_form': u_form,
         'p_form': p_form
     }
-    return render(request, 'user/profile.html', context)
+    return render(request, 'user/profile.html', context)  # Default render
 
 
 @login_required
