@@ -1,0 +1,174 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+
+{% block agentDetails_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/agentDetails.css' %}">
+{% endblock %}
+
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span class="nav-text">Agent Details</span>
+                <button class="toggle-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li data-section="products">
+                    <i class="fas fa-box"></i>
+                    <span class="nav-text">Products</span>
+                </li>
+                <li data-section="clinics">
+                    <i class="fas fa-clinic-medical"></i>
+                    <span class="nav-text">Clinics</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section active">
+                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Dashboard Overview</h1>
+                <div class="stats-cards">
+                    <div class="card">
+                        <div class="card-header">Total Products</div>
+                        <div class="card-value">156</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">Total Clinics</div>
+                        <div class="card-value">42</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="products" class="content-section">
+                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Products Management</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Product A</td>
+                                <td>Category 1</td>
+                                <td>100</td>
+                                <td>$99.99</td>
+                                <td>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Product B</td>
+                                <td>Category 2</td>
+                                <td>75</td>
+                                <td>$149.99</td>
+                                <td>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Clinics Section -->
+            <div id="clinics" class="content-section">
+                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Clinics Management</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Clinic Name</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Clinic A</td>
+                                <td>New York</td>
+                                <td>Active</td>
+                                <td>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Clinic B</td>
+                                <td>Los Angeles</td>
+                                <td>Active</td>
+                                <td>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Sidebar toggle functionality
+        const toggleBtn = document.querySelector('.toggle-btn');
+        const sidebar = document.querySelector('.sidebar');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Navigation functionality
+        document.querySelectorAll('.nav-links li').forEach(link => {
+            link.addEventListener('click', () => {
+                // Remove active class from all links
+                document.querySelectorAll('.nav-links li').forEach(l => {
+                    l.classList.remove('active');
+                });
+
+                // Add active class to clicked link
+                link.classList.add('active');
+
+                // Hide all content sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the selected content section
+                const sectionId = link.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+    </script>
+
+
+{% endblock %}
+

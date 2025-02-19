@@ -72,20 +72,24 @@
             </div>
             {% endif %}
         </div>
-      <div class="profile-actions">
-            <a href="{% url 'profile-update' %}" class="btn-profile btn-profile-primary">
+      <div class="profile-actions" style="display: flex; gap: 20px;">
+    <a href="{% url 'profile-update' %}" class="btn-profile btn-profile-primary">
+        <i class="fas fa-edit"></i>
+        Edit Profile
+    </a>
 
-                <i class="fas fa-edit"></i>
-                Edit Profile
-            </a>
-        </div>
-        <div class="profile-actions">
-            <a href="{% url 'change-password' %}" class="btn-profile btn-profile-primary">
+    <a href="{% url 'change-password' %}" class="btn-profile btn-profile-primary">
+        <i class="fas fa-edit"></i>
+        Change Password
+    </a>
+    {% if request.user.profile.agent %}
+        <a href="{% url 'agentDetails' %}" class="btn-profile btn-profile-primary">
+            <i class="fas fa-edit"></i>
+            My Details
+        </a>
+    {% endif %}
 
-                <i class="fas fa-edit"></i>
-                Change Password
-            </a>
-        </div>
+</div>
 
 
     </div>

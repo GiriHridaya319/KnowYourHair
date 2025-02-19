@@ -11,6 +11,7 @@ from hairfallprediction.models import Product
 from clinic.models import Clinic
 
 
+
 def register(request):
     if request.method == 'POST':
         user_type = request.POST.get('user_type')
@@ -257,5 +258,13 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             })
 
         return context
+
+
+class AgentDetails(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'user/agentDetails.html'
+    model = Product
+
+    def test_func(self):
+        return self.request.user.profile.agent
 
 
