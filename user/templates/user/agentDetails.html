@@ -1,142 +1,221 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-
 {% block agentDetails_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'user/css/agentDetails.css' %}">
 {% endblock %}
 
-
 {% block footer %}{% endblock %}
 
 {% block content %}
-
 <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <span class="nav-text">Agent Details</span>
-                <button class="toggle-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span class="nav-text">{{ request.user.username }}</span>
+            <button class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span class="nav-text">Dashboard</span>
+            </li>
+            <li data-section="products">
+                <i class="fas fa-box"></i>
+                <span class="nav-text">Products</span>
+            </li>
+            <li data-section="clinics">
+                <i class="fas fa-clinic-medical"></i>
+                <span class="nav-text">Clinics</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <h1>Dashboard Overview</h1>
+            <div class="stats-cards">
+                <div class="card">
+                    <div class="card-header">Total Products</div>
+                    <div class="card-value">{{ products|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Total Clinics</div>
+                    <div class="card-value">{{ clinics|length }}</div>
+                </div>
             </div>
-            <ul class="nav-links">
-                <li class="active" data-section="dashboard">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-text">Dashboard</span>
-                </li>
-                <li data-section="products">
-                    <i class="fas fa-box"></i>
-                    <span class="nav-text">Products</span>
-                </li>
-                <li data-section="clinics">
-                    <i class="fas fa-clinic-medical"></i>
-                    <span class="nav-text">Clinics</span>
-                </li>
-            </ul>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Dashboard Section -->
-            <div id="dashboard" class="content-section active">
-                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Dashboard Overview</h1>
-                <div class="stats-cards">
-                    <div class="card">
-                        <div class="card-header">Total Products</div>
-                        <div class="card-value">156</div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">Total Clinics</div>
-                        <div class="card-value">42</div>
-                    </div>
-                </div>
+        <!-- Products Section -->
+        <div id="products" class="content-section">
+            <div class="section-header">
+                <h1>Products Management</h1>
+
             </div>
 
-            <!-- Products Section -->
-            <div id="products" class="content-section">
-                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Products Management</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Product A</td>
-                                <td>Category 1</td>
-                                <td>100</td>
-                                <td>$99.99</td>
-                                <td>
-                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Product B</td>
-                                <td>Category 2</td>
-                                <td>75</td>
-                                <td>$149.99</td>
-                                <td>
-                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            {% if products %}
+            <a href="{% url 'product-create' %}" class="add-btn">
+                    <i class="fas fa-plus"></i> Add New Product
+                </a>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.stock }}</td>
+                            <td>${{ product.cost }}</td>
+                            <td>{{ product.status }}</td>
+                            <td>
+                                <a href="{% url 'product-update' product.id %}" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'product-delete' product.id %}" class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-box empty-icon"></i>
+                <h2>No Products Added Yet</h2>
+                <p>Start by adding your first product</p>
+                <a href="{% url 'product-create' %}" class="add-btn">
+                    <i class="fas fa-plus"></i> Add Product
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Clinics Section -->
+        <div id="clinics" class="content-section">
+            <div class="section-header">
+                <h1>Clinics Management</h1>
+
             </div>
 
-            <!-- Clinics Section -->
-            <div id="clinics" class="content-section">
-                <h1 style="margin-bottom: 20px; color: var(--primary-blue);">Clinics Management</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Clinic Name</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Clinic A</td>
-                                <td>New York</td>
-                                <td>Active</td>
-                                <td>
-                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Clinic B</td>
-                                <td>Los Angeles</td>
-                                <td>Active</td>
-                                <td>
-                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            {% if clinics %}
+            <a href="{% url 'clinic-create' %}" class="add-btn">
+                    <i class="fas fa-plus"></i> Add New Clinic
+                </a>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Opening Hours</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for clinic in clinics %}
+                        <tr>
+                            <td>{{ clinic.name }}</td>
+                            <td>{{ clinic.address }}</td>
+                            <td>{{ clinic.opening_time }} - {{ clinic.closing_time }}</td>
+                            <td>{{ clinic.status }}</td>
+                            <td>
+                                <a href="{% url 'clinic-update' clinic.id %}" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'clinic-delete' clinic.id %}" class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clinic-medical empty-icon"></i>
+                <h2>No Clinics Added Yet</h2>
+                <p>Start by adding your first clinic</p>
+                <a href="{% url 'clinic-create' %}" class="add-btn">
+                    <i class="fas fa-plus"></i> Add Clinic
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
+</div>
+
+<style>
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .add-btn {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .add-btn:hover {
+        background: var(--secondary-color);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--bg-secondary);
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h2 {
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .table-container {
+        margin-top: 1rem;
+    }
+</style>
     <script>
         // Sidebar toggle functionality
         const toggleBtn = document.querySelector('.toggle-btn');

@@ -262,9 +262,42 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 class AgentDetails(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'user/agentDetails.html'
-    model = Product
 
     def test_func(self):
-        return self.request.user.profile.agent
+        return self.request.user.profile.agent is not None
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the logged-in user
+        current_user = self.request.user
+
+        # Get products authored by the current user
+        products = Product.objects.filter(author=current_user).select_related('author')
+        context['products'] = [{
+            'id': product.id,
+            'name': product.name,
+            'cost': product.cost,
+            'stock': product.stock,
+            'status': product.status,
+            'feedback': product.feedback,
+            'details': product.details,
+            'image': product.image.url if product.image else None
+        } for product in products]
+
+        # Get clinics authored by the current user
+        clinics = Clinic.objects.filter(author=current_user).select_related('author')
+        context['clinics'] = [{
+            'id': clinic.id,
+            'name': clinic.name,
+            'address': clinic.address,
+            'description': clinic.description,
+            'opening_time': clinic.opening_time,
+            'closing_time': clinic.closing_time,
+            'phoneNum': clinic.phoneNum,
+            'status': clinic.status,
+            'image': clinic.image.url if clinic.image else None
+        } for clinic in clinics]
+
+        return context
 
