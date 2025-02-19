@@ -214,6 +214,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # Get all clinics
         clinics = Clinic.objects.select_related('author').all()
         context['clinics'] = [{
+            'id': clinic.id,
             'name': clinic.name,
             'address': clinic.address,
             'description': clinic.description,
