@@ -46,22 +46,7 @@
                     </div>
                 </div>
             {% empty %}
-                <div class="no-dermatologists">
-        <div class="message-container">
-            <div class="empty-state-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="7" r="4"/>
-                    <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
-                    <line x1="8" y1="21" x2="16" y2="21"/>
-                    <path d="M18 2v2M18 8v2M2 6h2M8 6h2"/>
-                </svg>
-            </div>
-            <h2>No Dermatologists Found</h2>
-            <p>No dermatologists are currently listed for {{ clinic.name }}.</p>
-            <p class="suggestion">Please check back later or contact the clinic for more information.</p>
-            <a href="{% url 'clinic-detail' clinic_id %}" class="return-button">Return to Clinic</a>
-        </div>
-    </div>
+                <p>No dermatologists found.</p>
             {% endfor %}
         </div>
     </div>

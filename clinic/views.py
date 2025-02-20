@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Clinic, Dermatologist
 
 
@@ -84,13 +84,6 @@ class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class DermatologistListView(ListView):
-    model = Dermatologist
-    template_name = 'clinic/dermatologist_page.html'
-    context_object_name = 'dermatologists'
-    ordering = ['-total_experience']
-
-
 class DermatologistDetailView(DetailView):
     model = Dermatologist
     template_name = 'clinic/dermatologistDetail.html'
@@ -103,3 +96,36 @@ class DermatologistDetailView(DetailView):
             clinic=self.object.clinic
         ).exclude(id=self.object.id)[:3]  # Get up to 3 related dermatologists from the same clinic
         return context
+
+
+class DermatologistListView(TemplateView):
+    template_name = 'clinic/dermatologist_page.html'
+
+    def test_func(self):
+        return hasattr(self.request.user, 'profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        clinic_id = self.kwargs.get('clinic_id')
+
+        # Get the clinic
+        clinic = Clinic.objects.get(id=clinic_id)
+
+        # Add clinic and clinic_id to context
+        context['clinic'] = clinic
+        context['clinic_id'] = clinic_id
+
+        # Get dermatologists for the specific clinic
+        context['dermatologists'] = Dermatologist.objects.filter(clinic_id=clinic_id).select_related('clinic')
+
+        return context
+
+
+class AllDermatologistListView(ListView):
+    model = Dermatologist
+    template_name = 'clinic/Dermatologist.html'
+    context_object_name = 'dermatologists'
+    paginate_by = 6
+
+    def get_queryset(self):
+        return Dermatologist.objects.all().select_related('clinic')

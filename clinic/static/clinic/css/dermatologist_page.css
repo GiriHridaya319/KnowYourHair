@@ -59,6 +59,82 @@
     gap: 1rem;
 }
 
+.no-dermatologists {
+    width: 100%;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.empty-state-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+}
+
+.no-dermatologists h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-dermatologists p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+}
+
+.suggestion {
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+.return-button {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    margin-top: 1.5rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.return-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .no-dermatologists {
+        padding: 2rem 1rem;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .no-dermatologists h2 {
+        font-size: 1.5rem;
+    }
+
+    .no-dermatologists p {
+        font-size: 1rem;
+    }
+}
+
 .doctor-name {
     color: var(--primary-blue);
     font-size: 1.8rem;
@@ -136,6 +212,19 @@
     background: #2d5d8b;
     transform: translateY(-2px);
 }
+
+.empty-state-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+}
+
+.empty-state-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
 
 .visit-clinic {
     background: var(--primary-orange);

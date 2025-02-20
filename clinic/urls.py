@@ -4,12 +4,14 @@ from django.conf.urls.static import static
 from KnowYourHair import settings
 from . import views
 from .views import ClinicUpdateView, ClinicDeleteView, ClinicCreateView, ClinicListView,\
-    Clinic, ClinicDetailView, DermatologistListView, DermatologistDetailView
+    Clinic, ClinicDetailView, DermatologistListView, DermatologistDetailView, AllDermatologistListView
 
 # home is the function created in views
 urlpatterns = [
     path('', ClinicListView.as_view(), name='KnowYourHair-clinic'),
-    path('dermatologist/', DermatologistListView.as_view(), name='dermatologist-view'),
+
+    path('<int:clinic_id>/dermatologists/', DermatologistListView.as_view(), name='dermatologist-views'),
+    path('dermatologists/', AllDermatologistListView.as_view(), name='dermatologist'),
     path('dermatologist/<int:pk>/', DermatologistDetailView.as_view(), name='dermatologist-detail'),
     path('search/', views.ClinicSearch, name='clinic-search'),
     path('<int:pk>/delete', ClinicDeleteView.as_view(), name='clinic-delete'),

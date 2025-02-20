@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="action-buttons">
-            <a href="{% url 'dermatologist-view' %}" class="action-btn edit">Dermatologist </a>
+            <a href="{% url 'dermatologist-views' clinic.id %}" class="btn">View Clinic Dermatologists</a>
         </div>
 
         {% if user == object.author %}
