@@ -7,7 +7,8 @@ from hairfallprediction.models import Product
 
 
 def ProductSearch(request):
-    products = Product.objects.all()  # Default queryset for all products
+    # Only get approved products
+    products = Product.objects.filter(status='Approved')
 
     if request.method == 'POST':
         searched = request.POST.get('searched', '').strip()
@@ -16,7 +17,7 @@ def ProductSearch(request):
 
         # Handle empty search with sorting
         if not searched and (sort_name or sort_price):
-            # Apply sorting to all products
+            # Apply sorting to approved products
             if sort_name:
                 products = products.order_by('name' if sort_name == 'asc' else '-name')
             elif sort_price:
@@ -33,8 +34,11 @@ def ProductSearch(request):
             messages.error(request, 'Please enter a valid search')
             return render(request, 'product/product_page.html', {})
 
-        # Case-insensitive search using icontains
-        search_results = Product.objects.filter(name__icontains=searched)
+        # Case-insensitive search using icontains for approved products only
+        search_results = Product.objects.filter(
+            name__icontains=searched,
+            status='Approved'
+        )
 
         # Apply sorting to search results
         if sort_name:
@@ -77,7 +81,8 @@ class ProductListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        # Get base queryset with only approved products
+        queryset = super().get_queryset().filter(status='Approved')
         sort_name = self.request.GET.get('sort_name', '')
         sort_price = self.request.GET.get('sort_price', '')
 
@@ -100,32 +105,35 @@ class ProductDetailView(DetailView):
     template_name = 'product/product_detail.html'
 
     def get_object(self):
-        return get_object_or_404(Product, name=self.kwargs['slug'])
+        # Only allow viewing approved products
+        return get_object_or_404(Product, name=self.kwargs['slug'], status='Approved')
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'product/productadd.html'
     fields = ['name', 'cost', 'feedback', 'details', 'image', 'stock']
-    success_url = reverse_lazy('KnowYourHair-product')  # Redirect to list view after creation
+    success_url = reverse_lazy('KnowYourHair-product')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.status = 'Pending'  # Set initial status as Pending
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     fields = ['name', 'cost', 'feedback', 'details', 'image', 'stock']
     template_name = 'product/productadd.html'
 
-    def form_valid(self, form):  # setting the form author to the current logged in user
+    def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.status = 'Pending'  # Reset status to Pending after update
         return super().form_valid(form)
 
-    def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
-        product = self.get_object()  # get the post trying to update
-        if self.request.user == product.author:  # check if the current user is the author of the post
+    def test_func(self):
+        product = self.get_object()
+        if self.request.user == product.author:
             return True
         return False
 
@@ -133,10 +141,10 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'product/product_confirm_delete.html'
-    success_url = '/product'  # redirect to product page after deleting the product
+    success_url = '/product'
 
-    def test_func(self):  # UserPassesTestMixin - to check if the current user is the author of the post
-        post = self.get_object()  # get the post trying to update
-        if self.request.user == post.author:  # check if the current user is the author of the post
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
             return True
         return False

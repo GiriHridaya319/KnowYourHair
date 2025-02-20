@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="container">
-    <div class="title">PRODUCT LIST</div>
+    <div class="title">APPROVED PRODUCTS</div>
 
      <form method="post" action="{% url 'product-search' %}" enctype="multipart/form-data" id="searchForm">
         {% csrf_token %}
@@ -64,19 +64,21 @@
         <div class="title">Search Results</div>
         <div class="listProduct">
             {% for product in searched %}
-                <a href="{% url 'recom-product-detail' product.slug %}" class="item">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    <div class="item-content">
-                        <h2>{{ product.name |truncatewords:10 }}</h2>
-                        <div class="separator-box"></div>
-                        <div class="price">NRs. {{ product.cost }}</div>
-                        {% if product.stock > 0 %}
-                            <div class="stock-badge">In Stock</div>
-                        {% else %}
-                            <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
-                        {% endif %}
-                    </div>
-                </a>
+                {% if product.status == 'Approved' %}
+                    <a href="{% url 'recom-product-detail' product.slug %}" class="item">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <div class="item-content">
+                            <h2>{{ product.name |truncatewords:10 }}</h2>
+                            <div class="separator-box"></div>
+                            <div class="price">NRs. {{ product.cost }}</div>
+                            {% if product.stock > 0 %}
+                                <div class="stock-badge">In Stock</div>
+                            {% else %}
+                                <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
     {% endif %}
@@ -84,19 +86,21 @@
     {% if not searched %}
         <div class="listProduct">
             {% for product in products %}
-                <a href="{% url 'recom-product-detail' product.slug %}" class="item">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    <div class="item-content">
-                        <h2>{{ product.name |truncatewords:10 }}</h2>
-                        <div class="separator-box"></div>
-                        <div class="price">NRs. {{ product.cost }}</div>
-                        {% if product.stock > 0 %}
-                            <div class="stock-badge">In Stock</div>
-                        {% else %}
-                            <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
-                        {% endif %}
-                    </div>
-                </a>
+                {% if product.status == 'Approved' %}
+                    <a href="{% url 'recom-product-detail' product.slug %}" class="item">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <div class="item-content">
+                            <h2>{{ product.name |truncatewords:10 }}</h2>
+                            <div class="separator-box"></div>
+                            <div class="price">NRs. {{ product.cost }}</div>
+                            {% if product.stock > 0 %}
+                                <div class="stock-badge">In Stock</div>
+                            {% else %}
+                                <div class="stock-badge" style="background-color: #ffeeee; color: #e74c3c;">Out of Stock</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
     {% endif %}
@@ -124,7 +128,6 @@
     </div>
 {% endif %}
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('filterOptions').style.display = 'none';
@@ -138,7 +141,5 @@ function toggleFilter() {
 function handleSort() {
     document.getElementById('searchForm').submit();
 }
-
-
 </script>
 {% endblock %}
