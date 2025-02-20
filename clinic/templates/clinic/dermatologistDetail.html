@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block dermatologistDetail_page_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'clinic/css/dermatologistDetail.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="dermatologist-detail-container">
+        <div class="dermatologist-profile">
+            <div class="profile-header">
+                <div class="profile-image">
+                    {% if dermatologist.image %}
+                        <img src="{{ dermatologist.image.url }}" alt="Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}">
+                    {% else %}
+                        <img src="/api/placeholder/400/400" alt="Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}">
+                    {% endif %}
+                </div>
+                <div class="profile-info">
+                    <h1>Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}</h1>
+                    <div class="experience-badge">{{ dermatologist.total_experience }} Years Experience</div>
+                    <div class="contact-info">
+                        <p>📞 {{ dermatologist.phoneNum }}</p>
+                    </div>
+                    <div class="clinic-info">
+                        <h3>Practicing at:</h3>
+                        <a href="{% url 'clinic-detail' dermatologist.clinic.id %}" class="clinic-link">
+                            {{ dermatologist.clinic.name }}
+                        </a>
+                        {% if dermatologist.clinic.status == 'Approved' %}
+                            <span class="clinic-status approved">Verified Clinic</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-about">
+                <h2>About Dr. {{ dermatologist.last_name }}</h2>
+                <p>{{ dermatologist.About }}</p>
+            </div>
+
+            {% if related_dermatologists %}
+            <div class="related-dermatologists">
+                <h2>Other Dermatologists at {{ dermatologist.clinic.name }}</h2>
+                <div class="related-cards">
+                    {% for related in related_dermatologists %}
+                        <div class="related-card">
+                            <a href="{% url 'dermatologist-detail' related.id %}">
+                                <div class="related-image">
+                                    {% if related.image %}
+                                        <img src="{{ related.image.url }}" alt="Dr. {{ related.first_name }} {{ related.last_name }}">
+                                    {% else %}
+                                        <img src="/api/placeholder/200/200" alt="Dr. {{ related.first_name }} {{ related.last_name }}">
+                                    {% endif %}
+                                </div>
+                                <h3>Dr. {{ related.first_name }} {{ related.last_name }}</h3>
+                                <p>{{ related.total_experience }} Years Experience</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

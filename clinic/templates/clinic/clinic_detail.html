@@ -46,6 +46,9 @@
                 <p>{{ object.phoneNum }}</p>
             </div>
         </div>
+        <div class="action-buttons">
+            <a href="{% url 'dermatologist-view' %}" class="action-btn edit">Dermatologist </a>
+        </div>
 
         {% if user == object.author %}
         <div class="action-buttons">

@@ -1,0 +1,204 @@
+:root {
+    --primary-blue: #1e3d59;
+    --primary-orange: #ff6e40;
+    --light-orange: #fff0eb;
+    --gradient-bg: linear-gradient(135deg, var(--primary-blue), #2d5d8b);
+}
+
+.header {
+    background: var(--primary-blue);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.container-derma {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 2rem;
+}
+
+.doctor-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.doctor-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+
+.doctor-image {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.doctor-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doctor-info {
+    padding: 2rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.doctor-name {
+    color: var(--primary-blue);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.doctor-contact {
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.doctor-experience {
+    background: var(--light-orange);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+.doctor-about {
+    color: #444;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+}
+
+.doctor-clinic {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.clinic-link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.clinic-link:hover {
+    background: var(--light-orange);
+    color: var(--primary-orange);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.action-buttons a {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.view-profile {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.view-profile:hover {
+    background: #2d5d8b;
+    transform: translateY(-2px);
+}
+
+.visit-clinic {
+    background: var(--primary-orange);
+    color: white;
+}
+
+.visit-clinic:hover {
+    background: #ff825b;
+    transform: translateY(-2px);
+}
+
+.clinic-status {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.clinic-status.approved {
+    background: #48bb78;
+    color: white;
+}
+
+.clinic-status.approved::before {
+    content: "✓";
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .doctor-card {
+        flex-direction: column;
+    }
+
+    .doctor-image {
+        width: 100%;
+        height: 250px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .doctor-info {
+        padding: 1.5rem;
+    }
+
+    .doctor-name {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+    }
+
+    .container-derma {
+        padding: 0 1rem;
+    }
+}

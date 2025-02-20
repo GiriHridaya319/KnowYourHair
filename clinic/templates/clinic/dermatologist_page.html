@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block dermatologist_page_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'clinic/css/dermatologist_page.css' %}">
+{% endblock %}
+
+{% block search_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/searchBar.css' %}">
+{% endblock %}
+
+{% block content %}
+    <header class="header">
+        <h1>Meet Our Expert Dermatologists</h1>
+        <p>World-class skin care specialists at your service</p>
+    </header>
+
+    <div class="container-derma">
+        <div class="doctor-cards">
+            {% for dermatologist in dermatologists %}
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        {% if dermatologist.image %}
+                            <img src="{{ dermatologist.image.url }}" alt="Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}">
+                        {% else %}
+                            <img src="/api/placeholder/250/300" alt="Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}">
+                        {% endif %}
+                    </div>
+                    <div class="doctor-info">
+                        <h2 class="doctor-name">Dr. {{ dermatologist.first_name }} {{ dermatologist.last_name }}</h2>
+                        <div class="doctor-contact">📞 {{ dermatologist.phoneNum }}</div>
+                        <div class="doctor-clinic">
+                            <span>🏥 Practicing at:</span>
+                            <a href="{% url 'clinic-detail' dermatologist.clinic.id %}" class="clinic-link">
+                                {{ dermatologist.clinic.name }}
+                            </a>
+                        </div>
+                        <p class="doctor-about">{{ dermatologist.About|truncatewords:20 }}</p>
+                        <div class="action-buttons">
+                            <a href="{% url 'dermatologist-detail' dermatologist.id %}" class="view-profile">View Full Profile</a>
+                            <a href="{% url 'clinic-detail' dermatologist.clinic.id %}" class="visit-clinic">Visit Clinic</a>
+                        </div>
+                        {% if dermatologist.clinic.status == 'Approved' %}
+                            <div class="clinic-status approved">Verified Clinic</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No dermatologists found.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

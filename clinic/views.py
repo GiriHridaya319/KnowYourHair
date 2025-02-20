@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Clinic
+from .models import Clinic, Dermatologist
 
 
 def ClinicSearch(request):
@@ -82,3 +82,24 @@ class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:  # check if the current user is the author of the post
             return True
         return False
+
+
+class DermatologistListView(ListView):
+    model = Dermatologist
+    template_name = 'clinic/dermatologist_page.html'
+    context_object_name = 'dermatologists'
+    ordering = ['-total_experience']
+
+
+class DermatologistDetailView(DetailView):
+    model = Dermatologist
+    template_name = 'clinic/dermatologistDetail.html'
+    context_object_name = 'dermatologist'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add additional context if needed
+        context['related_dermatologists'] = Dermatologist.objects.filter(
+            clinic=self.object.clinic
+        ).exclude(id=self.object.id)[:3]  # Get up to 3 related dermatologists from the same clinic
+        return context

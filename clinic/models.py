@@ -48,13 +48,12 @@ class Dermatologist(models.Model):
     last_name = models.CharField(max_length=100)
     About = models.TextField()
     image = models.ImageField(upload_to='dermatologist_images/', blank=True, null=True)
-    Specialization = models.CharField(max_length=100)
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="dermatologists")
     phoneNum = models.CharField(max_length=100)
     total_experience = models.IntegerField()
 
     def __str__(self):
-        return f"{self.name} - {self.status}"
+        return f"{self.first_name} - {self.last_name}"
 
     def get_absolute_url(self):
         return reverse('dermatologist-detail', kwargs={'pk': self.pk})
