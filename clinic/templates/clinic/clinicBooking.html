@@ -3,10 +3,10 @@
 
 {% block clinicBooking_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'clinic/css/clinicBooking.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
 {% endblock %}
 
 {% block content %}
-
 <div class="container-booking">
     <h1>Book Your Appointment</h1>
 
@@ -17,7 +17,7 @@
         <div class="step-indicator">3</div>
     </div>
 
-    <form id="bookingForm" method="post">
+    <form id="bookingForm" method="POST">
         {% csrf_token %}
         <div class="form-container">
             <!-- Step 1: Personal Information -->
@@ -27,21 +27,15 @@
                         <label class="required" for="first_name">First Name</label>
                         <div class="input-with-icon">
                             <i class="fas fa-user"></i>
-                            {{ form.first_name }}
+                            <input type="text" id="first_name" name="first_name" required>
                         </div>
-                        {% if form.first_name.errors %}
-                        <div class="error-message">{{ form.first_name.errors }}</div>
-                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label class="required" for="last_name">Last Name</label>
                         <div class="input-with-icon">
                             <i class="fas fa-user"></i>
-                            {{ form.last_name }}
+                            <input type="text" id="last_name" name="last_name" required>
                         </div>
-                        {% if form.last_name.errors %}
-                        <div class="error-message">{{ form.last_name.errors }}</div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -50,21 +44,15 @@
                         <label class="required" for="email">Email</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            {{ form.email }}
+                            <input type="email" id="email" name="email" required>
                         </div>
-                        {% if form.email.errors %}
-                        <div class="error-message">{{ form.email.errors }}</div>
-                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            {{ form.phone }}
+                            <input type="tel" id="phone" name="phone">
                         </div>
-                        {% if form.phone.errors %}
-                        <div class="error-message">{{ form.phone.errors }}</div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -82,21 +70,22 @@
                         <label class="required" for="country">Country</label>
                         <div class="input-with-icon">
                             <i class="fas fa-globe"></i>
-                            {{ form.country }}
+                            <input type="text" id="country" name="country" required>
                         </div>
-                        {% if form.country.errors %}
-                        <div class="error-message">{{ form.country.errors }}</div>
-                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label class="required" for="clinic">Select Clinic</label>
                         <div class="input-with-icon">
                             <i class="fas fa-hospital"></i>
-                            {{ form.clinic }}
+                            <select id="clinic" name="clinic" required onchange="updateDermatologists(this.value)">
+                                <option value="">Choose a clinic...</option>
+                                {% for clinic in clinics %}
+                                    <option value="{{ clinic.id }}" {% if selected_clinic == clinic.id %}selected{% endif %}>
+                                        {{ clinic.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        {% if form.clinic.errors %}
-                        <div class="error-message">{{ form.clinic.errors }}</div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -105,21 +94,20 @@
                         <label class="required" for="dermatologist">Select Dermatologist</label>
                         <div class="input-with-icon">
                             <i class="fas fa-user-md"></i>
-                            {{ form.dermatologist }}
+                            <select id="dermatologist" name="dermatologist" required>
+                                <option value="">Choose a dermatologist...</option>
+                                {% for dermatologist in dermatologists %}
+                                    <option value="{{ dermatologist.id }}">{{ dermatologist.first_name }} {{ dermatologist.last_name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        {% if form.dermatologist.errors %}
-                        <div class="error-message">{{ form.dermatologist.errors }}</div>
-                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label class="required" for="appointment_time">Appointment Date & Time</label>
                         <div class="input-with-icon">
                             <i class="fas fa-calendar-alt"></i>
-                            {{ form.appointment_time }}
+                            <input type="text" id="appointment_time" name="appointment_time" required>
                         </div>
-                        {% if form.appointment_time.errors %}
-                        <div class="error-message">{{ form.appointment_time.errors }}</div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -139,19 +127,13 @@
                     <label class="required" for="subject">Subject</label>
                     <div class="input-with-icon">
                         <i class="fas fa-heading"></i>
-                        {{ form.subject }}
+                        <input type="text" id="subject" name="subject" required>
                     </div>
-                    {% if form.subject.errors %}
-                    <div class="error-message">{{ form.subject.errors }}</div>
-                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="message">Message</label>
-                    {{ form.message }}
-                    {% if form.message.errors %}
-                    <div class="error-message">{{ form.message.errors }}</div>
-                    {% endif %}
+                    <textarea id="message" name="message" placeholder="Please describe your concern..."></textarea>
                 </div>
 
                 <div class="buttons">
@@ -167,9 +149,25 @@
     </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 <script>
     let currentStep = 1;
     const totalSteps = 3;
+
+    // Initialize flatpickr for date/time picker
+    flatpickr("#appointment_time", {
+        enableTime: true,
+        minTime: "09:00",
+        maxTime: "18:00",
+        minDate: "today",
+        dateFormat: "Y-m-d H:i",
+        disable: [
+            function(date) {
+                // Disable weekends
+                return date.getDay() === 0 || date.getDay() === 6;
+            }
+        ]
+    });
 
     function updateProgress() {
         const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
@@ -211,27 +209,20 @@
         }
     }
 
-    // Form validation before submission
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Validate all required fields
-        const form = this;
-        const isValid = form.checkValidity();
+    function updateDermatologists(clinicId) {
+        if (clinicId) {
+            // Reload the page with the selected clinic
+            window.location.href = `?clinic=${clinicId}`;
+        }
+    }
 
-        if (isValid) {
-            form.submit();
-        } else {
-            // Show the step with invalid fields
-            const invalidInputs = form.querySelectorAll(':invalid');
-            if (invalidInputs.length > 0) {
-                const step = invalidInputs[0].closest('.form-step');
-                const stepNumber = parseInt(step.dataset.step);
-                currentStep = stepNumber;
-                showStep(stepNumber);
-                updateProgress();
-            }
+    // Set the selected clinic value after page reload
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clinicId = urlParams.get('clinic');
+        if (clinicId) {
+            document.getElementById('clinic').value = clinicId;
         }
     });
 </script>
-
 {% endblock content %}

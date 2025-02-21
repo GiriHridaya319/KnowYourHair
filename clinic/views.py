@@ -163,6 +163,7 @@ class ClinicBooking(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+
         # Add Bootstrap classes and placeholders
         for field_name, field in form.fields.items():
             field.widget.attrs.update({
@@ -170,36 +171,27 @@ class ClinicBooking(LoginRequiredMixin, CreateView):
                 'id': field_name
             })
 
-            # Add datepicker attributes to appointment_time field
-            if field_name == 'appointment_time':
-                field.widget.attrs.update({
-                    'class': 'form-control flatpickr',
-                })
-
-            # If there's a clinic selected, filter dermatologists
-            if self.request.GET.get('clinic'):
-                if field_name == 'dermatologist':
-                    field.queryset = Dermatologist.objects.filter(
-                        clinic_id=self.request.GET.get('clinic')
-                    )
         return form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get all approved clinics
+        context['clinics'] = Clinic.objects.filter(status='Approved')
+
+        # Get the selected clinic from GET parameters
+        selected_clinic = self.request.GET.get('clinic')
+        context['selected_clinic'] = selected_clinic
+
+        # Filter dermatologists based on selected clinic
+        if selected_clinic:
+            context['dermatologists'] = Dermatologist.objects.filter(clinic_id=selected_clinic)
+        else:
+            context['dermatologists'] = Dermatologist.objects.none()
+
+        return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.status = 'pending'
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['clinics'] = Clinic.objects.filter(status='Approved')
-
-        # If clinic is selected, get its dermatologists
-        clinic_id = self.request.GET.get('clinic')
-        if clinic_id:
-            context['dermatologists'] = Dermatologist.objects.filter(
-                clinic_id=clinic_id
-            ).select_related('clinic')
-        else:
-            context['dermatologists'] = Dermatologist.objects.none()
-
-        return context
