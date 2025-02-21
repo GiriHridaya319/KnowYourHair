@@ -40,9 +40,7 @@
                             <a href="{% url 'dermatologist-detail' dermatologist.id %}" class="view-profile">View Full Profile</a>
                             <a href="{% url 'clinic-detail' dermatologist.clinic.id %}" class="visit-clinic">Visit Clinic</a>
                         </div>
-                        {% if dermatologist.clinic.status == 'Approved' %}
-                            <div class="clinic-status approved">Verified Clinic</div>
-                        {% endif %}
+
                     </div>
                 </div>
             {% empty %}

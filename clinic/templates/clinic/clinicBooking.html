@@ -7,222 +7,146 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-booking">
-    <h1>Book Your Appointment</h1>
-
-    <div class="progress-bar">
-        <div class="progress" style="width: 0%"></div>
-        <div class="step-indicator active">1</div>
-        <div class="step-indicator">2</div>
-        <div class="step-indicator">3</div>
+<div class="booking-container">
+    <div class="booking-header">
+        <h1>Clinic Booking</h1>
+        <p>Schedule your appointment with our expert dermatologists</p>
     </div>
+        <div class="steps-container">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-title">Personal Info</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-title">Appointment</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-title">Details</div>
+            </div>
+        </div>
 
-    <form id="bookingForm" method="POST">
-        {% csrf_token %}
-        <div class="form-container">
-            <!-- Step 1: Personal Information -->
-            <div class="form-step active" data-step="1">
-                <div class="form-row">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="forms-container">
+                <!-- Step 1: Personal Information -->
+                <div class="form-step" id="step1">
                     <div class="form-group">
-                        <label class="required" for="first_name">First Name</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="first_name" name="first_name" required>
-                        </div>
+                        <label for="first_name">First Name*</label>
+                        <input type="text" id="first_name" name="first_name" required>
                     </div>
                     <div class="form-group">
-                        <label class="required" for="last_name">Last Name</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="last_name" name="last_name" required>
-                        </div>
+                        <label for="last_name">Last Name*</label>
+                        <input type="text" id="last_name" name="last_name" required>
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
-                        <label class="required" for="email">Email</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="email" name="email" required>
-                        </div>
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" id="phone" name="phone">
-                        </div>
+                        <input type="tel" id="phone" name="phone">
                     </div>
                 </div>
 
-                <div class="buttons">
-                    <button type="button" class="btn-next" onclick="nextStep(1)">
-                        Next <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 2: Location & Doctor -->
-            <div class="form-step" data-step="2">
-                <div class="form-row">
+                <!-- Step 2: Appointment Details -->
+                <div class="form-step" id="step2">
                     <div class="form-group">
-                        <label class="required" for="country">Country</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-globe"></i>
-                            <input type="text" id="country" name="country" required>
-                        </div>
+                        <label for="clinic">Clinic</label>
+                        <input type="text" id="clinic" value="{{ clinic.name }}" readonly>
                     </div>
                     <div class="form-group">
-                        <label class="required" for="clinic">Select Clinic</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-hospital"></i>
-                            <select id="clinic" name="clinic" required onchange="updateDermatologists(this.value)">
-                                <option value="">Choose a clinic...</option>
-                                {% for clinic in clinics %}
-                                    <option value="{{ clinic.id }}" {% if selected_clinic == clinic.id %}selected{% endif %}>
-                                        {{ clinic.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="required" for="dermatologist">Select Dermatologist</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user-md"></i>
-                            <select id="dermatologist" name="dermatologist" required>
-                                <option value="">Choose a dermatologist...</option>
-                                {% for dermatologist in dermatologists %}
-                                    <option value="{{ dermatologist.id }}">{{ dermatologist.first_name }} {{ dermatologist.last_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <label for="dermatologist">Select Dermatologist*</label>
+                        <select id="dermatologist" name="dermatologist" required>
+                            <option value="">Choose a dermatologist...</option>
+                            {% for derm in dermatologists %}
+                                <option value="{{ derm.id }}">{{ derm.first_name }} {{ derm.last_name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label class="required" for="appointment_time">Appointment Date & Time</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                            <input type="text" id="appointment_time" name="appointment_time" required>
-                        </div>
+                        <label for="appointment_time">Appointment Date & Time*</label>
+                        <input type="datetime-local" id="appointment_time" name="appointment_time" required>
                     </div>
                 </div>
 
-                <div class="buttons">
-                    <button type="button" class="btn-prev" onclick="prevStep(2)">
-                        <i class="fas fa-arrow-left"></i> Previous
-                    </button>
-                    <button type="button" class="btn-next" onclick="nextStep(2)">
-                        Next <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 3: Additional Information -->
-            <div class="form-step" data-step="3">
-                <div class="form-group">
-                    <label class="required" for="subject">Subject</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-heading"></i>
+                <!-- Step 3: Additional Details -->
+                <div class="form-step" id="step3">
+                    <div class="form-group">
+                        <label for="subject">Subject*</label>
                         <input type="text" id="subject" name="subject" required>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" placeholder="Please describe your concern..."></textarea>
-                </div>
-
-                <div class="buttons">
-                    <button type="button" class="btn-prev" onclick="prevStep(3)">
-                        <i class="fas fa-arrow-left"></i> Previous
-                    </button>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-check"></i> Book Appointment
-                    </button>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="4"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
-<script>
-    let currentStep = 1;
-    const totalSteps = 3;
+            <div class="form-navigation">
+                <button type="button" class="btn btn-prev" onclick="prevStep()" style="display: none;">Previous</button>
+                <button type="button" class="btn btn-next" onclick="nextStep()">Next</button>
+                <button type="submit" class="btn btn-submit" style="display: none;">Book Appointment</button>
+            </div>
+        </form>
+    </div>
 
-    // Initialize flatpickr for date/time picker
-    flatpickr("#appointment_time", {
-        enableTime: true,
-        minTime: "09:00",
-        maxTime: "18:00",
-        minDate: "today",
-        dateFormat: "Y-m-d H:i",
-        disable: [
-            function(date) {
-                // Disable weekends
-                return date.getDay() === 0 || date.getDay() === 6;
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function updateFormDisplay() {
+            const container = document.querySelector('.forms-container');
+            const translateValue = (currentStep - 1) * -33.33;
+            container.style.transform = `translateX(${translateValue}%)`;
+
+            // Update steps
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            // Update buttons
+            const prevButton = document.querySelector('.btn-prev');
+            const nextButton = document.querySelector('.btn-next');
+            const submitButton = document.querySelector('.btn-submit');
+
+            prevButton.style.display = currentStep === 1 ? 'none' : 'block';
+            nextButton.style.display = currentStep === totalSteps ? 'none' : 'block';
+            submitButton.style.display = currentStep === totalSteps ? 'block' : 'none';
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateFormDisplay();
             }
-        ]
-    });
+        }
 
-    function updateProgress() {
-        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-        document.querySelector('.progress').style.width = `${progress}%`;
-
-        document.querySelectorAll('.step-indicator').forEach((step, index) => {
-            if (index + 1 < currentStep) {
-                step.classList.add('complete');
-                step.classList.remove('active');
-            } else if (index + 1 === currentStep) {
-                step.classList.add('active');
-                step.classList.remove('complete');
-            } else {
-                step.classList.remove('active', 'complete');
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateFormDisplay();
             }
-        });
-    }
-
-    function showStep(step) {
-        document.querySelectorAll('.form-step').forEach(s => {
-            s.classList.remove('active');
-        });
-        document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
-    }
-
-    function nextStep(step) {
-        if (step < totalSteps) {
-            currentStep = step + 1;
-            showStep(currentStep);
-            updateProgress();
         }
-    }
 
-    function prevStep(step) {
-        if (step > 1) {
-            currentStep = step - 1;
-            showStep(currentStep);
-            updateProgress();
-        }
-    }
+        // Initialize datetime picker restrictions
+        const appointmentTime = document.getElementById('appointment_time');
+        if (appointmentTime) {
+            // Set min date to today
+            const today = new Date();
+            const minDateTime = today.toISOString().slice(0, 16);
+            appointmentTime.min = minDateTime;
 
-    function updateDermatologists(clinicId) {
-        if (clinicId) {
-            // Reload the page with the selected clinic
-            window.location.href = `?clinic=${clinicId}`;
+            // Set max date to 3 months from now
+            const maxDate = new Date();
+            maxDate.setMonth(maxDate.getMonth() + 3);
+            const maxDateTime = maxDate.toISOString().slice(0, 16);
+            appointmentTime.max = maxDateTime;
         }
-    }
-
-    // Set the selected clinic value after page reload
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const clinicId = urlParams.get('clinic');
-        if (clinicId) {
-            document.getElementById('clinic').value = clinicId;
-        }
-    });
-</script>
+    </script>
 {% endblock content %}

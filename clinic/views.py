@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import request
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
@@ -144,7 +145,7 @@ class AllDermatologistListView(ListView):
         return Dermatologist.objects.all().select_related('clinic')
 
 
-class ClinicBooking(LoginRequiredMixin, CreateView):
+class ClinicBookingView(LoginRequiredMixin, CreateView):
     model = BookingClinic
     template_name = 'clinic/clinicBooking.html'
     fields = [
@@ -153,45 +154,29 @@ class ClinicBooking(LoginRequiredMixin, CreateView):
         'email',
         'phone',
         'country',
-        'clinic',
         'dermatologist',
         'appointment_time',
         'subject',
         'message'
     ]
-    success_url = reverse_lazy('booking_success')
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-
-        # Add Bootstrap classes and placeholders
-        for field_name, field in form.fields.items():
-            field.widget.attrs.update({
-                'class': 'form-control',
-                'id': field_name
-            })
-
-        return form
+    success_url = reverse_lazy('booking-success')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        clinic_id = self.kwargs.get('clinic_id')  # Get clinic ID from URL
 
-        # Get all approved clinics
-        context['clinics'] = Clinic.objects.filter(status='Approved')
-
-        # Get the selected clinic from GET parameters
-        selected_clinic = self.request.GET.get('clinic')
-        context['selected_clinic'] = selected_clinic
-
-        # Filter dermatologists based on selected clinic
-        if selected_clinic:
-            context['dermatologists'] = Dermatologist.objects.filter(clinic_id=selected_clinic)
-        else:
-            context['dermatologists'] = Dermatologist.objects.none()
+        try:
+            clinic = Clinic.objects.get(id=clinic_id)
+            context['clinic'] = clinic
+            context['dermatologists'] = Dermatologist.objects.filter(clinic_id=clinic_id)
+        except Clinic.DoesNotExist:
+            context['clinic'] = None
+            context['dermatologists'] = []
 
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.instance.clinic_id = self.kwargs.get('clinic_id')
         form.instance.status = 'pending'
         return super().form_valid(form)

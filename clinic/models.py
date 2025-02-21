@@ -79,7 +79,7 @@ class BookingClinic(models.Model):
     message = models.TextField(blank=True, null=True)  # Optional notes or reason for the appointment
 
     def __str__(self):
-        return f"Appointment with {self.dermatologist.user.username} on {self.appointment_time}"
+        return f"Appointment with {self.dermatologist.first_name} on {self.appointment_time} in {self.clinic}"
 
     # Automatically calculate whether appointment is today or upcoming
     def is_today(self):
