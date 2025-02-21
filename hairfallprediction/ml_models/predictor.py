@@ -50,9 +50,10 @@ class HairfallPredictor:
             # Only adjust if prediction is less than current age
             if predicted_age < current_age:
                 if risk_level == "High Risk":
-                    predicted_age = current_age + 2  # Immediate risk
+                    predicted_age = current_age + 3  # Immediate risk
                 else:  # Medium Risk
-                    predicted_age = current_age + 5  # Medium-term risk
+                    predicted_age = current_age + 6  # Medium-term
+
 
             # Format age prediction
             age_prediction = {

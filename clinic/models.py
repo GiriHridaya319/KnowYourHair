@@ -87,3 +87,4 @@ class BookingClinic(models.Model):
 
     def is_upcoming(self):
         return self.appointment_time > timezone.now()
+
