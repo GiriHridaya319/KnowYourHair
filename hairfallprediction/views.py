@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -11,8 +12,9 @@ def welcome(request):
     return render(request, 'hairfallprediction/welcomePage.html')
 
 
-def survey(request):
-    return render(request, 'hairfallprediction/survey.html', {'title': 'survey'})
+class SurveyView(LoginRequiredMixin, CreateView):
+    model = Product
+    template_name = 'hairfallprediction/survey.html'
 
 
 # Initialize the predictor and recommender

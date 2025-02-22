@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block BookingSuccess_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'clinic/css/BookingSuccess.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-book">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0 text-center">
+                        <i class="fas fa-check-circle me-2"></i>Booking Successful!
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img src="{% static 'images/success-checkmark.svg' %}" alt="Success" class="mb-3" style="width: 80px;">
+                        <h4 class="text-success">Thank You for Your Booking</h4>
+                    </div>
+
+                    <div class="booking-details bg-light p-4 rounded mb-4">
+                        <h5 class="mb-3">Booking Details</h5>
+                        <div class="row">
+                            <div class="col-md-6 text-start">
+                                <p><strong>Booking ID:</strong> #{{ booking.id }}</p>
+                                <p><strong>Patient Name:</strong> {{ booking.first_name }} {{ booking.last_name }}</p>
+                                <p><strong>Dermatologist:</strong> Dr. {{ booking.dermatologist.first_name }} {{ booking.dermatologist.last_name }}</p>
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <p><strong>Clinic:</strong> {{ booking.clinic.name }}</p>
+                                <p><strong>Date & Time:</strong> {{ booking.appointment_time|date:"F d, Y" }} at {{ booking.appointment_time|time:"g:i A" }}</p>
+                                <p><strong>Status:</strong> <span class="badge bg-warning">Pending Confirmation</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        The clinic will contact you shortly to confirm your appointment.
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'KnowYourHair-clinic' %}" class="btn btn-primary me-2">
+                            <i class="fas fa-home me-1"></i> Return to Homepage
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar me-1"></i> View My Bookings
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

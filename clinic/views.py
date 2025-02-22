@@ -159,7 +159,7 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
         'subject',
         'message'
     ]
-    success_url = reverse_lazy('booking-success')
+    success_url = 'success/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -176,7 +176,30 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.instance.clinic_id = self.kwargs.get('clinic_id')
-        form.instance.status = 'pending'
-        return super().form_valid(form)
+        try:
+            form.instance.user = self.request.user
+            form.instance.clinic_id = self.kwargs.get('clinic_id')
+            form.instance.status = 'pending'
+            return super().form_valid(form)
+        except Exception as e:
+            messages.error(self.request, f'Booking failed: {str(e)}')
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please check your form entries.')
+        return super().form_invalid(form)
+
+
+class BookingSuccessView(LoginRequiredMixin, TemplateView):
+    template_name = 'clinic/booking_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Get the latest booking for this user
+        try:
+            context['booking'] = BookingClinic.objects.filter(
+                user=self.request.user
+            ).latest('id')
+        except BookingClinic.DoesNotExist:
+            context['booking'] = None
+        return context

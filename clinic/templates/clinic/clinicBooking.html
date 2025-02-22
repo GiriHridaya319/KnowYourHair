@@ -27,7 +27,8 @@
             </div>
         </div>
 
-        <form method="POST">
+        <form method="POST" action="{% url 'clinic-booking' clinic.id %}">
+
             {% csrf_token %}
             <div class="forms-container">
                 <!-- Step 1: Personal Information -->
@@ -50,11 +51,18 @@
                     </div>
                 </div>
 
+                <!-- Add this in Step 1 of the form -->
+
+
                 <!-- Step 2: Appointment Details -->
                 <div class="form-step" id="step2">
                     <div class="form-group">
                         <label for="clinic">Clinic</label>
                         <input type="text" id="clinic" value="{{ clinic.name }}" readonly>
+                    </div>
+                    <div class="form-group">
+                    <label for="country">Country*</label>
+                    <input type="text" id="country" name="country" required>
                     </div>
                     <div class="form-group">
                         <label for="dermatologist">Select Dermatologist*</label>
