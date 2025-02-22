@@ -12,9 +12,9 @@ def welcome(request):
     return render(request, 'hairfallprediction/welcomePage.html')
 
 
-class SurveyView(LoginRequiredMixin, CreateView):
-    model = Product
-    template_name = 'hairfallprediction/survey.html'
+def SurveyView(request):
+    return render(request, 'hairfallprediction/survey.html')
+
 
 
 # Initialize the predictor and recommender
