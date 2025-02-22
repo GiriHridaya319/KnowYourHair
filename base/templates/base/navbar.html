@@ -2,25 +2,15 @@
 
 {% block navbar_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'base/css/home.css' %}">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-<!-- Add ScrollReveal -->
-<script src="https://unpkg.com/scrollreveal"></script>
-{% endblock %}
-
-{% block scripts %}
-<script src="{% static 'base/js/main.js' %}"></script>
 {% endblock %}
 
 <nav>
-    <div class="nav__header">
 
+
+    <div class="nav__header ">
         <div class="nav__logo">
-    <a href="{% url 'KnowYourHair-home' %}">
-        <img src="{% static 'base/images/logo.png' %}" alt="KnowYourHair Logo" class="logo-img">
-        </a>
-    <h3> KnowYourHair</h3>
-
-</div>
+            <a href="{% url 'KnowYourHair-home' %}">Know<span>YourHair</span></a>
+        </div>
         <div class="nav__menu__btn" id="menu-btn">
             <span><i class="ri-menu-line"></i></span>
         </div>
@@ -34,25 +24,21 @@
         <li><a href="{% url 'KnowYourHair-blog' %}">Blog</a></li>
         <li><a href="{% url 'KnowYourHair-AboutUs' %}">About Us</a></li>
     </ul>
-        {% if user.is_authenticated %}
-            {% if request.user.is_superuser %}
-                <a href="{% url 'adminDash' %}" class="btn sign__up">Dashboard</a>
-            {% elif request.user.profile.agent %}
-                <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
-            {% elif request.user.profile.customer %}
-                <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
-            {% endif %}
-            <a href="{% url 'logout' %}" class="btn sign__in">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}" class="btn sign__in">Login</a>
-            <a href="{% url 'registration' %}" class="btn sign__up">Register</a>
+  <div class="nav__btns">
+    {% if user.is_authenticated %}
+        {% if request.user.is_superuser %}
+            <a href="{% url 'adminDash' %}" class="btn sign__up">Dashboard</a>
+        {% elif request.user.profile.agent %}
+            <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
+        {% elif request.user.profile.customer %}
+            <a href="{% url 'profile' %}" class="btn sign__up">Profile </a>
         {% endif %}
-    </div>
+        <a href="{% url 'logout' %}" class="btn sign__in">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn sign__in">Login</a>
+        <a href="{% url 'registration' %}" class="btn sign__up">Register</a>
+    {% endif %}
+</div>
 </nav>
 
-<script>
-
-    document.getElementById('menu-btn').addEventListener('click', function() {
-    document.getElementById('nav-links').classList.toggle('show');
-});
-</script>
+<script src="{% static 'base/js/navbar.js' %}"></script>

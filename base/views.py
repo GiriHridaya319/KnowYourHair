@@ -1,8 +1,6 @@
 from django.shortcuts import render
-
-
-def home(request):
-    return render(request, 'base/home.html')
+from hairfallprediction.models import Product
+from django.views.generic import ListView, DetailView, CreateView
 
 
 def hair_fall_prediction(request):
@@ -16,3 +14,8 @@ def blog(request):
 def About(request):
     return render(request, 'base/AboutUs.html', {'title': 'About Us'})
 
+
+class Home(ListView):
+    model = Product
+    template_name = 'base/home.html'
+    context_object_name = 'products'

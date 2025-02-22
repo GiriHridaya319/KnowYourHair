@@ -68,8 +68,76 @@
 
       </div>
     </header>
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script src="{% static 'base/js/main.js' %}"></script>
 
 
+<section class="product-section-feature">
+  <h2 class="product-heading-feature">Featured Products</h2>
+
+  <div class="slider-container-feature">
+    <div class="slider-track-feature">
+      {% for product in products %}
+        {% if product.status == 'Approved' %}
+          <div class="product-card-feature">
+            <a href="{% url 'recom-product-detail' product.slug %}" class="product-link-feature">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image-feature">
+              <h3 class="product-name-feature">{{ product.name |truncatewords:10 }}</h3>
+              <div class="product-price-feature">{{ product.cost }}</div>
+              {% if product.stock > 0 %}
+                <div class="stock-badge-feature">In Stock</div>
+              {% else %}
+                <div class="stock-badge-feature stock-badge-out">Out of Stock</div>
+              {% endif %}
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="nav-buttons-feature">
+    <button class="nav-button-feature prev-btn" aria-label="Previous">←</button>
+    <button class="nav-button-feature next-btn" aria-label="Next">→</button>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const track = document.querySelector('.slider-track-feature');
+  const cards = document.querySelectorAll('.product-card-feature');
+  const prevBtn = document.querySelector('.prev-btn');
+  const nextBtn = document.querySelector('.next-btn');
+
+  let currentIndex = 0;
+  const cardWidth = 304; // 280px + 24px gap
+  const visibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
+  const maxIndex = Math.max(0, cards.length - visibleCards);
+
+  function updateSlider() {
+    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === maxIndex;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = Math.max(currentIndex - 1, 0);
+    updateSlider();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex = Math.min(currentIndex + 1, maxIndex);
+    updateSlider();
+  });
+
+  // Initial update
+  updateSlider();
+
+  // Update on window resize
+  window.addEventListener('resize', () => {
+    const newVisibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
+    const newMaxIndex = Math.max(0, cards.length - newVisibleCards);
+    currentIndex = Math.min(currentIndex, newMaxIndex);
+    updateSlider();
+  });
+});
+</script>
 {% endblock content%}
