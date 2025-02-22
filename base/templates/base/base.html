@@ -17,8 +17,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'product/css/searchBar.css' %}">
 
 
-    {% block login_css %}
-    {% endblock %}
+    {% block login_css %} {% endblock %}
+    {% block navbar_css %} {% endblock %}
+    {% block homes_css %} {% endblock %}
     {% block profile_css %} {% endblock %}
     {% block clinic_css %} {% endblock %}
     {% block product_css %}{% endblock %}
@@ -39,7 +40,6 @@
     {% block dermatologist_page_css %} {% endblock %}
     {% block dermatologistDetail_page_css %} {% endblock %}
     {% block clinicBooking_css %} {% endblock %}
-    {% block scripts %} {% endblock %}
     {% block BookingSuccess_css %} {% endblock %}
 
 
@@ -113,5 +113,8 @@
     </section>
     {% endblock %}
 
+<script src="{% static 'base/js/main.js' %}"></script>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>
