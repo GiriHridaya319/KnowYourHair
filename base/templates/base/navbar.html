@@ -13,12 +13,14 @@
 
 <nav>
     <div class="nav__header">
-        <div class="nav__logo">
-            <a href="{% url 'KnowYourHair-home' %}">
-                <img src="{% static 'base/images/logo.png' %}" alt="KnowYourHair Logo" class="logo-img">
 
-            </a>
-        </div>
+        <div class="nav__logo">
+    <a href="{% url 'KnowYourHair-home' %}">
+        <img src="{% static 'base/images/logo.png' %}" alt="KnowYourHair Logo" class="logo-img">
+        </a>
+    <h3> KnowYourHair</h3>
+
+</div>
         <div class="nav__menu__btn" id="menu-btn">
             <span><i class="ri-menu-line"></i></span>
         </div>
@@ -30,9 +32,8 @@
         <li><a href="{% url 'KnowYourHair-clinic' %}">Clinics</a></li>
         <li><a href="{% url 'dermatologist' %}">Dermatologists</a></li>
         <li><a href="{% url 'KnowYourHair-blog' %}">Blog</a></li>
-        <li><a href="{% url 'KnowYourHair-blog' %}">Contact Us</a></li>
+        <li><a href="{% url 'KnowYourHair-AboutUs' %}">About Us</a></li>
     </ul>
-    <div class="nav__btns">
         {% if user.is_authenticated %}
             {% if request.user.is_superuser %}
                 <a href="{% url 'adminDash' %}" class="btn sign__up">Dashboard</a>

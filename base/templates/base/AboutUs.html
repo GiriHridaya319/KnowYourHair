@@ -1,5 +1,110 @@
-
 {% extends "base/base.html" %}
+
+{% load static %}
+
+{% block aboutUs_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/css/aboutUs.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1> This is the About Us page </h1>
+<header class="header">
+        <h1>KnowYourHair</h1>
+        <p>Your AI-Powered Hair Health Companion</p>
+    </header>
+
+    <div class="stats-banner fade-in">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">80%</div>
+                <div class="stat-label">of men affected by androgenetic alopecia</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50%</div>
+                <div class="stat-label">of women experience hair loss</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">16%</div>
+                <div class="stat-label">of young men (18-29) have moderate to extensive hair loss</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">53%</div>
+                <div class="stat-label">of men aged 40-49 experience hair loss</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="featured-image-section fade-in">
+            <div class="featured-image-container">
+                <img src="{% static 'base/images/Knowyourhair.jpeg' %}" alt="KnowYourHair Logo" class="featured-image">
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">AI-Powered Hair Loss Prevention</h2>
+            <p>
+                KnowYourHair is revolutionizing hair care through advanced AI technology, helping you predict and prevent hair loss before it becomes a concern. Our comprehensive platform combines cutting-edge prediction algorithms with expert dermatological guidance to provide personalized hair care solutions.
+            </p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Risk Prediction</h3>
+                    <p>Advanced AI analysis of genetics, lifestyle, and nutrition to predict your future hair loss risk with personalized timing estimates.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Age Prediction</h3>
+                    <p>Precise estimates of when hair loss might begin for medium and high-risk individuals, enabling early preventive action.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Expert Connection</h3>
+                    <p>Direct access to top dermatologists and clinics, with easy appointment booking and consultation management.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Product Recommendations</h3>
+                    <p>Personalized suggestions for dermatologist-approved hair care products based on your risk profile and preferences.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">How It Works</h2>
+            <div class="mission-text">
+                <p>Our platform uses advanced algorithms to analyze multiple factors affecting hair health:</p>
+                <ul class="features-list">
+                    <li><strong>Comprehensive Analysis:</strong> Evaluation of genetic factors, lifestyle habits, and nutritional intake</li>
+                    <li><strong>Risk Assessment:</strong> Categorization into low, medium, or high-risk groups with specific recommendations</li>
+                    <li><strong>Timeline Prediction:</strong> Estimated age range for potential hair loss onset for at-risk individuals</li>
+                    <li><strong>Expert Guidance:</strong> Direct connection to qualified dermatologists and clinics</li>
+                    <li><strong>Product Access:</strong> Curated selection of proven hair care products and treatments</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">Prevention Through Innovation</h2>
+            <p>
+                Early detection and prevention are crucial in managing hair loss effectively. KnowYourHair empowers you with the tools and knowledge needed to take control of your hair health journey, combining technological innovation with medical expertise to deliver personalized care solutions.
+            </p>
+            <ul class="features-list">
+                <li>AI-powered risk assessment and prediction</li>
+                <li>Personalized prevention strategies and treatment plans</li>
+                <li>Direct access to leading dermatologists and clinics</li>
+                <li>Curated selection of proven hair care products</li>
+                <li>Comprehensive educational resources and support</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
 {% endblock content%}

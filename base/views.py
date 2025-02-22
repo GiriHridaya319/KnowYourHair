@@ -13,3 +13,6 @@ def blog(request):
     return render(request, 'base/Blog.html', {'title': 'Prediction'})
 
 
+def About(request):
+    return render(request, 'base/AboutUs.html', {'title': 'About Us'})
+
