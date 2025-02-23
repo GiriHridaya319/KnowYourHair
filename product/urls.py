@@ -14,10 +14,18 @@ from .views import (
 urlpatterns = [
     path('', ProductListView.as_view(), name='KnowYourHair-product'),
     path('search/', views.ProductSearch, name='product-search'),
-    path('<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
     path('new/', ProductCreateView.as_view(), name='product-create'),
-    path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
+    path('<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
     path('<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
+
+    # Cart URLs before the catch-all slug pattern
+    path('cart/', views.cart_detail, name='cart_detail'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/update/', views.update_cart, name='update_cart'),
+
+    # Move the catch-all slug pattern to the end
+    path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
 ]
 
 if settings.DEBUG:

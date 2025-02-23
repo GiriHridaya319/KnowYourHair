@@ -35,10 +35,14 @@
                 </div>
             </div>
 
-            <div class="product-actions">
-                <button class="btn btn-primary">Add to Cart</button>
-                <button class="btn btn-secondary">Add to Wishlist</button>
-            </div>
+            <!-- Replace your existing button with this -->
+        <div class="product-actions">
+            <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+            <button class="btn btn-secondary">Add to Wishlist</button>
+        </div>
         </div>
         {% if user == product.author %}
 <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">

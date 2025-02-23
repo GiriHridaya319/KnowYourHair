@@ -1,5 +1,9 @@
+from decimal import Decimal
+
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -148,3 +152,121 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+
+
+# cart and order
+
+def get_cart(request):
+    """Get or initialize the cart in session"""
+    return request.session.get('cart', {})
+
+
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id, status='Approved')
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id, status='Approved')
+        cart = get_cart(request)
+
+        # Check stock
+        current_quantity = int(cart.get(str(product_id), {}).get('quantity', 0))
+        if current_quantity + 1 > product.stock:
+            messages.error(request, 'Not enough stock available')
+            return redirect('recom-product-detail', slug=product.slug)
+
+        # Add to cart
+        if str(product_id) in cart:
+            cart[str(product_id)]['quantity'] += 1
+        else:
+            cart[str(product_id)] = {
+                'name': product.name,
+                'price': str(product.cost),
+                'quantity': 1,
+                'image': product.image.url
+            }
+
+        request.session['cart'] = cart
+        messages.success(request, 'Product added to cart')
+        return redirect('cart_detail')  # This should match the URL name
+
+    return redirect('recom-product-detail', slug=product.slug)
+
+
+@login_required
+def remove_from_cart(request, product_id):
+    cart = get_cart(request)
+    if str(product_id) in cart:
+        del cart[str(product_id)]
+        request.session['cart'] = cart
+        messages.success(request, 'Product removed from cart')
+
+    return redirect('cart_detail')
+
+
+@login_required
+def update_cart(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        quantity = int(request.POST.get('quantity', 0))
+
+        if quantity < 0:
+            return JsonResponse({'error': 'Invalid quantity'}, status=400)
+
+        product = get_object_or_404(Product, id=product_id, status='Approved')
+
+        # Check stock availability
+        if quantity > product.stock:
+            return JsonResponse({
+                'error': 'Not enough stock available',
+                'available_stock': product.stock
+            }, status=400)
+
+        cart = get_cart(request)
+
+        if quantity == 0:
+            if str(product_id) in cart:
+                del cart[str(product_id)]
+        else:
+            cart[str(product_id)] = {
+                'name': product.name,
+                'price': str(product.cost),
+                'quantity': quantity,
+                'image': product.image.url
+            }
+
+        request.session['cart'] = cart
+
+        cart_total = sum(
+            Decimal(item['price']) * item['quantity']
+            for item in cart.values()
+        )
+
+        return JsonResponse({
+            'success': True,
+            'cart_total': float(cart_total)
+        })
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_required
+def cart_detail(request):
+    cart = get_cart(request)
+    cart_items = []
+    total = Decimal('0.00')
+
+    for product_id, item in cart.items():
+        product = get_object_or_404(Product, id=product_id, status='Approved')
+        subtotal = Decimal(item['price']) * item['quantity']
+        total += subtotal
+
+        cart_items.append({
+            'product': product,
+            'quantity': item['quantity'],
+            'subtotal': subtotal
+        })
+
+    return render(request, 'product/cart.html', {
+        'cart_items': cart_items,
+        'total': total
+    })

@@ -53,6 +53,17 @@ nav {
   color: var(--white);
 }
 
+.nav__logo {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center the logo */
+}
+
+.logo-image {
+    width: 80px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensure the image is treated as a block element */
+}
+
 .nav__menu__btn {
   font-size: 1.5rem;
   color: var(--white);
@@ -293,6 +304,7 @@ nav {
     gap: 2rem;
   }
 
+
   .nav__header {
     flex: 1;
     padding: 0;
@@ -397,6 +409,7 @@ nav {
   --secondary-orange: #ff9e80;
   --light-blue: #f5f9ff;
 }
+
 
 .product-section-feature {
   max-width: 1400px;
@@ -553,4 +566,18 @@ nav {
   .product-heading-feature {
     font-size: 28px;
   }
+}
+
+.cart-icon {
+    display: inline-flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center the image and text */
+    min-width: 24px; /* Ensure the container has a minimum width */
+    min-height: 24px; /* Ensure the container has a minimum height */
+    text-decoration: none; /* Remove underline from link */
+}
+
+.cart-image {
+    width: 60px; /* Set a fixed width */
+    height: 60px; /* Set a fixed height */
+    display: block; /* Ensure the image is treated as a block element */
 }

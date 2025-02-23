@@ -29,27 +29,5 @@
         </div>
 
 
-    <script>
-        // Function to handle the 'Add to Cart' action
-        function addToCart(productId) {
-            // Assuming you have a cart system in place
-            fetch(`/add-to-cart/${productId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token for security
-                },
-                body: JSON.stringify({ productId: productId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Product added to cart!");
-                } else {
-                    alert("Error adding product to cart.");
-                }
-            });
-        }
-    </script>
 
 {% endblock %}

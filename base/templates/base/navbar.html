@@ -7,14 +7,16 @@
 <nav>
 
 
-    <div class="nav__header ">
-        <div class="nav__logo">
-            <a href="{% url 'KnowYourHair-home' %}">Know<span>YourHair</span></a>
-        </div>
-        <div class="nav__menu__btn" id="menu-btn">
-            <span><i class="ri-menu-line"></i></span>
-        </div>
+    <div class="nav__header">
+    <div class="nav__logo">
+        <a href="{% url 'KnowYourHair-home' %}">
+            <img src="{% static 'base/images/logo.png' %}" alt="KnowYourHair Logo" class="logo-image">
+        </a>
     </div>
+    <div class="nav__menu__btn" id="menu-btn">
+        <span><i class="ri-menu-line"></i></span>
+    </div>
+</div>
     <ul class="nav__links" id="nav-links">
         <li class="active"><a href="{% url 'KnowYourHair-home' %}">Home</a></li>
         <li><a href="{% url 'KnowYourHair-hairfallprediction' %}">HairFall</a></li>
@@ -23,6 +25,7 @@
         <li><a href="{% url 'dermatologist' %}">Dermatologists</a></li>
         <li><a href="{% url 'KnowYourHair-blog' %}">Blog</a></li>
         <li><a href="{% url 'KnowYourHair-AboutUs' %}">About Us</a></li>
+
     </ul>
   <div class="nav__btns">
     {% if user.is_authenticated %}
@@ -31,7 +34,12 @@
         {% elif request.user.profile.agent %}
             <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
         {% elif request.user.profile.customer %}
-            <a href="{% url 'profile' %}" class="btn sign__up">Profile </a>
+            <a href="{% url 'cart_detail' %}" class="cart-icon">
+                <img src="{% static 'base/images/cart.png' %}" alt="Cart" class="cart-image">
+                <!-- Optional: Add text if needed -->
+                <!-- <span class="cart-text">Cart</span> -->
+            </a>
+            <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
         {% endif %}
         <a href="{% url 'logout' %}" class="btn sign__in">Logout</a>
     {% else %}
@@ -39,6 +47,5 @@
         <a href="{% url 'registration' %}" class="btn sign__up">Register</a>
     {% endif %}
 </div>
-</nav>
 
-<script src="{% static 'base/js/navbar.js' %}"></script>
+</nav>

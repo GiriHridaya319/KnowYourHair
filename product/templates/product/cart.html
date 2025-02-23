@@ -1,0 +1,179 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block cart_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/cart.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h1 class="cart-title">Your Shopping Cart</h1>
+        <span class="cart-count">{{ cart_items|length }} Items</span>
+    </div>
+
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item" data-product-id="{{ item.product.id }}">
+            <div class="item-image">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+            </div>
+            <div class="item-details">
+                <div class="item-name">{{ item.product.name }}</div>
+                <div class="item-meta">Stock: {{ item.product.stock }} available</div>
+                <div class="item-price">₹{{ item.product.cost }}</div>
+                <div class="item-quantity">
+                    <button class="quantity-btn decrease-qty">-</button>
+                    <input type="number" 
+                           class="quantity-input" 
+                           value="{{ item.quantity }}"
+                           min="1"
+                           max="{{ item.product.stock }}"
+                           data-price="{{ item.product.cost }}"
+                           data-stock="{{ item.product.stock }}">
+                    <button class="quantity-btn increase-qty">+</button>
+                </div>
+            </div>
+            <button class="remove-btn" data-product-id="{{ item.product.id }}">Remove Item</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹<span id="subtotal">{{ total }}</span></span>
+        </div>
+        <div class="summary-row total-row">
+            <span>Total</span>
+            <span>₹<span id="total">{{ total }}</span></span>
+        </div>
+    </div>
+
+    <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    {% else %}
+    <div style="text-align: center; padding: 40px;">
+        <p style="font-size: 18px; color: var(--primary-blue); margin-bottom: 20px;">Your cart is empty</p>
+        <a href="{% url 'KnowYourHair-product' %}" class="checkout-btn" style="display: inline-block; text-decoration: none;">
+            Continue Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // CSRF token setup for AJAX requests
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Quantity update function
+    async function updateQuantity(productId, quantity, input) {
+        try {
+            const response = await fetch('{% url "update_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: `product_id=${productId}&quantity=${quantity}`
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                if (data.available_stock) {
+                    input.value = data.available_stock;
+                }
+                return;
+            }
+            
+            // Update totals
+            document.getElementById('subtotal').textContent = data.cart_total.toFixed(2);
+            document.getElementById('total').textContent = data.cart_total.toFixed(2);
+            
+            // Update cart count
+            document.querySelector('.cart-count').textContent = 
+                `${document.querySelectorAll('.cart-item').length} Items`;
+            
+            // Remove item if quantity is 0
+            if (quantity === 0) {
+                const cartItem = input.closest('.cart-item');
+                cartItem.remove();
+                
+                // Reload if cart is empty
+                if (document.querySelectorAll('.cart-item').length === 0) {
+                    location.reload();
+                }
+            }
+        } catch (error) {
+            console.error('Error updating cart:', error);
+            alert('Error updating cart. Please try again.');
+        }
+    }
+
+    // Setup quantity controls for each item
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const input = item.querySelector('.quantity-input');
+        const productId = item.dataset.productId;
+        const maxStock = parseInt(input.dataset.stock);
+
+        // Decrease quantity
+        item.querySelector('.decrease-qty').addEventListener('click', () => {
+            const newQty = Math.max(0, parseInt(input.value) - 1);
+            input.value = newQty;
+            updateQuantity(productId, newQty, input);
+        });
+
+        // Increase quantity
+        item.querySelector('.increase-qty').addEventListener('click', () => {
+            const newQty = Math.min(maxStock, parseInt(input.value) + 1);
+            input.value = newQty;
+            updateQuantity(productId, newQty, input);
+        });
+
+        // Manual input
+        input.addEventListener('change', () => {
+            let newQty = parseInt(input.value);
+            if (isNaN(newQty) || newQty < 0) newQty = 0;
+            if (newQty > maxStock) newQty = maxStock;
+            input.value = newQty;
+            updateQuantity(productId, newQty, input);
+        });
+
+        // Remove button
+        item.querySelector('.remove-btn').addEventListener('click', () => {
+            updateQuantity(productId, 0, input);
+        });
+    });
+
+    // Checkout button
+    document.getElementById('checkout-btn')?.addEventListener('click', () => {
+        // Add your checkout logic here
+        alert('Proceeding to checkout...');
+        // Redirect to checkout page or open checkout modal
+    });
+});
+</script>
+{% endblock %}
