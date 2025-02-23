@@ -39,7 +39,7 @@ class Product(models.Model):
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
     ]
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=400)
     slug = models.SlugField(unique=True, max_length=200)  # Increased to 200 characters
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     feedback = models.TextField()

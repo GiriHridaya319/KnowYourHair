@@ -569,15 +569,15 @@ nav {
 }
 
 .cart-icon {
-    display: inline-flex; /* Use flexbox for alignment */
-    align-items: center; /* Vertically center the image and text */
-    min-width: 24px; /* Ensure the container has a minimum width */
-    min-height: 24px; /* Ensure the container has a minimum height */
-    text-decoration: none; /* Remove underline from link */
+    display: inline-flex;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+    text-decoration: none;
 }
 
 .cart-image {
-    width: 60px; /* Set a fixed width */
-    height: 60px; /* Set a fixed height */
-    display: block; /* Ensure the image is treated as a block element */
+    width: 60px;
+    height: 60px;
+    display: block;
 }

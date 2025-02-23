@@ -65,56 +65,52 @@
 
     {% block footer %}
     <!-- Footer -->
-    <section class="footer">
-        <div class="footer-row">
-            <div class="footer-col">
-                <h4>Info</h4>
-                <ul class="links">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Compressions</a></li>
-                    <li><a href="#">Customers</a></li>
-                    <li><a href="#">Service</a></li>
-                    <li><a href="#">Collection</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Explore</h4>
-                <ul class="links">
-                    <li><a href="#">Free Designs</a></li>
-                    <li><a href="#">Latest Designs</a></li>
-                    <li><a href="#">Themes</a></li>
-                    <li><a href="#">Popular Designs</a></li>
-                    <li><a href="#">Art Skills</a></li>
-                    <li><a href="#">New Uploads</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <ul class="links">
-                    <li><a href="#">Customer Agreement</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">GDPR</a></li>
-                    <li><a href="#">Security</a></li>
-                    <li><a href="#">Testimonials</a></li>
-                    <li><a href="#">Media Kit</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Newsletter</h4>
-                <p>Subscribe to our newsletter for news, updates, and exclusive offers.</p>
-                <form action="#">
-                    <input type="text" placeholder="Your email" required>
-                    <button type="submit">SUBSCRIBE</button>
-                </form>
-                <div class="icons">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-linkedin"></i>
-                    <i class="fab fa-github"></i>
-                </div>
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <a href="{% url 'KnowYourHair-home' %}">
+            <img src="{% static 'base/images/logo.png' %}" alt="KnowYourHair Logo" class="logo-image">
+        </a>
+            <h2>KnowYourHair</h2>
+            <p>Transforming the way you care for your hair. We believe in empowering individuals with knowledge and premium products for their unique hair journey.</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Explore</h3>
+            <div class="footer-links">
+                <a href="/Products">Hair Products</a>
+                <a href="/services">Hair Services</a>
+                <a href="/consultations">Expert Consultation</a>
+                <a href="/Blog">Hair Care Tips</a>
             </div>
         </div>
-    </section>
+
+        <div class="footer-section">
+            <h3>Customer Care</h3>
+            <div class="footer-links">
+                <a href="/faq">FAQs & Support</a>
+                <a href="/shipping">Shipping Policy</a>
+                <a href="/returns">Returns & Refunds</a>
+                <a href="/contact">Get in Touch</a>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h3>Join Our Community</h3>
+            <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">Subscribe to receive expert hair care tips, exclusive offers, and updates.</p>
+            <div class="newsletter-form">
+                <div class="form-group">
+                    <input type="email" placeholder="Enter your email address" required>
+                </div>
+                <button class="subscribe-btn">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2025 KnowYourHair. All rights reserved.</p>
+    </div>
+</footer>
     {% endblock %}
 
 <script src="{% static 'base/js/main.js' %}"></script>
