@@ -47,10 +47,13 @@
                             <i class="fas fa-home me-1"></i> Return to Homepage
                         </a>
                         {% if user.is_authenticated %}
-                        <a href="#" class="btn btn-outline-primary">
+                        <a href="{% url 'CustomerDetails' %}" class="btn btn-outline-primary">
                             <i class="fas fa-calendar me-1"></i> View My Bookings
                         </a>
                         {% endif %}
+
+
+
                     </div>
                 </div>
             </div>

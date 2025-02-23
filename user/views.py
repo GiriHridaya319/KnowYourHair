@@ -1,16 +1,17 @@
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, DeleteView
 from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Profile, Agent, Customer
 from hairfallprediction.models import Product
 from clinic.models import Clinic, BookingClinic
-
 
 
 def register(request):
@@ -140,6 +141,59 @@ def profile_update(request):
         'p_form': p_form
     }
     return render(request, 'user/profile_update.html', context)
+
+
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = User
+    template_name = 'user/profile_confirm_delete.html'
+    success_url = reverse_lazy('login')
+
+    def test_func(self):
+        """Verify that users can only delete their own accounts"""
+        user = self.get_object()
+        return self.request.user == user
+
+    def post(self, request, *args, **kwargs):
+        """Handle the post request with password verification"""
+        try:
+            password = request.POST.get('password')
+            user = self.get_object()
+
+            # Verify password
+            if not password:
+                messages.error(request, 'Password is required to delete your account.')
+                return redirect('profile')
+
+            if not check_password(password, user.password):
+                messages.error(request, 'Invalid password. Account deletion failed.')
+                return redirect('profile')
+
+            # If password is correct, proceed with deletion
+            if user == request.user:
+                # Delete user account
+                response = super().delete(request, *args, **kwargs)
+
+                # Log out the user
+                logout(request)
+
+                messages.success(request, 'Your account has been successfully deleted.')
+                return response
+
+        except Exception as e:
+            messages.error(request, 'An error occurred while deleting your account. Please try again.')
+            return redirect('profile')
+
+    def handle_no_permission(self):
+        """Handle unauthorized access attempts"""
+        messages.error(self.request, 'You do not have permission to delete this account.')
+        return redirect('profile')
+
+    def get_context_data(self, **kwargs):
+        """Add additional context data for the template"""
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Delete Account'
+        return context
+
 
 
 @login_required

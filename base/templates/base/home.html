@@ -84,11 +84,7 @@
               </div>
               <h3 class="product-name-feature">{{ product.name |truncatewords:10 }}</h3>
               <div class="product-price-feature">{{ product.cost }}</div>
-              {% if product.stock > 0 %}
-                <div class="stock-badge-feature">In Stock</div>
-              {% else %}
-                <div class="stock-badge-feature stock-badge-out">Out of Stock</div>
-              {% endif %}
+
             </a>
           </div>
         {% endif %}
