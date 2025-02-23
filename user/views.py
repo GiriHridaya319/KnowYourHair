@@ -4,11 +4,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.views.generic import ListView, TemplateView
 from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Profile, Agent, Customer
 from hairfallprediction.models import Product
-from clinic.models import Clinic
+from clinic.models import Clinic, BookingClinic
 
 
 
@@ -302,3 +303,16 @@ class AgentDetails(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
         return context
 
+
+class UserBookingView(LoginRequiredMixin, TemplateView):
+    template_name = 'user/user_booking.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Filter bookings for the currently logged-in user
+        context['bookings'] = BookingClinic.objects.filter(
+            user=self.request.user  # This filters for the logged-in user
+        ).select_related('dermatologist', 'clinic').order_by('-appointment_time')  # Added - for newest first
+
+        return context

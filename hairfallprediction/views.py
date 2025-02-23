@@ -1,8 +1,12 @@
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from KnowYourHair import settings
 from .ml_models.predictor import HairfallPredictor
 from .ml_models.recommender import ProductRecommender
 from .models import Product
@@ -45,17 +49,31 @@ def predict_risk(request):
             'Smoking': int(request.POST.get('Smoking')),
         }
 
-        # age and risk level comes from here
+        # Get prediction
         prediction_result = predictor.predict_risk(user_data)
 
-        # Get product recommendations based on risk level
+        # Get recommendations
         recommendations, _ = recommender.get_recommendations_risk(prediction_result['risk_level'])
 
-        # Prepare context for the template
+        for rec in recommendations:
+            # Check if the file exists in the media directory
+            if rec['image']:
+                full_path = os.path.join(settings.MEDIA_ROOT, str(rec['image']))
+
+        # Process recommendations to ensure proper image URLs
+        for rec in recommendations:
+            if rec['image']:
+                # If the image path doesn't start with MEDIA_URL, add it
+                if not str(rec['image']).startswith('/media/'):
+                    rec['image'] = os.path.join(settings.MEDIA_URL, str(rec['image']))
+
+        # Prepare context with additional debug info
         context = {
             'prediction_result': prediction_result['risk_level'],
             'age_prediction': prediction_result['age_prediction'],
             'recommendations': recommendations,
+            'MEDIA_URL': settings.MEDIA_URL,
+            'DEBUG': settings.DEBUG,
         }
 
         return render(request, 'hairfallprediction/resultPage.html', context)
@@ -76,9 +94,21 @@ def recommendation_hybrid(request):
             # Get recommendations based on the selected product
             recommendations = recommender.get_hybrid_recommendations(product_name)
 
+            # Process recommendations to ensure proper image URLs
+            for rec in recommendations:
+                if rec['image']:
+                    # Check if the file exists in the media directory
+                    full_path = os.path.join(settings.MEDIA_ROOT, str(rec['image']))
+
+                    # If the image path doesn't start with MEDIA_URL, add it
+                    if not str(rec['image']).startswith('/media/'):
+                        rec['image'] = os.path.join(settings.MEDIA_URL, str(rec['image']))
+
             context = {
                 'selected_product': product_name,
                 'recommendations': recommendations,
+                'MEDIA_URL': settings.MEDIA_URL,
+                'DEBUG': settings.DEBUG,
             }
 
             return render(request, 'hairfallprediction/recom_product_detail.html', context)

@@ -79,7 +79,9 @@
         {% if product.status == 'Approved' %}
           <div class="product-card-feature">
             <a href="{% url 'recom-product-detail' product.slug %}" class="product-link-feature">
-              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image-feature">
+              <div class="image-wrapper-feature">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image-feature">
+              </div>
               <h3 class="product-name-feature">{{ product.name |truncatewords:10 }}</h3>
               <div class="product-price-feature">{{ product.cost }}</div>
               {% if product.stock > 0 %}
@@ -100,43 +102,48 @@
   </div>
 </section>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const track = document.querySelector('.slider-track-feature');
-  const cards = document.querySelectorAll('.product-card-feature');
+  const sliderTrack = document.querySelector('.slider-track-feature');
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
+  const cards = document.querySelectorAll('.product-card-feature');
 
   let currentIndex = 0;
-  const cardWidth = 304; // 280px + 24px gap
-  const visibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
+  const cardWidth = 304; // card width (280px) + gap (24px)
+  const visibleCards = Math.floor(sliderTrack.offsetWidth / cardWidth);
   const maxIndex = Math.max(0, cards.length - visibleCards);
 
-  function updateSlider() {
-    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+  function updateSliderPosition() {
+    sliderTrack.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+    // Update button states
     prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === maxIndex;
+    nextBtn.disabled = currentIndex >= maxIndex;
   }
 
   prevBtn.addEventListener('click', () => {
-    currentIndex = Math.max(currentIndex - 1, 0);
-    updateSlider();
+    currentIndex = Math.max(0, currentIndex - 1);
+    updateSliderPosition();
   });
 
   nextBtn.addEventListener('click', () => {
-    currentIndex = Math.min(currentIndex + 1, maxIndex);
-    updateSlider();
+    currentIndex = Math.min(maxIndex, currentIndex + 1);
+    updateSliderPosition();
   });
 
-  // Initial update
-  updateSlider();
+  // Initialize button states
+  updateSliderPosition();
 
   // Update on window resize
+  let resizeTimeout;
   window.addEventListener('resize', () => {
-    const newVisibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
-    const newMaxIndex = Math.max(0, cards.length - newVisibleCards);
-    currentIndex = Math.min(currentIndex, newMaxIndex);
-    updateSlider();
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      currentIndex = Math.min(currentIndex, maxIndex);
+      updateSliderPosition();
+    }, 200);
   });
 });
 </script>

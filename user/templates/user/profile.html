@@ -87,6 +87,11 @@
             <i class="fas fa-edit"></i>
             My Details
         </a>
+      {% elif request.user.profile.customer %}
+          <a href="{% url 'CustomerDetails' %}" class="btn-profile btn-profile-primary">
+            <i class="fas fa-edit"></i>
+            My Bookings
+        </a>
     {% endif %}
 
 </div>

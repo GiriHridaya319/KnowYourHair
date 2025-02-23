@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-{%load static%}
+{% load static %}
 
 {% block footer %}{% endblock %}
 
@@ -12,7 +12,7 @@
     <div class="product-container">
         <div class="product-image">
             {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}">
             {% else %}
                 <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
             {% endif %}
@@ -35,74 +35,65 @@
                 </div>
             </div>
 
-            <!-- Replace your existing button with this -->
-        <div class="product-actions">
-            <form method="POST" action="{% url 'add_to_cart' product.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Add to Cart</button>
-            </form>
-            <button class="btn btn-secondary">Add to Wishlist</button>
-        </div>
+            <div class="product-actions">
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+                <button class="btn btn-secondary">Add to Wishlist</button>
+            </div>
         </div>
         {% if user == product.author %}
-<div class="action-buttons" style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-    <a href="{% url 'product-update' object.pk %}" class="action-btn edit" style="background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Edit Details</a>
-
-    <a href="{% url 'product-delete' object.pk %}" class="action-btn delete" style="background-color: #f44336; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Delete Listing</a>
-
-    <a href="{% url 'product-create' %}" class="action-btn create" style="background-color: #2196F3; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Create New</a>
-</div>
-{% endif %}
+        <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+            <a href="{% url 'product-update' object.pk %}" class="action-btn edit" style="background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Edit Details</a>
+            <a href="{% url 'product-delete' object.pk %}" class="action-btn delete" style="background-color: #f44336; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Delete Listing</a>
+            <a href="{% url 'product-create' %}" class="action-btn create" style="background-color: #2196F3; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: 500; transition: background-color 0.3s; display: inline-block;">Create New</a>
+        </div>
+        {% endif %}
     </div>
-
 
     <!-- Modal for zoomed image -->
     <div class="modal" onclick="closeModal()">
         {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}">
         {% else %}
             <img src="{% static 'images/default-product.jpg' %}" alt="Default Product Image">
         {% endif %}
     </div>
 
-     <!-- hybrid recommendation -->
-<div class="recommendations">
-    <h2>Similar products you might like</h2>
-    <div class="slider-container">
-        <button class="slider-button prev">
-            <svg class="button-icon" viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-            </svg>
-        </button>
-        <div class="slider">
-            {% for product in recommendations %}
-            <a href="{% url 'recom-product-detail' product.slug %}" class="item">
-                <div class="product-card-recom">
-                    <div class="product-image-recom">
-                        {% if product.image %}
-                            <img src="{{ product.image}}" alt="{{ product.name }}">
-
-                        {% else %}
-                             <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
-                        {% endif %}
+    <!-- hybrid recommendation -->
+    <div class="recommendations">
+        <h2>Similar products you might like</h2>
+        <div class="slider-container">
+            <button class="slider-button prev">
+                <svg class="button-icon" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+            </button>
+            <div class="slider">
+                {% for product in recommendations %}
+                <a href="{% url 'recom-product-detail' product.slug %}" class="item">
+                    <div class="product-card-recom">
+                        <div class="product-image-recom">
+                            {% if product.image %}
+                                <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{{ MEDIA_URL }}product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
+                            {% endif %}
+                        </div>
+                        <div class="product-title-recom">{{ product.name }}</div>
+                        <div class="product-price-recom">₹{{ product.cost }}</div>
                     </div>
-                    <div class="product-title-recom">{{ product.name }}</div>
-                    <div class="product-price-recom">₹{{ product.cost }}</div>
-
-                </div>
-            {% endfor %}
+                </a>
+                {% endfor %}
+            </div>
+            <button class="slider-button next">
+                <svg class="button-icon" viewBox="0 0 24 24">
+                    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                </svg>
+            </button>
         </div>
-        <button class="slider-button next">
-            <svg class="button-icon" viewBox="0 0 24 24">
-                <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
-            </svg>
-        </button>
     </div>
-</div>
-
-
-
-
 
     <script>
         function openModal() {
@@ -128,37 +119,35 @@
         });
 
         const slider = document.querySelector('.slider');
-const prevButton = document.querySelector('.prev');
-const nextButton = document.querySelector('.next');
-const cards = document.querySelectorAll('.product-card-recom'); // Fixed selector
-const cardWidth = cards[0].offsetWidth + 24; // Including the gap
-let currentPosition = 0;
-const maxPosition = -(cardWidth * (cards.length - 3)); // Adjust for visible items
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        const cards = document.querySelectorAll('.product-card-recom');
+        const cardWidth = cards[0].offsetWidth + 24; // Including the gap
+        let currentPosition = 0;
+        const maxPosition = -(cardWidth * (cards.length - 3)); // Adjust for visible items
 
-function updateSliderPosition() {
-  slider.style.transform = `translateX(${currentPosition}px)`;
+        function updateSliderPosition() {
+            slider.style.transform = `translateX(${currentPosition}px)`;
 
-  // Update button states
-  prevButton.style.opacity = currentPosition === 0 ? '0.5' : '1';
-  nextButton.style.opacity = currentPosition <= maxPosition ? '0.5' : '1';
-}
+            // Update button states
+            prevButton.style.opacity = currentPosition === 0 ? '0.5' : '1';
+            nextButton.style.opacity = currentPosition <= maxPosition ? '0.5' : '1';
+        }
 
-prevButton.addEventListener('click', () => {
-  if (currentPosition === 0) return;
-  currentPosition = Math.min(currentPosition + cardWidth, 0);
-  updateSliderPosition();
-});
+        prevButton.addEventListener('click', () => {
+            if (currentPosition === 0) return;
+            currentPosition = Math.min(currentPosition + cardWidth, 0);
+            updateSliderPosition();
+        });
 
-nextButton.addEventListener('click', () => {
-  if (currentPosition <= maxPosition) return;
-  currentPosition = Math.max(currentPosition - cardWidth, maxPosition);
-  updateSliderPosition();
-});
+        nextButton.addEventListener('click', () => {
+            if (currentPosition <= maxPosition) return;
+            currentPosition = Math.max(currentPosition - cardWidth, maxPosition);
+            updateSliderPosition();
+        });
 
-// Initialize button states
-updateSliderPosition();
-
+        // Initialize button states
+        updateSliderPosition();
     </script>
 </div>
 {% endblock content %}
-

@@ -35,7 +35,7 @@ class ProductRecommender:
                 'cost': product['cost'],
                 'feedback': product['feedback'],
                 'details': product['details'],
-                'image': f"/media/product_images/{product['image']}"
+                'image': product['image']
             })
 
         return initial_recommendations, top_indices
@@ -65,7 +65,7 @@ class ProductRecommender:
             formatted_rec = {
                 'name': rec['name'].strip(),
                 'slug': slugify(rec['name']),
-                'image': f"/media/product_images/{rec['image']}" if rec['image'] else None,
+                'image': rec['image'],
                 'details': rec['details'],
                 'cost': rec['cost'],
                 'HybridScore': rec['HybridScore']
