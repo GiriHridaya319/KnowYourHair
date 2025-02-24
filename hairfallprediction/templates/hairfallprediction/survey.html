@@ -191,25 +191,35 @@
     <h2><i class="fas fa-users"></i> Family History</h2>
     <p class="question-text">
         <i class="fas fa-question-circle"></i>
-        Is there a history of hair loss in your immediate family?
+        What is your family history regarding hair loss?
     </p>
     <p class="question-description">
-        Consider parents, siblings, and grandparents when answering.
+        Consider immediate family members and extended relatives.
     </p>
     <div class="radio-group">
         <div class="radio-option">
             <input type="radio" id="genetics-0" name="Genetics" value="0" required>
-            <label for="genetics-0">No family history of hair loss</label>
+            <label for="genetics-0">No History - No known hair loss in family</label>
         </div>
         <div class="radio-option">
             <input type="radio" id="genetics-1" name="Genetics" value="1">
-            <label for="genetics-1">Some relatives have hair loss</label>
+            <label for="genetics-1">Minimal - Distant relatives only with hair loss</label>
         </div>
         <div class="radio-option">
             <input type="radio" id="genetics-2" name="Genetics" value="2">
-            <label for="genetics-2">Strong family history of hair loss</label>
+            <label for="genetics-2">Moderate - One parent or sibling affected</label>
         </div>
+        <div class="radio-option">
+            <input type="radio" id="genetics-3" name="Genetics" value="3">
+            <label for="genetics-3">Significant - Multiple immediate family members affected</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="genetics-4" name="Genetics" value="4">
+            <label for="genetics-4">Very Strong - Multiple generations affected</label>
+        </div>
+
     </div>
+    <div class="validation-message">Please select your family history to continue.</div>
 </section>
 
 <!-- Past Chronic Illness Section -->
@@ -243,25 +253,27 @@
     <h2><i class="fas fa-moon"></i> Sleep Patterns</h2>
     <p class="question-text">
         <i class="fas fa-question-circle"></i>
-        How would you describe your sleep quality?
-    </p>
-    <p class="question-description">
-        Consider your average sleep duration and quality over the past month.
+        How would you describe your average sleep quality?
     </p>
     <div class="radio-group">
         <div class="radio-option">
             <input type="radio" id="sleep-0" name="Sleep_Disturbance" value="0" required>
-            <label for="sleep-0">Regular, restful sleep (7-9 hours)</label>
+            <label for="sleep-0">Excellent (7-9 hours nightly)</label>
         </div>
         <div class="radio-option">
             <input type="radio" id="sleep-1" name="Sleep_Disturbance" value="1">
-            <label for="sleep-1">Occasional sleep issues</label>
+            <label for="sleep-1">Good (6-7 hours)</label>
         </div>
         <div class="radio-option">
             <input type="radio" id="sleep-2" name="Sleep_Disturbance" value="2">
-            <label for="sleep-2">Frequent sleep problems</label>
+            <label for="sleep-2">Fair (5-6 hours)</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="sleep-3" name="Sleep_Disturbance" value="3">
+            <label for="sleep-3">Sleep disorder/Insomnia</label>
         </div>
     </div>
+    <div class="validation-message">Please select your sleep pattern to continue.</div>
 </section>
 
 <!-- Water Quality Section -->
@@ -377,7 +389,7 @@
     <h2><i class="fas fa-pump-soap"></i> Hair Care Routine</h2>
     <p class="question-text">
         <i class="fas fa-question-circle"></i>
-        How would you rate your hair care routine?
+        How would you describe your hair care routine?
     </p>
     <p class="question-description">
         Consider your washing schedule, product usage, and general hair maintenance.
@@ -385,13 +397,30 @@
     <div class="radio-group">
         <div class="radio-option">
             <input type="radio" id="haircare-0" name="Hair_Care_Habits" value="0" required>
-            <label for="haircare-0">Excellent - Regular gentle care routine</label>
+            <label for="haircare-0">Excellent - Professional care with regular maintenance</label>
         </div>
         <div class="radio-option">
             <input type="radio" id="haircare-1" name="Hair_Care_Habits" value="1">
-            <label for="haircare-1">Inadequate - Irregular or harsh care routine</label>
+            <label for="haircare-1">Very Good - Regular care with quality products</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="haircare-2" name="Hair_Care_Habits" value="2">
+            <label for="haircare-2">Good - Basic regular care routine</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="haircare-3" name="Hair_Care_Habits" value="3">
+            <label for="haircare-3">Moderate - Inconsistent care routine</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="haircare-4" name="Hair_Care_Habits" value="4">
+            <label for="haircare-4">Poor - Minimal hair care</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" id="haircare-5" name="Hair_Care_Habits" value="5">
+            <label for="haircare-5">Inadequate - Neglected hair care</label>
         </div>
     </div>
+    <div class="validation-message">Please select your hair care routine to continue.</div>
 </section>
 
                 <!-- Hormonal Change Section -->

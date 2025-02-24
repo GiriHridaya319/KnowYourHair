@@ -73,6 +73,9 @@
             {% endif %}
         </div>
       <div class="profile-actions" style="display: flex; gap: 20px;">
+
+          <a href="{% url 'profile-delete' user.pk %}" class="btn-profile btn-profile-primary">Delete Account</a>
+
     <a href="{% url 'profile-update' %}" class="btn-profile btn-profile-primary">
         <i class="fas fa-edit"></i>
         Edit Profile
@@ -94,7 +97,7 @@
         </a>
     {% endif %}
 
-        <a href="{% url 'profile-delete' user.pk %}" class="btn btn-danger">Delete Account</a>
+
 
 </div>
 
