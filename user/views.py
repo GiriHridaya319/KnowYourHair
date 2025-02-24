@@ -2,7 +2,7 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -11,7 +11,7 @@ from django.views.generic import ListView, TemplateView, DeleteView
 from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Profile, Agent, Customer
 from hairfallprediction.models import Product
-from clinic.models import Clinic, BookingClinic
+from clinic.models import Clinic, BookingClinic, Dermatologist
 
 
 def register(request):
@@ -319,46 +319,36 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return context
 
 
-class AgentDetails(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    template_name = 'user/agentDetails.html'
+@login_required
+def agent_dashboard(request):
+    """
+    Agent dashboard showing products, clinics, dermatologists, and bookings
+    created by the logged-in user.
+    """
+    # Get products authored by the current user
+    products = Product.objects.filter(author=request.user)
 
-    def test_func(self):
-        return self.request.user.profile.agent is not None
+    # Get clinics authored by the current user
+    clinics = Clinic.objects.filter(author=request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    # Get dermatologists from all clinics owned by the current user
+    # First get all clinics IDs owned by the user
+    clinic_ids = clinics.values_list('id', flat=True)
 
-        # Get the logged-in user
-        current_user = self.request.user
+    # Then get all dermatologists for these clinics
+    dermatologists = Dermatologist.objects.filter(clinic_id__in=clinic_ids)
 
-        # Get products authored by the current user
-        products = Product.objects.filter(author=current_user).select_related('author')
-        context['products'] = [{
-            'id': product.id,
-            'name': product.name,
-            'cost': product.cost,
-            'stock': product.stock,
-            'status': product.status,
-            'feedback': product.feedback,
-            'details': product.details,
-            'image': product.image.url if product.image else None
-        } for product in products]
+    # Get all bookings for these clinics
+    bookings = BookingClinic.objects.filter(clinic_id__in=clinic_ids)
 
-        # Get clinics authored by the current user
-        clinics = Clinic.objects.filter(author=current_user).select_related('author')
-        context['clinics'] = [{
-            'id': clinic.id,
-            'name': clinic.name,
-            'address': clinic.address,
-            'description': clinic.description,
-            'opening_time': clinic.opening_time,
-            'closing_time': clinic.closing_time,
-            'phoneNum': clinic.phoneNum,
-            'status': clinic.status,
-            'image': clinic.image.url if clinic.image else None
-        } for clinic in clinics]
+    context = {
+        'products': products,
+        'clinics': clinics,
+        'dermatologists': dermatologists,
+        'bookings': bookings
+    }
 
-        return context
+    return render(request, 'user/agentDetails.html', context)
 
 
 class UserBookingView(LoginRequiredMixin, TemplateView):
@@ -373,3 +363,37 @@ class UserBookingView(LoginRequiredMixin, TemplateView):
         ).select_related('dermatologist', 'clinic').order_by('-appointment_time')  # Added - for newest first
 
         return context
+
+
+@login_required
+def approve_booking(request, pk):
+    booking = get_object_or_404(BookingClinic, pk=pk)
+
+    # Check if user is authorized to approve this booking
+    if request.user != booking.clinic.author:
+        messages.error(request, "You don't have permission to approve this booking.")
+        return redirect('agentDetails')
+
+    # Update the booking status to confirmed
+    booking.status = 'confirmed'
+    booking.save()
+
+    messages.success(request, f"Booking #{booking.id} has been confirmed successfully.")
+    return redirect('agentDetails')
+
+
+@login_required
+def reject_booking(request, pk):
+    booking = get_object_or_404(BookingClinic, pk=pk)
+
+    # Check if user is authorized to reject this booking
+    if request.user != booking.clinic.author:
+        messages.error(request, "You don't have permission to reject this booking.")
+        return redirect('agentDetails')
+
+    # Update the booking status to cancelled
+    booking.status = 'cancelled'
+    booking.save()
+
+    messages.success(request, f"Booking #{booking.id} has been cancelled.")
+    return redirect('agentDetails')  # Or redirect to the bookings tab

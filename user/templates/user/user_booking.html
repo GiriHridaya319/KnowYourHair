@@ -124,7 +124,7 @@
         {% for booking in bookings %}
             <div class="booking-card">
                 <div class="booking-header">
-                    <h3>Appointment with Dr. {{ booking.dermatologist.user.first_name }} {{ booking.dermatologist.user.last_name }}</h3>
+                    <h3>Appointment with Dr. {{ booking.dermatologist.first_name }} {{ booking.dermatologist.last_name }}</h3>
                     <span class="status-badge status-{{ booking.status }}">{{ booking.status|title }}</span>
                 </div>
                 <div class="booking-content">

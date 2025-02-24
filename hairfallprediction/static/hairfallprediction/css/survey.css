@@ -758,3 +758,20 @@ body {
     height: 6px;
     background: #cbd5e0;
 }
+
+.validation-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.survey-section.show-validation .validation-message {
+    display: block;
+}
+
+.option-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}

@@ -30,6 +30,14 @@
                 <i class="fas fa-clinic-medical"></i>
                 <span class="nav-text">Clinics</span>
             </li>
+            <li data-section="dermatologists">
+                <i class="fas fa-user-md"></i>
+                <span class="nav-text">Dermatologists</span>
+            </li>
+            <li data-section="bookings">
+                <i class="fas fa-calendar-check"></i>
+                <span class="nav-text">Bookings</span>
+            </li>
         </ul>
     </div>
 
@@ -47,6 +55,14 @@
                     <div class="card-header">Total Clinics</div>
                     <div class="card-value">{{ clinics|length }}</div>
                 </div>
+                <div class="card">
+                    <div class="card-header">Total Dermatologists</div>
+                    <div class="card-value">{{ dermatologists|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Total Bookings</div>
+                    <div class="card-value">{{ bookings|length }}</div>
+                </div>
             </div>
         </div>
 
@@ -54,7 +70,6 @@
         <div id="products" class="content-section">
             <div class="section-header">
                 <h1>Products Management</h1>
-
             </div>
 
             {% if products %}
@@ -110,7 +125,6 @@
         <div id="clinics" class="content-section">
             <div class="section-header">
                 <h1>Clinics Management</h1>
-
             </div>
 
             {% if clinics %}
@@ -142,8 +156,6 @@
                                 <a href="{% url 'clinic-delete' clinic.id %}" class="action-btn delete-btn">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
-
-
                             </td>
                         </tr>
                         {% endfor %}
@@ -161,93 +173,284 @@
             </div>
             {% endif %}
         </div>
+
+        <!-- Dermatologists Section -->
+        <div id="dermatologists" class="content-section">
+            <div class="section-header">
+                <h1>Dermatologists Management</h1>
+            </div>
+
+            {% if dermatologists %}
+            {% if clinics %}
+            <a href="#" class="add-btn" onclick="showClinicSelection()">
+                <i class="fas fa-plus"></i> Add New Dermatologist
+            </a>
+
+            <!-- Clinic Selection Modal -->
+            <div id="clinic-selection-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="hideClinicSelection()">&times;</span>
+                    <h2>Select a Clinic</h2>
+                    <div class="clinic-list">
+                        {% for clinic in clinics %}
+                        <a href="{% url 'dermatologist-create' clinic_id=clinic.id %}" class="clinic-option">
+                            {{ clinic.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                You need to create a clinic before adding dermatologists.
+                <a href="{% url 'clinic-create' %}">Create a clinic</a>
+            </div>
+            {% endif %}
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Clinic</th>
+                            <th>Experience</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dermatologist in dermatologists %}
+                        <tr>
+                            <td>{{ dermatologist.first_name }} {{ dermatologist.last_name }}</td>
+                            <td>{{ dermatologist.clinic.name }}</td>
+                            <td>{{ dermatologist.total_experience }} years</td>
+                            <td>{{ dermatologist.phoneNum }}</td>
+                            <td>
+                                <a href="{% url 'dermatologist-update' dermatologist.id %}" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'dermatologist-delete' dermatologist.id %}" class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-md empty-icon"></i>
+                <h2>No Dermatologists Added Yet</h2>
+                <p>Start by adding your first dermatologist</p>
+                {% if clinics %}
+                <a href="#" class="add-btn" onclick="showClinicSelection()">
+                    <i class="fas fa-plus"></i> Add Dermatologist
+                </a>
+
+                <!-- Clinic Selection Modal -->
+                <div id="clinic-selection-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close-modal" onclick="hideClinicSelection()">&times;</span>
+                        <h2>Select a Clinic</h2>
+                        <div class="clinic-list">
+                            {% for clinic in clinics %}
+                            <a href="{% url 'dermatologist-create' clinic_id=clinic.id %}" class="clinic-option">
+                                {{ clinic.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    You need to create a clinic before adding dermatologists.
+                    <a href="{% url 'clinic-create' %}" class="add-btn">
+                        <i class="fas fa-plus"></i> Create a Clinic First
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Bookings Section -->
+        <div id="bookings" class="content-section">
+            <div class="section-header">
+                <h1>Bookings Management</h1>
+            </div>
+
+            {% if bookings %}
+            <div class="booking-filters">
+                <button class="filter-btn active" data-filter="all">All Bookings</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+                <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+                <button class="filter-btn" data-filter="today">Today</button>
+                <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Clinic</th>
+                            <th>Patient</th>
+                            <th>Dermatologist</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr class="booking-row"
+                            data-status="{{ booking.status }}"
+                            data-today="{% if booking.is_today %}true{% else %}false{% endif %}"
+                            data-upcoming="{% if booking.is_upcoming %}true{% else %}false{% endif %}">
+                            <td>{{ booking.clinic.name }}</td>
+                            <td>{{ booking.first_name }} {{ booking.last_name }}</td>
+                            <td>{{ booking.dermatologist.first_name }} {{ booking.dermatologist.last_name }}</td>
+                            <td>{{ booking.appointment_time|date:"M d, Y - h:i A" }}</td>
+                            <td>
+                                <span class="status-badge status-{{ booking.status }}">
+                                    {{ booking.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                               <div class="booking-actions">
+                                    <button class="action-btn view-btn" onclick="viewBookingDetails({{ booking.id }})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    {% if booking.status == 'pending' %}
+                                    <button class="action-btn confirm-btn" onclick="window.location.href='{% url 'approve_booking' booking.id %}'">
+                                        <i class="fas fa-check"></i> Confirm
+                                    </button>
+                                    {% endif %}
+                                    {% if booking.status != 'cancelled' %}
+                                    <button class="action-btn cancel-btn" onclick="window.location.href='{% url 'reject_booking' booking.id %}'">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-calendar-check empty-icon"></i>
+                <h2>No Bookings Yet</h2>
+                <p>Bookings will appear here when patients schedule appointments at your clinics</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 
-<style>
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
 
-    .add-btn {
-        background: var(--primary-color);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: var(--transition);
-    }
+<script>
+    // Sidebar toggle functionality
+    const toggleBtn = document.querySelector('.toggle-btn');
+    const sidebar = document.querySelector('.sidebar');
 
-    .add-btn:hover {
-        background: var(--secondary-color);
-    }
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
 
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: var(--bg-secondary);
-        border-radius: 1rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .empty-icon {
-        font-size: 4rem;
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-    }
-
-    .empty-state h2 {
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        color: var(--text-secondary);
-        margin-bottom: 1.5rem;
-    }
-
-    .table-container {
-        margin-top: 1rem;
-    }
-</style>
-    <script>
-        // Sidebar toggle functionality
-        const toggleBtn = document.querySelector('.toggle-btn');
-        const sidebar = document.querySelector('.sidebar');
-
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-
-        // Navigation functionality
-        document.querySelectorAll('.nav-links li').forEach(link => {
-            link.addEventListener('click', () => {
-                // Remove active class from all links
-                document.querySelectorAll('.nav-links li').forEach(l => {
-                    l.classList.remove('active');
-                });
-
-                // Add active class to clicked link
-                link.classList.add('active');
-
-                // Hide all content sections
-                document.querySelectorAll('.content-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-
-                // Show the selected content section
-                const sectionId = link.getAttribute('data-section');
-                document.getElementById(sectionId).classList.add('active');
+    // Navigation functionality
+    document.querySelectorAll('.nav-links li').forEach(link => {
+        link.addEventListener('click', () => {
+            // Remove active class from all links
+            document.querySelectorAll('.nav-links li').forEach(l => {
+                l.classList.remove('active');
             });
+
+            // Add active class to clicked link
+            link.classList.add('active');
+
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the selected content section
+            const sectionId = link.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
         });
-    </script>
+    });
 
+    // Clinic selection modal functions
+    function showClinicSelection() {
+        document.getElementById('clinic-selection-modal').style.display = 'flex';
+    }
 
+    function hideClinicSelection() {
+        document.getElementById('clinic-selection-modal').style.display = 'none';
+    }
+
+    // Booking filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            btn.classList.add('active');
+
+            // Get the filter value
+            const filter = btn.getAttribute('data-filter');
+
+            // Filter the bookings
+            filterBookings(filter);
+        });
+    });
+
+    function filterBookings(filter) {
+        const rows = document.querySelectorAll('.booking-row');
+
+        rows.forEach(row => {
+            const status = row.getAttribute('data-status');
+            const isToday = row.getAttribute('data-today') === 'true';
+            const isUpcoming = row.getAttribute('data-upcoming') === 'true';
+
+            switch(filter) {
+                case 'all':
+                    row.style.display = '';
+                    break;
+                case 'pending':
+                    row.style.display = status === 'pending' ? '' : 'none';
+                    break;
+                case 'confirmed':
+                    row.style.display = status === 'confirmed' ? '' : 'none';
+                    break;
+                case 'cancelled':
+                    row.style.display = status === 'cancelled' ? '' : 'none';
+                    break;
+                case 'today':
+                    row.style.display = isToday ? '' : 'none';
+                    break;
+                case 'upcoming':
+                    row.style.display = isUpcoming ? '' : 'none';
+                    break;
+            }
+        });
+    }
+
+    // Placeholder functions for booking actions - these would connect to your backend
+    function viewBookingDetails(bookingId) {
+        // You would implement this to show a modal with booking details
+        alert(`View booking details for booking ID: ${bookingId}`);
+    }
+
+    function updateBookingStatus(bookingId, status) {
+        // You would implement this to update the booking status via AJAX
+        alert(`Update booking ${bookingId} to status: ${status}`);
+        // After successful update, you might want to refresh the page or update the UI
+    }
+</script>
 {% endblock %}
-
