@@ -1,4 +1,11 @@
 {% extends "base/base.html" %}
+{% load static %}
+
+
+{% block deleteAccount_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/confirmDelete.css' %}">
+{% endblock %}
+
 {% block content %}
     <div class="content-section">
         <form method="POST">
