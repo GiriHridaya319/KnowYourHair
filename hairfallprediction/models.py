@@ -40,11 +40,11 @@ class Product(models.Model):
         ('Rejected', 'Rejected'),
     ]
     name = models.CharField(max_length=500)
-    slug = models.SlugField(unique=True, max_length=200)  # Increased to 200 characters
+    slug = models.SlugField(unique=True, max_length=500)  # Increased to 200 characters
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     feedback = models.TextField()
     details = models.TextField()
-    image = models.ImageField(default='default_user.jpg', upload_to='product_images/')
+    image = models.ImageField(default='default.jpg', upload_to='product_images/')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     stock = models.PositiveIntegerField(default=0)  # New stock column added
     author = models.ForeignKey(

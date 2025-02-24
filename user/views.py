@@ -27,6 +27,9 @@ def register(request):
         address = request.POST.get('address', '')
         age = request.POST.get('age', '')
 
+        if image is None:
+            image = 'default_user.jpg'
+
         # Check if passwords match
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
