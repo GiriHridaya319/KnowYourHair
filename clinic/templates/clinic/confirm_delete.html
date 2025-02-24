@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block deleteConfirm %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/deleteConfirm.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <p>This action cannot be undone.</p>
+            <fieldset class="form-group">
+                {% if object_type == 'clinic' %}
+                    <legend class="border-bottom">Delete Clinic Details</legend>
+                    <div class="warning-icon">⚠️</div>
+                    <h2>Are you sure you want to delete the Clinic "{{ object.name }}"?</h2>
+                {% else %}
+                    <legend class="border-bottom">Delete Dermatologist Details</legend>
+                    <div class="warning-icon">⚠️</div>
+                    <h2>Are you sure you want to delete the Dermatologist "{{ object.first_name }} {{ object.last_name}}"?</h2>
+                {% endif %}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+                {% if object_type == 'clinic' %}
+                    <a class="btn btn-outline-secondary" href="{% url 'KnowYourHair-clinic' %}">Cancel</a>
+                {% else %}
+                    <a class="btn btn-outline-secondary" href="{% url 'dermatologist' %}">Cancel</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -38,6 +38,13 @@
                 <h2>About Dr. {{ dermatologist.last_name }}</h2>
                 <p>{{ dermatologist.About }}</p>
             </div>
+            {% if user == dermatologist.clinic.author %}
+                <div class="action-buttons">
+                    <a href="{% url 'dermatologist-update' object.pk %}" class="experience-badge">Update Profile</a>
+                    <a href="{% url 'dermatologist-delete' object.pk %}" class="experience-badge">Delete Profile</a>
+                </div>
+            <br>
+            {% endif %}
 
             {% if related_dermatologists %}
             <div class="related-dermatologists">
@@ -61,6 +68,7 @@
                 </div>
             </div>
             {% endif %}
+
         </div>
     </div>
 {% endblock content %}

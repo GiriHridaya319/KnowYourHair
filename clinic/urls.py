@@ -14,7 +14,10 @@ from .views import (
     DermatologistDetailView,
     AllDermatologistListView,
     ClinicBookingView,
-    BookingSuccessView
+    BookingSuccessView,
+    DermatologistCreateView,
+    DermatologistUpdateView,
+    DermatologistDeleteView
 )
 
 urlpatterns = [
@@ -22,6 +25,11 @@ urlpatterns = [
     path('<int:clinic_id>/dermatologists/', DermatologistListView.as_view(), name='dermatologist-views'),
     path('dermatologists/', AllDermatologistListView.as_view(), name='dermatologist'),
     path('dermatologist/<int:pk>/', DermatologistDetailView.as_view(), name='dermatologist-detail'),
+
+    path('dermatologist/<int:clinic_id>/Add/', DermatologistCreateView.as_view(), name='dermatologist-create'),
+    path('dermatologist/<int:pk>/update', DermatologistUpdateView.as_view(), name='dermatologist-update'),
+    path('dermatologist/<int:pk>/delete', DermatologistDeleteView.as_view(), name='dermatologist-delete'),
+
     path('search/', views.ClinicSearch, name='clinic-search'),
     path('<int:pk>/delete', ClinicDeleteView.as_view(), name='clinic-delete'),
     path('<int:pk>/', ClinicDetailView.as_view(), name='clinic-detail'),

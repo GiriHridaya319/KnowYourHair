@@ -17,7 +17,7 @@ class Clinic(models.Model):
     description = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='clinics_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='clinics_images/',default='default.jpg',)
     address = models.CharField(max_length=100)
     opening_time = models.CharField(max_length=100)
     closing_time = models.CharField(max_length=100)

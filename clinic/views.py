@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import request
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Clinic, Dermatologist, BookingClinic
+
 
 def ClinicSearch(request):
     # Only get approved clinics
@@ -61,6 +63,7 @@ class ClinicCreateView(LoginRequiredMixin, CreateView):
     model = Clinic
     fields = ['name', 'description', 'image', 'opening_time', 'closing_time', 'phoneNum', 'address']
     template_name = 'clinic/clinic_add_form.html'
+    success_url = '/clinic'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -72,7 +75,7 @@ class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Clinic
     fields = ['name', 'description', 'image', 'opening_time', 'closing_time', 'phoneNum', 'address']
     template_name = 'clinic/clinic_add_form.html'
-    success_url = '/'
+    success_url = '/clinic'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -88,14 +91,19 @@ class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Clinic
-    template_name = 'clinic/clinic_confirm_delete.html'
-    success_url = '/'
+    template_name = 'clinic/confirm_delete.html'  # Use the same common template
+    success_url = '/clinic'
 
     def test_func(self):
         post = self.get_object()
         if self.request.user == post.author:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_type'] = 'clinic'
+        return context
 
 
 class DermatologistDetailView(DetailView):
@@ -203,3 +211,63 @@ class BookingSuccessView(LoginRequiredMixin, TemplateView):
         except BookingClinic.DoesNotExist:
             context['booking'] = None
         return context
+
+
+class DermatologistCreateView(LoginRequiredMixin, CreateView):
+    model = Dermatologist
+    fields = ['first_name', 'last_name', 'About', 'image', 'phoneNum', 'total_experience']
+    template_name = 'clinic/dermatologist_add_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the clinic exists and belongs to the user
+        try:
+            self.clinic = Clinic.objects.get(
+                id=self.kwargs['clinic_id'],
+                author=self.request.user
+            )
+            return super().dispatch(request, *args, **kwargs)
+        except Clinic.DoesNotExist:
+            messages.error(self.request, "You don't have permission to add dermatologists to this clinic.")
+            return redirect('KnowYourHair-clinic')
+
+    def form_valid(self, form):
+        form.instance.clinic = self.clinic
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clinic'] = self.clinic
+        return context
+
+
+class DermatologistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Dermatologist
+    fields = ['first_name', 'last_name', 'About', 'image', 'phoneNum', 'total_experience']
+    template_name = 'clinic/dermatologist_add_form.html'
+    success_url = '/'
+
+    def test_func(self):
+        dermatologist = self.get_object()
+        # Check if the logged-in user owns the clinic this dermatologist belongs to
+        return self.request.user == dermatologist.clinic.author
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+class DermatologistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Dermatologist
+    template_name = 'clinic/confirm_delete.html'  # Use a common template
+    success_url = 'clinic/dermatologists'
+
+    def test_func(self):
+        dermatologist = self.get_object()
+        # Check if the logged-in user owns the clinic this dermatologist belongs to
+        return self.request.user == dermatologist.clinic.author
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_type'] = 'dermatologist'
+        return context
+
+
