@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views as user_view
 from .views import AdminDashboardView, UserBookingView, UserDeleteView
+from django.contrib.auth import views as auth_views
+from .forms import CustomPasswordResetForm, CustomSetPasswordForm
 
 urlpatterns = [
     path('profile/', user_view.profile, name='profile'),
@@ -8,7 +10,36 @@ urlpatterns = [
     path('Details/', UserBookingView.as_view(), name='CustomerDetails'),
     path('profile/delete/<int:pk>/', UserDeleteView.as_view(), name='profile-delete'),
     path('profile/edit/', user_view.profile_update, name='profile-update'),
-    path('profile/changePassword/', user_view.password, name='change-password'),
+
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='user/password_reset.html',
+             form_class=CustomPasswordResetForm,
+             email_template_name='user/password_reset_email.html',
+             subject_template_name='user/password_reset_subject.txt',
+
+         ),
+         name='password_reset'),
+
+    path('password-reset/done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='user/password_reset_done.html'
+         ),
+         name='password_reset_done'),
+
+    path('password-reset-confirm/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='user/changePassword.html',
+             form_class=CustomSetPasswordForm,
+         ),
+         name='password_reset_confirm'),
+
+    path('password-reset-complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='user/passwordResetComplete.html'
+         ),
+         name='password_reset_complete'),
+
     path('login/', user_view.login_view, name='login'),
     path('adminBoard/', AdminDashboardView.as_view(), name='adminDash'),
     path('registration/', user_view.register, name='registration'),
