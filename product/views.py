@@ -137,7 +137,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         product = self.get_object()
-        if self.request.user == product.author:
+        if self.request.user == product.author or self.request.user.is_superuser:
             return True
         return False
 
@@ -149,7 +149,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
+        if self.request.user == post.author or self.request.user.is_superuser:
             return True
         return False
 

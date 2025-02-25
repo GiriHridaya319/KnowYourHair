@@ -291,6 +291,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         pending_products = Product.objects.filter(status='Pending')
         for product in pending_products:
             context['approvals'].append({
+                'id': product.id,
                 'name': product.name,
                 'cost': product.cost,
                 'stock': product.stock,
@@ -305,6 +306,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         pending_clinics = Clinic.objects.filter(status='Pending')
         for clinic in pending_clinics:
             context['approvals'].append({
+                'id': clinic.id,
                 'name': clinic.name,
                 'address': clinic.address,
                 'description': clinic.description,
@@ -396,4 +398,54 @@ def reject_booking(request, pk):
     booking.save()
 
     messages.success(request, f"Booking #{booking.id} has been cancelled.")
-    return redirect('agentDetails')  # Or redirect to the bookings tab
+    return redirect('agentDetails')  # Or redirect to the bookings
+
+
+@login_required
+def approve_clinic(request, pk):
+    clinic = get_object_or_404(Clinic, pk=pk)
+
+
+    # Update the booking status to confirmed
+    clinic.status = 'Approved'
+    clinic.save()
+
+    messages.success(request, f"clinic #{clinic.name} has been approved successfully.")
+    return redirect('adminDash')
+
+
+@login_required
+def reject_clinic(request, pk):
+    clinic = get_object_or_404(Clinic, pk=pk)
+
+    # Update the booking status to confirmed
+    clinic.status = 'Rejected'
+    clinic.save()
+
+    messages.success(request, f"clinic #{clinic.name} has been Rejected successfully.")
+    return redirect('adminDash')
+
+
+@login_required
+def approve_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    # Update the booking status to confirmed
+    product.status = 'Approved'
+    product.save()
+
+    messages.success(request, f"product #{product.name} has been approved successfully.")
+    return redirect('adminDash')
+
+
+@login_required
+def reject_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    # Update the booking status to confirmed
+    product.status = 'Rejected'
+    product.save()
+
+    messages.success(request, f"product #{product.name} has been Rejected successfully.")
+    return redirect('adminDash')
+

@@ -47,7 +47,7 @@ class Dermatologist(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     About = models.TextField()
-    image = models.ImageField(upload_to='dermatologist_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='dermatologist_images/', default='default.jpg')
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="dermatologists")
     phoneNum = models.CharField(max_length=100)
     total_experience = models.IntegerField()

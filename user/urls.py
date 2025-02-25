@@ -17,4 +17,10 @@ urlpatterns = [
     # New booking approval/rejection URLs
     path('booking/<int:pk>/approve/', user_view.approve_booking, name='approve_booking'),
     path('booking/<int:pk>/reject/', user_view.reject_booking, name='reject_booking'),
+
+    path('clinic/<int:pk>/approve/', user_view.approve_clinic, name='approve_clinic'),
+    path('clinic/<int:pk>/reject/', user_view.reject_clinic, name='reject_clinic'),
+
+    path('product/<int:pk>/approve/', user_view.approve_product, name='approve_product'),
+    path('product/<int:pk>/reject/', user_view.reject_product, name='reject_product'),
 ]

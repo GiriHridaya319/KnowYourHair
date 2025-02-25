@@ -84,7 +84,7 @@ class ClinicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
+        if self.request.user == post.author or self.request.user.is_superuser:
             return True
         return False
 
@@ -96,7 +96,7 @@ class ClinicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
+        if self.request.user == post.author or self.request.user.is_superuser:
             return True
         return False
 
@@ -249,7 +249,7 @@ class DermatologistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
     def test_func(self):
         dermatologist = self.get_object()
         # Check if the logged-in user owns the clinic this dermatologist belongs to
-        return self.request.user == dermatologist.clinic.author
+        return self.request.user == dermatologist.clinic.author or self.request.user.is_superuser
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -263,7 +263,7 @@ class DermatologistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteVie
     def test_func(self):
         dermatologist = self.get_object()
         # Check if the logged-in user owns the clinic this dermatologist belongs to
-        return self.request.user == dermatologist.clinic.author
+        return self.request.user == dermatologist.clinic.author or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
