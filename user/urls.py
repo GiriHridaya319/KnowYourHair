@@ -16,8 +16,8 @@ urlpatterns = [
              template_name='user/password_reset.html',
              form_class=CustomPasswordResetForm,
              email_template_name='user/password_reset_email.html',
+             html_email_template_name='user/password_reset_html_email.html',  # Add this line
              subject_template_name='user/password_reset_subject.txt',
-
          ),
          name='password_reset'),
 
