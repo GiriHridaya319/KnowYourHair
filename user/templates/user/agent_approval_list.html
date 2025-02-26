@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<style>
+
+
+</style>
+<div class="container mt-5">
+    <h2>Agent Approval Requests</h2>
+    
+    {% if pending_agents %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agent in pending_agents %}
+                <tr>
+                    <td>{{ agent.profile.user.username }}</td>
+                    <td>{{ agent.profile.user.email }}</td>
+                    <td>{{ agent.profile.user.date_joined }}</td>
+                    <td>
+                        <a href="{% url 'approve_agent' agent.pk %}" class="btn btn-success btn-sm">Approve</a>
+                        <a href="{% url 'reject_agent' agent.pk %}" class="btn btn-danger btn-sm">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No pending agent approval requests.</p>
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'adminDash' %}" class="btn btn-primary">Back to Admin Dashboard</a>
+</div>
+{% endblock %}

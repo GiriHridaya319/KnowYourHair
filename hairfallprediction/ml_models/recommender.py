@@ -23,13 +23,16 @@ class ProductRecommender:
         similarity_scores = cosine_similarity(keyword_vector, product_vectors)
         avg_scores = similarity_scores.mean(axis=0)
 
-        # Get top 5 products
-        top_indices = np.argsort(avg_scores)[::-1][:5]
+        n = 30
+        top_indices = np.argsort(avg_scores)[::-1][:n]
 
-        initial_recommendations = []
-        for idx in top_indices:
+        # Randomly select 5 products from the top N
+        selected_indices = np.random.choice(top_indices, size=5, replace=False)
+
+        recommendations = []
+        for idx in selected_indices:
             product = self.product_data.iloc[idx]
-            initial_recommendations.append({
+            recommendations.append({
                 'name': product['name'],
                 'slug': slugify(product['name']),
                 'cost': product['cost'],
@@ -38,7 +41,7 @@ class ProductRecommender:
                 'image': product['image']
             })
 
-        return initial_recommendations, top_indices
+        return recommendations, selected_indices
 
     def get_hybrid_recommendations(self, selected_product_name):
         """Get hybrid recommendations combining content and collaborative filtering"""

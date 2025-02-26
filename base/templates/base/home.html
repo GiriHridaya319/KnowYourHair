@@ -40,18 +40,19 @@
       </div>
       <div class="header__content">
           {% if user.is_authenticated %}
-          <h1>WELCOME <span>{{ request.user.username }}</span></h1>
-          {% endif %}
+          <h1>HELLO <span>{{ request.user.username }}</span></h1>
+          {% else %}
         <h1>UNLOCK YOUR<br /> <span>HAIR'S FUTURE </span> </h1><h2>DISCOVER, PREVENT, AND REVIVE.</h2>
         <p>
           Get a personalized hair fall risk assessment in seconds!
           Discover expert recommendations tailored to your hair type.
           Shop premium hair care products and connect with top clinics.
         </p>
+          {% endif %}
         <form action="/">
           <div class="action__box">
       <div class="action__text">
-        <h3>Ready to transform your hair journey?</h3>
+        <h3>Ready To Transform Your Hair Care Journey?</h3>
         <p>Take our scientifically-backed assessment to get started</p>
       </div>
       <a href="{% url 'KnowYourHair-hairfallprediction' %}" class="shop-btn">

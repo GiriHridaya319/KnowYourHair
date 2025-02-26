@@ -1,5 +1,5 @@
 from django.contrib.auth import login, authenticate, logout, get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect, get_object_or_404
@@ -55,12 +55,12 @@ def register(request):
             customer = Customer(profile=profile, role='customer')
             customer.save()
             messages.success(request, "Customer registered successfully! Please log in.")
+            return redirect('login')
         elif user_type == 'agent':
-            agent = Agent(profile=profile, role='staff')
+            agent = Agent(profile=profile, role='staff', status='pending')
             agent.save()
-            messages.success(request, "Agent registered successfully! Please log in.")
 
-        return redirect('login')
+            return redirect('pending_approval')
 
     return render(request, 'user/register.html')
 
@@ -78,6 +78,21 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
+            # Check if the user is an agent with pending approval
+            try:
+                agent = Agent.objects.get(profile__user=user)
+                if agent.status == 'pending':
+                    messages.warning(request,
+                                     "Your agent account is pending approval. Please wait for admin confirmation.")
+                    return redirect('pending_approval')
+                elif agent.status == 'rejected':
+                    messages.error(request, "Your agent registration was rejected. Please contact admin.")
+                    return redirect('login')
+                # If approved, continue with login
+            except Agent.DoesNotExist:
+                # Not an agent
+                pass
+
             login(request, user)  # Ensure user object is passed
             messages.success(request, "Login successful!")
             return redirect('KnowYourHair-home')  # Redirect to the home page after successful login
@@ -88,11 +103,45 @@ def login_view(request):
     return render(request, 'user/login.html')
 
 
+def pending_approval(request):
+    """View for agents to see their pending status"""
+    return render(request, 'user/pending_approval.html')
+
+
+# Admin view to see all pending agent requests
+@user_passes_test(lambda u: u.is_staff)
+def agent_approval_list(request):
+    pending_agents = Agent.objects.filter(status='pending')
+    return render(request, 'user/agent_approval_list.html', {
+        'pending_agents': pending_agents
+    })
+
+
+# Admin action to approve an agent
+@user_passes_test(lambda u: u.is_staff)
+def approve_agent(request, pk):
+    agent = get_object_or_404(Agent, pk=pk)
+    agent.status = 'approved'
+    agent.approved_at = timezone.now()
+    agent.save()
+    messages.success(request, f"Agent {agent.profile.user.username} has been approved.")
+    return redirect('agent_approval_list')
+
+
+# Admin action to reject an agent
+@user_passes_test(lambda u: u.is_staff)
+def reject_agent(request, pk):
+    agent = get_object_or_404(Agent, pk=pk)
+    agent.status = 'rejected'
+    agent.save()
+    messages.success(request, f"Agent {agent.profile.user.username} has been rejected.")
+    return redirect('agent_approval_list')
+
+
 def custom_logout(request):
     logout(request)
     messages.success(request, "Logged out successfully!")
     return redirect('login')  # Redirect to login page after logging out
-
 
 
 @login_required
@@ -245,6 +294,8 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'image': agent.profile.image.url,
         } for agent in agents]
 
+
+
         # Get all customers with their profiles and users
         customers = Customer.objects.select_related('profile', 'profile__user').all()
         context['customers'] = [{
@@ -256,6 +307,9 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'gender': customer.profile.gender,
             'image': customer.profile.image.url,
         } for customer in customers]
+
+
+
         products = Product.objects.select_related('author').all()
         context['products'] = [{
             'id': product.id,
