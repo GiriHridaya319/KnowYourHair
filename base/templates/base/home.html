@@ -39,6 +39,9 @@
 
       </div>
       <div class="header__content">
+          {% if user.is_authenticated %}
+          <h1>WELCOME <span>{{ request.user.username }}</span></h1>
+          {% endif %}
         <h1>UNLOCK YOUR<br /> <span>HAIR'S FUTURE </span> </h1><h2>DISCOVER, PREVENT, AND REVIVE.</h2>
         <p>
           Get a personalized hair fall risk assessment in seconds!
@@ -46,23 +49,15 @@
           Shop premium hair care products and connect with top clinics.
         </p>
         <form action="/">
-          <div class="input__row">
-            <div class="input__group">
-              <h5>Destination</h5>
-              <div>
-                <span><i class="ri-map-pin-line"></i></span>
-                <input type="text" placeholder="Paris, France" />
-              </div>
-            </div>
-            <div class="input__group">
-              <h5>Date</h5>
-              <div>
-                <span><i class="ri-calendar-2-line"></i></span>
-                <input type="text" placeholder="17 July 2024" />
-              </div>
-            </div>
-          </div>
-          <button type="submit">Search</button>
+          <div class="action__box">
+      <div class="action__text">
+        <h3>Ready to transform your hair journey?</h3>
+        <p>Take our scientifically-backed assessment to get started</p>
+      </div>
+      <a href="{% url 'KnowYourHair-hairfallprediction' %}" class="shop-btn">
+        Take the Quiz <i class="ri-arrow-right-line"></i>
+      </a>
+    </div>
         </form>
 
 
@@ -103,9 +98,9 @@
               <span>In-clinic and virtual appointments</span>
             </li>
           </ul>
-          <a href="#book-consultation" class="consult-btn">
-            <i class="fas fa-calendar-check"></i> Book Now
-          </a>
+
+            <a href="{% url 'dermatologist'  %}" class="consult-btn">
+                <i class="fas fa-calendar-check"></i> Book Now</a>
         </div>
       </div>
 
@@ -135,7 +130,7 @@
               <span>Get recommendations based on your hair fall risk</span>
             </li>
           </ul>
-          <a href="#shop-products" class="shop-btn">
+          <a href="{% url 'KnowYourHair-product' %}" class="shop-btn">
             <i class="fas fa-shopping-cart"></i> View Products
           </a>
         </div>
@@ -167,7 +162,7 @@
               <span>Personalized clinic recommendations</span>
             </li>
           </ul>
-          <a href="#find-clinic" class="consult-btn">
+          <a href="{% url 'KnowYourHair-clinic' %}" class="consult-btn">
             <i class="fas fa-map-marker-alt"></i> Find a Clinic
           </a>
         </div>
@@ -199,7 +194,7 @@
               <span>Predict future hair health based on age</span>
             </li>
           </ul>
-          <a href="#risk-assessment" class="consult-btn">
+          <a href="{% url 'KnowYourHair-hairfallprediction' %}" class="consult-btn">
             <i class="fas fa-question-circle"></i> Take the Quiz
           </a>
         </div>
@@ -207,7 +202,7 @@
     </div>
   </section>
 
-
+{% if not request.user.profile.agent %}
 <section class="agent-sections">
         <div class="container-agents">
             <div class="agent-wrappers">
@@ -322,6 +317,8 @@
         </div>
     </section>
 
+{% endif %}
+
 
 
 <section class="product-section-feature">
@@ -353,10 +350,176 @@
 </section>
 
 
+<section class="kyh-testimonials-section">
+        <div class="kyh-testimonials-container">
+            <div class="kyh-testimonials-header">
+                <h2 class="kyh-testimonials-title">Success Stories from Our Users</h2>
+                <p class="kyh-testimonials-subtitle">See how KnowYourHair has helped people take control of their hair health journey with personalized predictions and prevention strategies.</p>
+            </div>
 
+            <div class="kyh-testimonials-grid">
+                <!-- Testimonial Card 1 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="James Williams" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">James Williams</h3>
+                            <p class="kyh-testimonial-info">34 years old • Delhi</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">KnowYourHair predicted I had a high risk of hair loss by age 38. The dermatologist confirmed this and recommended products that have significantly improved my hair density. The prediction was spot on!</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">3 months ago</span>
+                            <span class="kyh-testimonial-result kyh-result-high">High Risk</span>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Testimonial Card 2 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="Priya Sharma" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">Priya Sharma</h3>
+                            <p class="kyh-testimonial-info">27 years old • Mumbai</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★☆
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">I was skeptical at first but the medium risk assessment was accurate. The product recommendations helped reduce my hair fall by almost 60%! The online consultation saved me a trip to the clinic.</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">1 month ago</span>
+                            <span class="kyh-testimonial-result kyh-result-medium">Medium Risk</span>
+                        </div>
+                    </div>
+                </div>
 
-<script>
+                <!-- Testimonial Card 3 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="Rahul Kapoor" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">Rahul Kapoor</h3>
+                            <p class="kyh-testimonial-info">42 years old • Bangalore</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">Already experiencing hair loss, the system accurately assessed my condition and connected me with Dr. Mehra who provided an excellent treatment plan. The convenience of booking appointments through the app is fantastic!</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">2 months ago</span>
+                            <span class="kyh-testimonial-result kyh-result-high">High Risk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial Card 4 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="Neha Gupta" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">Neha Gupta</h3>
+                            <p class="kyh-testimonial-info">31 years old • Hyderabad</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">I was relieved to get a low risk assessment. Still, the prevention tips are helping me maintain healthy hair. The nutritional advice and product recommendations are working wonders for my hair volume!</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">5 months ago</span>
+                            <span class="kyh-testimonial-result kyh-result-low">Low Risk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial Card 5 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="Vikram Singh" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">Vikram Singh</h3>
+                            <p class="kyh-testimonial-info">39 years old • Chennai</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★☆
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">KnowYourHair predicted medium risk with potential hair loss starting at age 45. The recommended products are affordable and effective. I appreciate the detailed explanations about prevention strategies.</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">4 months ago</span>
+                            <span class="kyh-testimonial-result kyh-result-medium">Medium Risk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial Card 6 -->
+                <div class="kyh-testimonial-card">
+                    <div class="kyh-testimonial-tag">Verified Customer</div>
+                    <div class="kyh-testimonial-header">
+                        <img src="/api/placeholder/150/150" alt="Anjali Desai" class="kyh-testimonial-avatar">
+                        <div class="kyh-testimonial-user">
+                            <h3 class="kyh-testimonial-name">Anjali Desai</h3>
+                            <p class="kyh-testimonial-info">26 years old • Pune</p>
+                            <div class="kyh-testimonial-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kyh-testimonial-content">
+                        <p class="kyh-testimonial-text">After my prediction showed high risk due to hormonal issues, I booked an appointment with a dermatologist through the app. The treatment plan is showing amazing results after just 2 months!</p>
+                        <div class="kyh-testimonial-meta">
+                            <span class="kyh-testimonial-date">2 months ago</span>
+                            <span class="kyh-testimonial-result kyh-result-high">High Risk</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kyh-view-more">
+                <a href="#" class="kyh-view-more-link">
+                    View More Testimonials
+                    <span class="kyh-arrow-icon">→</span>
+                </a>
+            </div>
+
+            <div class="kyh-testimonials-cta">
+                <a href="#" class="kyh-cta-button">Try KnowYourHair Today</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Simple script for testimonial cards interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.kyh-testimonial-card');
+
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+            });
+        });
+
 document.addEventListener('DOMContentLoaded', function() {
   const sliderTrack = document.querySelector('.slider-track-feature');
   const prevBtn = document.querySelector('.prev-btn');
