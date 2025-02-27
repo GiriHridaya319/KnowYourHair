@@ -132,6 +132,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.status = 'Pending'
         return super().form_valid(form)
 
     def test_func(self):
