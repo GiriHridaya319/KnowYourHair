@@ -1,15 +1,133 @@
 {% extends 'base/base.html' %}
+
+{% block footer %}{% endblock %}
+
 {% block content %}
 <style>
+    .page-header {
+        margin: 80px;
+        border-bottom: 2px solid #f2f2f2;
+        text-align: center;
+        padding-bottom: 15px;
+    }
 
+    .page-title {
+        color: #333;
+        font-weight: 500;
+    }
 
+    .page-title span {
+        color: #0066cc;
+    }
+
+    .approval-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .approval-table th {
+        background-color: #f7f7f7;
+        color: #555;
+        font-weight: 500;
+        text-align: center;
+        padding: 12px 15px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .approval-table td {
+        text-align: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid #efefef;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-approve {
+        background-color: #e6f0ff;
+        border: 1px solid #cce0ff;
+        color: #0066cc;
+        padding: 6px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-approve:hover {
+        background-color: #d6e6ff;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
+    }
+
+    .btn-reject {
+        background-color: #fff0e6;
+        border: 1px solid #ffe0cc;
+        color: #ff7f00;
+        padding: 6px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-reject:hover {
+        background-color: #ffe6d6;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(255, 127, 0, 0.2);
+    }
+
+    .no-requests {
+        background-color: #f9f9f9;
+        padding: 15px;
+        color: #666;
+        border-radius: 4px;
+        text-align: center;
+        margin: 30px auto;
+        max-width: 500px;
+    }
+
+    .back-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .back-btn {
+        background-color: grey;
+        border: 1px solid #e0e0e0;
+        color: white;
+        padding: 8px 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .back-btn:hover {
+        background-color: #555;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 </style>
+
 <div class="container mt-5">
-    <h2>Agent Approval Requests</h2>
-    
+    <div class="page-header">
+        <h2 class="page-title">Agent <span>Approval</span> Requests</h2>
+    </div>
+
     {% if pending_agents %}
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="approval-table">
             <thead>
                 <tr>
                     <th>Username</th>
@@ -23,10 +141,16 @@
                 <tr>
                     <td>{{ agent.profile.user.username }}</td>
                     <td>{{ agent.profile.user.email }}</td>
-                    <td>{{ agent.profile.user.date_joined }}</td>
+                    <td>{{ agent.profile.user.date_joined|date:"M d, Y" }}</td>
                     <td>
-                        <a href="{% url 'approve_agent' agent.pk %}" class="btn btn-success btn-sm">Approve</a>
-                        <a href="{% url 'reject_agent' agent.pk %}" class="btn btn-danger btn-sm">Reject</a>
+                        <div class="action-buttons">
+                            <a href="{% url 'approve_agent' agent.pk %}" class="btn-approve">
+                                <i class="fas fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'reject_agent' agent.pk %}" class="btn-reject">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -34,11 +158,15 @@
         </table>
     </div>
     {% else %}
-    <div class="alert alert-info">
-        <p>No pending agent approval requests.</p>
+    <div class="no-requests">
+        <p class="mb-0">No pending agent approval requests.</p>
     </div>
     {% endif %}
-    
-    <a href="{% url 'adminDash' %}" class="btn btn-primary">Back to Admin Dashboard</a>
+
+    <div class="back-btn-container">
+        <a href="{% url 'adminDash' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+        </a>
+    </div>
 </div>
 {% endblock %}
