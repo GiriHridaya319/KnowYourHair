@@ -1,4 +1,4 @@
-Gender,Age,Hairline Pattern,Hair Fall Rate,Nutrition,Chemical Product Usage,Label,Genetics,Past Chronic Illness,Sleep Disturbance,Water Quality Issue,Stress,Food Habit,Hormonal Changes,Hair Care Habits,Smoking
+eGender,Age,Hairline Pattern,Hair Fall Rate,Nutrition,Chemical Product Usage,Label,Genetics,Past Chronic Illness,Sleep Disturbance,Water Quality Issue,Stress,Food Habit,Hormonal Changes,Hair Care Habits,Smoking
 1,20,2,58,1,0.0,1,1.5,0.0,1,1,1,0,1,0.0,1
 0,41,2,58,9,0.0,0,0.0,0.0,1,1,2,0,1,1.2,1
 0,15,2,58,1,3.0,1,0.0,0.0,1,1,0,0,1,0.0,1
