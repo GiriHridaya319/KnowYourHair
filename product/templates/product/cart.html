@@ -57,7 +57,11 @@
         </div>
     </div>
 
-    <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    <button class="checkout-btn" id="checkout-btn" onclick="window.location.href='{% url 'checkout' %}'">
+    Proceed to Checkout
+</button>
+
+
     {% else %}
     <div style="text-align: center; padding: 40px;">
         <p style="font-size: 18px; color: var(--primary-blue); margin-bottom: 20px;">Your cart is empty</p>
@@ -168,12 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Checkout button
-    document.getElementById('checkout-btn')?.addEventListener('click', () => {
-        // Add your checkout logic here
-        alert('Proceeding to checkout...');
-        // Redirect to checkout page or open checkout modal
-    });
+
 });
 </script>
 {% endblock %}

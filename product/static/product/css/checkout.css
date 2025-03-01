@@ -1,0 +1,455 @@
+/* Enhanced color variables with stronger orangey-blue combination */
+:root {
+  --primary-blue: #0055a4;
+  --secondary-blue: #003366;
+  --primary-orange: #ff7e00;
+  --secondary-orange: #ff5500;
+  --light-orange: #fff0e6;
+  --light-blue: #e6f0ff;
+  --white: #ffffff;
+  --light-gray: #f8f9fa;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #444444;
+  --shadow: rgba(0, 0, 0, 0.08);
+}
+
+
+.container-check {
+  max-width: 1600px;
+  margin: 2rem auto;
+  padding: 0 15px;
+}
+
+/* Page title styling with enhanced gradient */
+h2 {
+  color: var(--secondary-blue);
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+h2:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100px;
+  background: linear-gradient(to right, var(--primary-orange), var(--primary-blue));
+  border-radius: 2px;
+}
+
+/* Enhanced card styling */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px var(--shadow);
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  background-color: var(--white);
+}
+
+.card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 35px rgba(0, 85, 164, 0.1);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: var(--white);
+  border-bottom: none;
+  padding: 1.2rem 1.8rem;
+  font-weight: 600;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.card-header h5:before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 24px;
+  background-color: var(--primary-orange);
+  margin-right: 12px;
+  border-radius: 4px;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Order summary table styling */
+.table {
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.table thead th {
+  border: none;
+  background-color: var(--light-blue);
+  color: var(--secondary-blue);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.table tbody tr {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease;
+}
+
+.table tbody tr:hover {
+  transform: scale(1.01);
+  background-color: var(--light-orange);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  padding: 1.2rem 1rem;
+  border: none;
+  background-color: var(--white);
+}
+
+.table tbody td:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.table tbody td:last-child {
+  border-radius: 0 8px 8px 0;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.table tfoot tr td {
+  padding-top: 1.5rem;
+  font-weight: 700;
+  border: none;
+  color: var(--secondary-blue);
+  font-size: 1.1rem;
+}
+
+.table tfoot tr td:last-child {
+  color: var(--primary-orange);
+  font-size: 1.2rem;
+}
+
+/* Product image styling */
+.img-thumbnail {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  padding: 3px;
+  background: linear-gradient(145deg, var(--primary-blue), var(--primary-orange));
+}
+
+.img-thumbnail:hover {
+  transform: scale(1.15);
+}
+
+/* Enhanced Form styling */
+.form-label {
+  color: var(--secondary-blue);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  position: relative;
+  display: inline-block;
+}
+
+.form-label:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 30%;
+  background-color: var(--primary-orange);
+  border-radius: 1px;
+}
+
+.form-control {
+  border-radius: 10px;
+  border: 2px solid var(--medium-gray);
+  padding: 0.9rem 1.2rem;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 4px rgba(255, 126, 0, 0.2);
+  border-color: var(--primary-orange);
+  background-color: var(--white);
+}
+
+.form-control[readonly] {
+  background-color: var(--light-blue);
+  border-color: var(--primary-blue);
+  opacity: 0.8;
+  color: var(--secondary-blue);
+  font-weight: 500;
+}
+
+/* Form container styling */
+.shipping-form-container {
+  position: relative;
+  padding: 0.5rem;
+}
+
+.shipping-form-container:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(to left, rgba(255, 126, 0, 0.1), transparent);
+  z-index: 0;
+  border-radius: 0 10px 10px 0;
+  pointer-events: none;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem !important;
+  position: relative;
+}
+
+/* Enhanced Button styling */
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.4s ease;
+  box-shadow: 0 6px 15px rgba(255, 126, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--secondary-orange), var(--primary-orange));
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255, 126, 0, 0.4);
+}
+
+.btn-primary:hover:before {
+  left: 100%;
+}
+
+.btn-primary:focus, .btn-primary:active {
+  box-shadow: 0 0 0 4px rgba(255, 126, 0, 0.4);
+  outline: none;
+}
+
+/* Special field decorations for hair loss system */
+.form-decoration {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-blue);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+input:focus + .form-decoration,
+textarea:focus + .form-decoration {
+  color: var(--primary-orange);
+  opacity: 1;
+  right: 20px;
+}
+
+/* Add a custom progress indicator for the hair loss prediction checkout */
+.prediction-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+  position: relative;
+}
+
+.prediction-progress:after {
+  content: '';
+  position: absolute;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary-orange) 50%, var(--medium-gray) 50%);
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.progress-step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 4px solid var(--medium-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--dark-gray);
+  z-index: 2;
+  position: relative;
+}
+
+.progress-step.active {
+  border-color: var(--primary-orange);
+  background-color: var(--primary-orange);
+  color: var(--white);
+  box-shadow: 0 0 0 5px rgba(255, 126, 0, 0.2);
+}
+
+.progress-step.completed {
+  border-color: var(--primary-blue);
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
+
+/* Hair loss system specific styling */
+.prediction-info {
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to right, var(--light-blue), var(--light-orange));
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.prediction-info:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-blue), var(--primary-orange));
+}
+
+.prediction-info p {
+  margin-bottom: 0.5rem;
+  color: var(--dark-gray);
+}
+
+.prediction-info strong {
+  color: var(--primary-blue);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem 1rem;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 1.5rem;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .table tbody td {
+    display: block;
+    text-align: right;
+    padding: 0.8rem 1rem;
+    position: relative;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .table tbody td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--primary-blue);
+  }
+
+  .d-flex.align-items-center {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .img-thumbnail {
+    margin-bottom: 0.8rem;
+    max-width: 80px;
+  }
+
+  .prediction-progress {
+    margin-bottom: 2rem;
+    padding: 0;
+  }
+}
+
+/* Additional styling for form inputs specific to hair loss prediction */
+textarea.form-control {
+  background-image: linear-gradient(to bottom, var(--white) 97%, var(--primary-orange) 3%);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s ease;
+}
+
+textarea.form-control:focus {
+  background-size: 100% 100%;
+}
+
+#phone {
+  letter-spacing: 1px;
+}
+
+/* Animation for form interaction */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.form-control:focus::placeholder {
+  color: var(--primary-orange);
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  animation: pulse 0.3s ease;
+}

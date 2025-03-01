@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from hairfallprediction.models import Product
+from product.models import OrderDetail, Order
 
 
 def ProductSearch(request):
@@ -270,3 +271,95 @@ def cart_detail(request):
         'cart_items': cart_items,
         'total': total
     })
+
+
+# order and payment
+
+@login_required
+def checkout(request):
+    cart = request.session.get('cart', {})
+
+    if not cart:
+        messages.warning(request, "Your cart is empty")
+        return redirect('KnowYourHair-product')
+
+    cart_items = []
+    total = Decimal('0.00')
+
+    for product_id, item in cart.items():
+        product = get_object_or_404(Product, id=product_id, status='Approved')
+
+        # Validate stock availability
+        if item['quantity'] > product.stock:
+            messages.error(request, f"Not enough stock for {product.name}. Available: {product.stock}")
+            return redirect('cart_detail')
+
+        subtotal = Decimal(item['price']) * item['quantity']
+        cart_items.append({
+            'product': product,
+            'quantity': item['quantity'],
+            'price': Decimal(item['price']),
+            'subtotal': subtotal
+        })
+        total += subtotal
+
+    return render(request, 'product/checkout.html', {
+        'cart_items': cart_items,
+        'total': total
+    })
+
+
+@login_required
+def order_review(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+
+        if not cart:
+            messages.warning(request, "Your cart is empty")
+            return redirect('KnowYourHair-product')
+
+        # Get shipping information from form
+        shipping_address = request.POST.get('address', '')
+        phone = request.POST.get('phone', '')
+        first_name = request.POST.get('first_name', '')
+        last_name = request.POST.get('last_name', '')
+
+        # Process cart items
+        cart_items = []
+        total = Decimal('0.00')
+
+        for product_id, item in cart.items():
+            product = get_object_or_404(Product, id=product_id, status='Approved')
+
+            # Final stock validation
+            if item['quantity'] > product.stock:
+                messages.error(request, f"Not enough stock for {product.name}. Available: {product.stock}")
+                return redirect('cart_detail')
+
+            subtotal = Decimal(item['price']) * item['quantity']
+            cart_items.append({
+                'product': product,
+                'quantity': item['quantity'],
+                'price': Decimal(item['price']),
+                'subtotal': subtotal
+            })
+            total += subtotal
+
+        # Save shipping info in session for order creation
+        request.session['shipping_info'] = {
+            'address': shipping_address,
+            'phone': phone,
+            'first_name': first_name,
+            'last_name': last_name,
+        }
+
+        return render(request, 'product/order_review.html', {
+            'cart_items': cart_items,
+            'total': total,
+            'shipping_address': shipping_address,
+            'phone': phone,
+            'first_name': first_name,
+            'last_name': last_name
+        })
+
+    return redirect('checkout')

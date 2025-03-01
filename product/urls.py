@@ -24,8 +24,14 @@ urlpatterns = [
     path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/update/', views.update_cart, name='update_cart'),
 
+    path('checkout/', views.checkout, name='checkout'),
+    path('order/review/', views.order_review, name='order_review'),
+
+
     # Move the catch-all slug pattern to the end
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
+
+
 ]
 
 if settings.DEBUG:

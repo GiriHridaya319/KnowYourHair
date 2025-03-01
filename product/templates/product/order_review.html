@@ -1,0 +1,84 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block orderReview_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/orderReview.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Review Your Order</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-2" style="max-width: 50px;">
+                                        {{ item.product.name }}
+                                    </div>
+                                </td>
+                                <td>${{ item.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td><strong>${{ total }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ first_name }} {{ last_name }} </p>
+                    <p><strong>Email:</strong> {{ request.user.email }}</p>
+                    <p><strong>Address:</strong> {{ shipping_address }}</p>
+                    <p><strong>Phone:</strong> {{ phone }}</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'checkout' %}" class="btn btn-secondary">Edit Information</a>
+                            <button type="submit" class="btn btn-success">Proceed to Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
