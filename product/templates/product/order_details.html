@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block orderDetail_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/orderDetail.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="order-details-container">
+    <h2 class="order-details-title">Order #{{ order.id }}</h2>
+
+    <div class="order-details-card">
+        <div class="order-details-card-header">
+            <h5>Order Information</h5>
+        </div>
+        <div class="order-details-card-body">
+            <div class="order-details-row">
+                <div class="order-details-col">
+                    <p class="order-details-info"><strong>Order Number:</strong> #{{ order.id }}</p>
+                    <p class="order-details-info"><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+                    <p class="order-details-info">
+                        <strong>Status:</strong>
+                        <span class="order-details-badge
+                            {% if order.status == 'Pending' %}order-details-badge-warning
+                            {% elif order.status == 'Processing' %}order-details-badge-info
+                            {% elif order.status == 'Shipped' %}order-details-badge-primary
+                            {% elif order.status == 'Delivered' %}order-details-badge-success
+                            {% else %}order-details-badge-danger{% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </p>
+                </div>
+                <div class="order-details-col">
+                    <p class="order-details-info"><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                    <p class="order-details-info"><strong>Phone:</strong> {{ order.phone }}</p>
+                    <p class="order-details-info"><strong>Total Amount:</strong> <span class="order-details-amount">${{ order.total_amount }}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-details-card">
+        <div class="order-details-card-header">
+            <h5>Order Items</h5>
+        </div>
+        <div class="order-details-card-body">
+            <table class="order-details-table">
+                <thead class="order-details-table-head">
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="order-details-table-body">
+                    {% for item in order_details %}
+                    <tr>
+                        <td>
+                            <div class="order-details-product">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="order-details-product-image">
+                                <span class="order-details-product-name">{{ item.product.name }}</span>
+                            </div>
+                        </td>
+                        <td>${{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="order-details-amount">${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="order-details-table-foot">
+                    <tr>
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td class="order-details-amount"><strong>${{ order.total_amount }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+           <a href="{% url 'payment_process' %}" class="cancel-order-button-return">Return to Payment</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

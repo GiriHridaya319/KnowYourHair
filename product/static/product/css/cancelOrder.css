@@ -1,0 +1,282 @@
+/* cancelOrder.css - Enhanced Version */
+
+/* Color Variables */
+:root {
+  --co-blue-dark: #1a4367;
+  --co-blue-medium: #2980b9;
+  --co-blue-light: #d4e6f1;
+  --co-blue-pale: #eaf2f8;
+  --co-orange-dark: #d35400;
+  --co-orange-medium: #e67e22;
+  --co-orange-light: #f8c471;
+  --co-orange-pale: #fef5e7;
+  --co-gray-dark: #34495e;
+  --co-gray-light: #ecf0f1;
+  --co-white: #ffffff;
+  --co-danger: #e74c3c;
+  --co-success: #27ae60;
+}
+
+/* Reset and Base Styles */
+.cancel-order-container {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--co-gray-dark);
+  max-width: 1250px;
+  margin: 2rem auto;
+  background-color: var(--co-white);
+  padding: 0;
+}
+
+/* Page Header Styles */
+.cancel-order-title {
+  color: var(--co-blue-dark);
+  font-size: 1.8rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 12px;
+  margin-bottom: 25px;
+}
+
+.cancel-order-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100px;
+  background: linear-gradient(to right, var(--co-blue-medium), var(--co-orange-medium));
+  border-radius: 2px;
+}
+
+/* Message Alert Styles */
+.cancel-order-messages {
+  margin-bottom: 25px;
+}
+
+.cancel-order-alert {
+  border: none;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 15px;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.cancel-order-alert-error {
+  background-color: #fdedeb;
+  border-left: 5px solid var(--co-danger);
+  color: #922b21;
+}
+
+.cancel-order-alert-success {
+  background-color: #e9f7ef;
+  border-left: 5px solid var(--co-success);
+  color: #196f3d;
+}
+
+.cancel-order-alert-info {
+  background-color: var(--co-blue-pale);
+  border-left: 5px solid var(--co-blue-medium);
+  color: #1a5276;
+}
+
+/* Card Styles */
+.cancel-order-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.cancel-order-card-header {
+  background: linear-gradient(135deg, var(--co-blue-dark), var(--co-blue-medium));
+  color: var(--co-white);
+  padding: 18px 24px;
+  position: relative;
+}
+
+.cancel-order-card-header h5 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.cancel-order-card-body {
+  padding: 28px 24px;
+  background-color: var(--co-white);
+}
+
+/* Warning Alert Styles */
+.cancel-order-warning {
+  background-color: var(--co-orange-pale);
+  border-left: 5px solid var(--co-orange-medium);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.cancel-order-warning-heading {
+  color: var(--co-orange-dark);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.cancel-order-warning p {
+  color: #884400;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+/* Order Summary Styles */
+.cancel-order-summary {
+  background-color: var(--co-blue-pale);
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 25px;
+  border: 1px solid var(--co-blue-light);
+}
+
+.cancel-order-summary-title {
+  color: var(--co-blue-dark);
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.cancel-order-summary-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 60px;
+  background-color: var(--co-orange-medium);
+}
+
+/* Table Styles */
+.cancel-order-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+}
+
+.cancel-order-table-head {
+  background-color: rgba(41, 128, 185, 0.1);
+}
+
+.cancel-order-table-head th {
+  color: var(--co-blue-dark);
+  font-weight: 600;
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--co-blue-light);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.cancel-order-table-body td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--co-gray-light);
+  font-size: 0.95rem;
+}
+
+.cancel-order-table-foot {
+  background-color: rgba(41, 128, 185, 0.05);
+}
+
+.cancel-order-table-foot td {
+  padding: 16px;
+  font-weight: 600;
+}
+
+.cancel-order-amount {
+  color: var(--co-blue-dark);
+  font-weight: 700;
+}
+
+/* Form and Button Styles */
+.cancel-order-form {
+  margin-top: 28px;
+}
+
+.cancel-order-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cancel-order-button-return {
+  background-color: var(--co-blue-medium);
+  color: var(--co-white);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cancel-order-button-return:hover {
+  background-color: var(--co-blue-dark);
+  box-shadow: 0 4px 10px rgba(26, 67, 103, 0.3);
+  transform: translateY(-2px);
+  color: var(--co-white);
+  text-decoration: none;
+}
+
+.cancel-order-button-cancel {
+  background-color: var(--co-orange-medium);
+  color: var(--co-white);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.cancel-order-button-cancel:hover {
+  background-color: var(--co-orange-dark);
+  box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Product Info Styles */
+.cancel-order-product-name {
+  font-weight: 500;
+  color: var(--co-gray-dark);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .cancel-order-container {
+    padding: 0 15px;
+  }
+
+  .cancel-order-card-body {
+    padding: 20px 15px;
+  }
+
+  .cancel-order-table-head th,
+  .cancel-order-table-body td,
+  .cancel-order-table-foot td {
+    padding: 12px 10px;
+    font-size: 0.85rem;
+  }
+
+  .cancel-order-button-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cancel-order-button-return,
+  .cancel-order-button-cancel {
+    width: 100%;
+    text-align: center;
+  }
+}

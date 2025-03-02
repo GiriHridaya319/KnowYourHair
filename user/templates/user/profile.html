@@ -85,6 +85,12 @@
         <i class="fas fa-edit"></i>
         Change Password
     </a>
+
+          <a href="{% url 'my_orders' %}" class="btn-profile btn-profile-primary">
+        <i class="fas fa-edit"></i>
+        My Orders
+    </a>
+
     {% if request.user.profile.agent %}
         <a href="{% url 'agentDetails' %}" class="btn-profile btn-profile-primary">
             <i class="fas fa-edit"></i>

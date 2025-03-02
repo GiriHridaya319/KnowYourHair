@@ -1,0 +1,60 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block myOrders_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/myOrders.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="order-list-container">
+    <h2 class="order-list-title">My Orders</h2>
+
+    {% if orders %}
+        <div class="order-list-table-container">
+            <table class="order-list-table">
+                <thead class="order-list-table-head">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="order-list-table-body">
+                    {% for order in orders %}
+                    <tr>
+                        <td class="order-list-order-id">#{{ order.id }}</td>
+                        <td class="order-list-date">{{ order.created_at|date:"F j, Y" }}</td>
+                        <td class="order-list-amount">${{ order.total_amount }}</td>
+                        <td>
+                            <span class="order-list-badge
+                                {% if order.status == 'Pending' %}order-list-badge-warning
+                                {% elif order.status == 'Processing' %}order-list-badge-info
+                                {% elif order.status == 'Shipped' %}order-list-badge-primary
+                                {% elif order.status == 'Delivered' %}order-list-badge-success
+                                {% else %}order-list-badge-danger{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'order_details' order.id %}" class="order-list-button">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="order-list-alert">
+            <p>You haven't placed any orders yet.</p>
+            <a href="{% url 'KnowYourHair-product' %}" class="order-list-browse-button">Browse Products</a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

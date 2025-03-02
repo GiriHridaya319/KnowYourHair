@@ -8,6 +8,10 @@
     --neutral-gray: #f6f7f9;
   }
 
+  .container {
+    max-width: 1500px;
+    margin: 50px auto;
+  }
 
   .page-title {
     color: var(--dark-blue);

@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block cancelOrder_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'product/css/cancelOrder.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cancel-order-container">
+    <h2 class="cancel-order-title">Cancel Order #{{ order.id }}</h2>
+
+    {% if messages %}
+    <div class="cancel-order-messages">
+        {% for message in messages %}
+        <div class="cancel-order-alert {% if message.tags == 'error' %}cancel-order-alert-error{% elif message.tags == 'success' %}cancel-order-alert-success{% else %}cancel-order-alert-info{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="cancel-order-card">
+        <div class="cancel-order-card-header">
+            <h5>Confirm Cancellation</h5>
+        </div>
+        <div class="cancel-order-card-body">
+            <div class="cancel-order-warning">
+                <h4 class="cancel-order-warning-heading">Are you sure?</h4>
+                <p>You are about to cancel your order. This action cannot be undone.</p>
+            </div>
+
+            <div class="cancel-order-summary">
+                <h6 class="cancel-order-summary-title">Order Summary</h6>
+                <table class="cancel-order-table">
+                    <thead class="cancel-order-table-head">
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody class="cancel-order-table-body">
+                        {% for item in order.order_details.all %}
+                        <tr>
+                            <td class="cancel-order-product-name">{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="cancel-order-table-foot">
+                        <tr>
+                            <td colspan="2"><strong>Total Amount:</strong></td>
+                            <td class="cancel-order-amount"><strong>${{ order.total_amount }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <form method="post" action="" class="cancel-order-form">
+                {% csrf_token %}
+                <div class="cancel-order-button-container">
+                    <a href="{% url 'payment_process' %}" class="cancel-order-button-return">Return to Payment</a>
+                    <button type="submit" class="cancel-order-button-cancel">Yes, Cancel Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

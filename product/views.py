@@ -2,12 +2,14 @@ from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from hairfallprediction.models import Product
+from product import models
 from product.models import OrderDetail, Order
 
 
@@ -426,3 +428,167 @@ def create_order(request):
     return redirect('checkout')
 
 
+
+
+@login_required
+def payment_process(request):
+    # Get order ID from session
+    order_id = request.session.get('pending_order_id')
+
+    if not order_id:
+        messages.error(request, "No pending order found")
+        return redirect('KnowYourHair-product')
+
+    # Get the order object
+    order = get_object_or_404(Order, id=order_id, user=request.user, status='Pending')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'cancel':
+            # Redirect to cancel order page
+            return redirect('cancel_order', order_id=order.id)
+
+        elif action == 'update':
+            # Redirect to update order page
+            return redirect('update_order', order_id=order.id)
+
+        elif action == 'pay':
+            # Process payment with selected wallet
+            wallet = request.POST.get('wallet', 'esewa')
+
+            # In a real implementation, you would redirect to the payment gateway here
+            # For now, we'll simulate a successful payment
+
+            # Update order status
+            order.status = 'Processing'
+            order.save()
+
+            # Clear the pending order ID from session
+            if 'pending_order_id' in request.session:
+                del request.session['pending_order_id']
+
+            messages.success(request,
+                             f"Payment successful with {wallet.capitalize()}. Your order is now being processed.")
+            return redirect('order_details', order_id=order.id)
+
+    # For GET request, display payment page with order details
+    return render(request, 'product/payment_process.html', {
+        'order': order,
+        'total': order.total_amount,
+        'order_id': f'ORD-{order.id}'
+    })
+
+
+@login_required
+def update_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status != 'Pending':
+        messages.error(request, "Only pending orders can be updated.")
+        return redirect('order_details', order_id=order.id)
+
+    order_items = list(order.order_details.select_related('product'))
+
+    if request.method == 'POST':
+        updated = False
+        order_total = Decimal('0.00')
+
+        for item in order_items:
+            new_quantity = request.POST.get(f'quantity_{item.id}')
+            if new_quantity is None:
+                continue  # Skip if quantity isn't provided
+
+            try:
+                new_quantity = int(new_quantity)
+
+                if new_quantity == item.quantity:
+                    order_total += item.subtotal
+                    continue  # No change, move to the next item
+
+                if new_quantity <= 0:
+                    # Restore stock and delete item
+                    item.product.stock += item.quantity
+                    item.product.save()
+                    item.delete()
+                    updated = True
+                    continue
+
+                # Handle stock availability
+                stock_difference = new_quantity - item.quantity
+                if stock_difference > 0 and stock_difference > item.product.stock:
+                    messages.error(request, f"Not enough stock for {item.product.name}. Available: {item.product.stock}")
+                    return redirect('update_order', order_id=order.id)
+
+                # Update stock and item quantity
+                item.product.stock -= stock_difference
+                item.product.save()
+
+                item.quantity = new_quantity
+                item.save()
+                order_total += item.subtotal
+                updated = True
+
+            except ValueError:
+                messages.error(request, "Invalid quantity entered.")
+                return redirect('update_order', order_id=order.id)
+
+        # Update order total or delete if empty
+        if order.order_details.exists():
+            if updated:
+                order.total_amount = order_total
+                order.save()
+                messages.success(request, "Order updated successfully.")
+        else:
+            order.delete()
+            messages.info(request, "Order cancelled as all items were removed.")
+            return redirect('my_orders')
+
+        return redirect('order_details', order_id=order.id)
+
+    return render(request, 'product/update_order.html', {'order': order, 'order_items': order_items})
+
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status != 'Pending':
+        messages.error(request, "Only pending orders can be cancelled.")
+        return redirect('order_details', order_id=order.id)
+
+    if request.method == 'POST':
+        # Use `bulk_update` for better performance
+        for item in order.order_details.all():
+            item.product.stock += item.quantity
+            item.product.save()
+
+        order.delete()
+        messages.success(request, "Order cancelled successfully.")
+        return redirect('my_orders')
+
+    return render(request, 'product/confirm_cancel_order.html', {'order': order})
+
+
+@login_required
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_details = list(order.order_details.all())  # Fetch once, reuse
+
+    if request.method == 'POST' and 'confirm' in request.POST:
+        if order.status == 'Pending':
+            order.status = 'Processing'
+            order.save()
+            messages.success(request, "Order confirmed and is now being processed.")
+            return redirect('payment_process', order_id=order.id)
+
+    return render(request, 'product/order_details.html', {
+        'order': order,
+        'order_details': order_details
+    })
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'product/my_orders.html', {'orders': orders})
