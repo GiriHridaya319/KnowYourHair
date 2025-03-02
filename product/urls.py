@@ -26,6 +26,11 @@ urlpatterns = [
 
     path('checkout/', views.checkout, name='checkout'),
     path('order/review/', views.order_review, name='order_review'),
+    path('order/create/', views.create_order, name='create_order'),
+    path('order/<int:order_id>/', views.order_details, name='order_details'),
+    path('my-orders/', views.my_orders, name='my_orders'),
+    path('order/<int:order_id>/update/', views.update_order, name='update_order'),
+    path('order/<int:order_id>/cancel/', views.cancel_order, name='cancel_order'),
 
 
     # Move the catch-all slug pattern to the end

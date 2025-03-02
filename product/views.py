@@ -363,3 +363,66 @@ def order_review(request):
         })
 
     return redirect('checkout')
+
+
+@login_required
+def create_order(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        shipping_info = request.session.get('shipping_info', {})
+
+        if not cart or not shipping_info:
+            messages.warning(request, "Your cart is empty or shipping information is missing")
+            return redirect('cart_detail')
+
+        # Calculate total
+        total_amount = Decimal('0.00')
+        for product_id, item in cart.items():
+            subtotal = Decimal(item['price']) * item['quantity']
+            total_amount += subtotal
+
+        # Create order
+        order = Order.objects.create(
+            user=request.user,
+            total_amount=total_amount,
+            status='Pending',
+            shipping_address=shipping_info.get('address', ''),
+            phone=shipping_info.get('phone', '')
+        )
+
+        # Create order details and update stock
+        for product_id, item in cart.items():
+            product = get_object_or_404(Product, id=product_id, status='Approved')
+
+            # Final stock check
+            if item['quantity'] > product.stock:
+                # Delete the created order if stock is insufficient
+                order.delete()
+                messages.error(request, f"Not enough stock for {product.name}. Available: {product.stock}")
+                return redirect('cart_detail')
+
+            # Create order detail
+            OrderDetail.objects.create(
+                order=order,
+                product=product,
+                quantity=item['quantity'],
+                price=Decimal(item['price'])
+            )
+
+            # Update product stock
+            product.stock -= item['quantity']
+            product.save()
+
+        # Clear cart and shipping info from session
+        request.session['cart'] = {}
+        if 'shipping_info' in request.session:
+            del request.session['shipping_info']
+
+        # Save order ID in session for payment processing
+        request.session['pending_order_id'] = order.id
+
+        return redirect('payment_process')
+
+    return redirect('checkout')
+
+
