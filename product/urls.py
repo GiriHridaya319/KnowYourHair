@@ -31,13 +31,13 @@ urlpatterns = [
     path('my-orders/', views.my_orders, name='my_orders'),
     path('order/<int:order_id>/update/', views.update_order, name='update_order'),
     path('order/<int:order_id>/cancel/', views.cancel_order, name='cancel_order'),
-    path('order/payment/', views.payment_process, name='payment_process'),
 
+    # Add the payment_process with order_id parameter
+    path('order/payment/', views.payment_process, name='payment_process'),
+    path('order/<int:order_id>/payment/', views.payment_process, name='payment_process_with_id'),
 
     # Move the catch-all slug pattern to the end
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
-
-
 ]
 
 if settings.DEBUG:

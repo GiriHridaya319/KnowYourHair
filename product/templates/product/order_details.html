@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'product/css/orderDetail.css' %}">
 {% endblock %}
 
-
 {% block content %}
 
 <div class="order-details-container">
@@ -37,7 +36,7 @@
                 <div class="order-details-col">
                     <p class="order-details-info"><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
                     <p class="order-details-info"><strong>Phone:</strong> {{ order.phone }}</p>
-                    <p class="order-details-info"><strong>Total Amount:</strong> <span class="order-details-amount">${{ order.total_amount }}</span></p>
+                    <p class="order-details-info"><strong>Total Amount:</strong> <span class="order-details-amount">रु {{ order.total_amount }}</span></p>
                 </div>
             </div>
         </div>
@@ -66,20 +65,34 @@
                                 <span class="order-details-product-name">{{ item.product.name }}</span>
                             </div>
                         </td>
-                        <td>${{ item.price }}</td>
+                        <td>रु {{ item.price }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td class="order-details-amount">${{ item.subtotal }}</td>
+                        <td class="order-details-amount">रु {{ item.subtotal }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot class="order-details-table-foot">
                     <tr>
                         <td colspan="3"><strong>Total</strong></td>
-                        <td class="order-details-amount"><strong>${{ order.total_amount }}</strong></td>
+                        <td class="order-details-amount"><strong>रु {{ order.total_amount }}</strong></td>
                     </tr>
                 </tfoot>
             </table>
-           <a href="{% url 'payment_process' %}" class="cancel-order-button-return">Return to Payment</a>
+            <br>
+            {% if order.status == 'Pending' %}
+            <div class="order-details-actions">
+                <a href="{% url 'payment_process_with_id' order_id=order.id %}" class="cancel-order-button-return">Proceed to Payment</a>
+                <a href="{% url 'update_order' order_id=order.id %}" class="cancel-order-button-return">Update Order</a>
+                <a href="{% url 'cancel_order' order_id=order.id %}" class="cancel-order-button-return">Cancel Order</a>
+            </div>
+            {% elif order.status == 'Processing' %}
+            <div class="order-details-info-message">
+                Your order is being processed. Thank you for your purchase!
+            </div>
+
+            {% endif %}
+            <br>
+            <a href="{% url 'my_orders' %}" class="cancel-order-button-return">Back to My Orders</a>
         </div>
     </div>
 </div>

@@ -37,16 +37,16 @@
                                         {{ item.product.name }}
                                     </div>
                                 </td>
-                                <td>${{ item.price }}</td>
+                                <td>रु {{ item.price }}</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>${{ item.subtotal }}</td>
+                                <td>रु {{ item.subtotal }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="3"><strong>Total</strong></td>
-                                <td><strong>${{ total }}</strong></td>
+                                <td><strong>रु {{ total }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>

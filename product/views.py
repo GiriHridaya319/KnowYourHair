@@ -428,31 +428,34 @@ def create_order(request):
     return redirect('checkout')
 
 
-
-
 @login_required
-def payment_process(request):
-    # Get order ID from session
-    order_id = request.session.get('pending_order_id')
+def payment_process(request, order_id=None):
+    # First try to get order_id from the URL parameter
+    if order_id is None:
+        # If not in URL, fall back to session
+        order_id = request.session.get('pending_order_id')
 
-    if not order_id:
-        messages.error(request, "No pending order found")
-        return redirect('KnowYourHair-product')
+        if not order_id:
+            messages.error(request, "No pending order found")
+            return redirect('my_orders')
 
-    # Get the order object
-    order = get_object_or_404(Order, id=order_id, user=request.user, status='Pending')
+    # Get the order object - ensure it belongs to current user and is still pending
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status != 'Pending':
+        messages.warning(request, "This order is no longer pending payment.")
+        return redirect('order_details', order_id=order.id)
+
+    # Store the order ID in session for consistency
+    request.session['pending_order_id'] = order.id
 
     if request.method == 'POST':
         action = request.POST.get('action')
 
         if action == 'cancel':
-            # Redirect to cancel order page
             return redirect('cancel_order', order_id=order.id)
-
         elif action == 'update':
-            # Redirect to update order page
             return redirect('update_order', order_id=order.id)
-
         elif action == 'pay':
             # Process payment with selected wallet
             wallet = request.POST.get('wallet', 'esewa')
@@ -478,7 +481,6 @@ def payment_process(request):
         'total': order.total_amount,
         'order_id': f'ORD-{order.id}'
     })
-
 
 @login_required
 def update_order(request, order_id):

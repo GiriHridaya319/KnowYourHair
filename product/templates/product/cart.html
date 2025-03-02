@@ -28,7 +28,7 @@
             <div class="item-details">
                 <div class="item-name">{{ item.product.name }}</div>
                 <div class="item-meta">Stock: {{ item.product.stock }} available</div>
-                <div class="item-price">₹{{ item.product.cost }}</div>
+                <div class="item-price">रु {{ item.product.cost }}</div>
                 <div class="item-quantity">
                     <button class="quantity-btn decrease-qty">-</button>
                     <input type="number" 
@@ -49,11 +49,11 @@
     <div class="cart-summary">
         <div class="summary-row">
             <span>Subtotal</span>
-            <span>₹<span id="subtotal">{{ total }}</span></span>
+            <span>रु <span id="subtotal">{{ total }}</span></span>
         </div>
         <div class="summary-row total-row">
             <span>Total</span>
-            <span>₹<span id="total">{{ total }}</span></span>
+            <span>रु <span id="total">{{ total }}</span></span>
         </div>
     </div>
 
