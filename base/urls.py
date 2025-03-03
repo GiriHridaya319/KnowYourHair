@@ -7,4 +7,5 @@ urlpatterns = [
     path('', Home.as_view(), name='KnowYourHair-home'),
     path('AboutUs/', views.About, name='KnowYourHair-AboutUs'),
     path('Blog/', views.blog, name='KnowYourHair-blog'),
+    path('faq/', views.helpSupport, name='KnowYourHair-HelpAndSupport'),
 ]

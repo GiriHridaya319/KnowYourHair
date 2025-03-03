@@ -1,0 +1,279 @@
+{% extends "base/base.html" %}
+
+{% load static %}
+
+{% block help_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/css/help.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+        <div class="container-faq">
+            <h1 class="page-title">Help & Support</h1>
+            <p class="subtitle">Find answers to your questions about KnowYourHair</p>
+        </div>
+    </header>
+<div class="container-faq">
+        <div class="content-section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="general">General</div>
+                    <div class="tab" data-tab="user-account">User Account</div>
+                    <div class="tab" data-tab="hair-analysis">Hair Analysis</div>
+                    <div class="tab" data-tab="products">Products</div>
+                    <div class="tab" data-tab="clinics">Clinics & Booking</div>
+                    <div class="tab" data-tab="agents">For Agents</div>
+                </div>
+
+                <div id="general" class="tab-content active">
+                    <div class="faq-item">
+                        <div class="faq-question">What is KnowYourHair?</div>
+                        <div class="faq-answer">
+                            KnowYourHair is an AI-powered platform that helps you understand your hair fall risk, provides personalized prevention tips, and recommends dermatologist-approved products for your specific hair needs.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Is KnowYourHair backed by science?</div>
+                        <div class="faq-answer">
+                            Yes! Our prediction system is based on machine learning models trained on clinical data and reviewed by certified dermatologists. All recommendations are backed by scientific research and expert approval.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">How do I get started?</div>
+                        <div class="faq-answer">
+                            Simply create an account, complete the lifestyle questionnaire, and our system will generate your personalized hair health report, prevention tips, and product recommendations instantly.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="user-account" class="tab-content">
+                    <div class="faq-item">
+                        <div class="faq-question">How do I create an account?</div>
+                        <div class="faq-answer">
+                            Click the "Sign Up" button on our homepage, enter your email address, create a password, and fill in basic profile information. You'll then be guided to complete your hair health questionnaire.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Can I update my profile information?</div>
+                        <div class="faq-answer">
+                            Yes, you can update your profile information anytime by clicking on your profile picture in the top right corner and selecting "Edit Profile." Changes to lifestyle factors will update your risk assessment.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">How do I reset my password?</div>
+                        <div class="faq-answer">
+                            Click "Forgot Password" on the login page and follow the instructions sent to your registered email address. For security reasons, password reset links expire after 24 hours.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hair-analysis" class="tab-content">
+                    <div class="faq-item">
+                        <div class="faq-question">How accurate is the hair fall prediction?</div>
+                        <div class="faq-answer">
+                            Our prediction model has been tested with a 85% accuracy rate when compared to clinical assessments. For best results, provide detailed and honest answers to all questionnaire items.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">How often should I update my hair assessment?</div>
+                        <div class="faq-answer">
+                            We recommend updating your assessment every 3-6 months or whenever you make significant lifestyle changes (diet, exercise routine, stress levels, medication changes, etc.).
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Can I track my hair health over time?</div>
+                        <div class="faq-answer">
+                            Yes! Your dashboard shows trends in your hair health metrics over time. Take progress photos in the app monthly for visual tracking alongside your quantitative data.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products" class="tab-content">
+                    <div class="faq-item">
+                        <div class="faq-question">How are product recommendations determined?</div>
+                        <div class="faq-answer">
+                            Products are recommended based on your specific hair type, identified risk factors, and reported symptoms. Each product in our system has been verified and approved by dermatologists.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Are the recommended products guaranteed to work?</div>
+                        <div class="faq-answer">
+                            While we recommend clinically proven products, individual results may vary. We suggest giving each recommended product at least 4-6 weeks of consistent use before evaluating its effectiveness.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Can I purchase products directly through KnowYourHair?</div>
+                        <div class="faq-answer">
+                            Yes, you can purchase any recommended product directly through our platform with secure payment processing. We partner with authorized retailers to ensure you receive genuine products.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="clinics" class="tab-content">
+                    <div class="faq-item">
+                        <div class="faq-question">How do I find a dermatologist near me?</div>
+                        <div class="faq-answer">
+                            Use the "Find Clinic" feature and enter your location. You can filter results by distance, availability, specialties, and patient ratings to find the perfect match for your needs.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">How do I book an appointment?</div>
+                        <div class="faq-answer">
+                            Select your preferred clinic/dermatologist, choose an available time slot from their calendar, fill in your details, and confirm your booking. You'll receive an instant confirmation email and reminder notifications.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Can I reschedule or cancel my appointment?</div>
+                        <div class="faq-answer">
+                            Yes, appointments can be rescheduled or canceled up to 24 hours before the scheduled time without penalty. Go to "My Appointments" in your profile to make changes.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agents" class="tab-content">
+                    <div class="faq-item">
+                        <div class="faq-question">How do I register my clinic on KnowYourHair?</div>
+                        <div class="faq-answer">
+                            Click "Register as Agent" on our homepage, complete the registration form with your clinic details and credentials, and submit for approval. Our admin team typically reviews applications within 2-3 business days.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">What are the requirements for clinic registration?</div>
+                        <div class="faq-answer">
+                            You must provide proof of dermatological certification, clinic business license, clear photos of your facility, operating hours, and service details. All dermatologists must have valid medical licenses.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">How do I add products to the platform?</div>
+                        <div class="faq-answer">
+                            After your agent account is approved, go to "Product Management" and click "Add New Product." Submit detailed product information, clinical evidence, and pricing. All products undergo review before approval.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Support Options</h2>
+
+            <div class="support-options">
+                <div class="support-card">
+                    <h3>Email Support</h3>
+                    <p>Questions? Contact our team for help within 24 hours.</p>
+                    <a href="mailto:hridayagiri78@gmail.com.com">Email Us</a>
+                </div>
+
+                <div class="support-card">
+                    <h3>Live Chat</h3>
+                    <p>Get instant help on weekdays 9am-6pm.</p>
+                    <a href="#">Chat Now</a>
+                </div>
+
+                <div class="support-card">
+                    <h3>Video Guides</h3>
+                    <p>Watch tutorials on using our platform.</p>
+                    <a href="#">Watch Videos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Feedback Form</h2>
+
+            <div class="feedback-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="feedback-type">Feedback Type</label>
+                    <select id="feedback-type">
+                        <option value="suggestion">Suggestion</option>
+                        <option value="compliment">Compliment</option>
+                        <option value="problem">Report a Problem</option>
+                        <option value="question">Question</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>How would you rate your experience?</label>
+                    <div class="rating-container">
+                        <button type="button" class="rating-btn" data-rating="1">1</button>
+                        <button type="button" class="rating-btn" data-rating="2">2</button>
+                        <button type="button" class="rating-btn" data-rating="3">3</button>
+                        <button type="button" class="rating-btn" data-rating="4">4</button>
+                        <button type="button" class="rating-btn" data-rating="5">5</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedback-message">Your Feedback</label>
+                    <textarea id="feedback-message" placeholder="Please share your thoughts, suggestions or questions"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-feedback">Submit Feedback</button>
+
+                <div class="success-message" id="feedback-success">
+                    Thank you for your feedback! We appreciate your input and will use it to improve KnowYourHair.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Rating functionality
+        const ratingBtns = document.querySelectorAll('.rating-btn');
+
+        ratingBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all rating buttons
+                ratingBtns.forEach(b => b.classList.remove('active'));
+
+                // Add active class to clicked button
+                btn.classList.add('active');
+            });
+        });
+
+
+    </script>
+{% endblock content%}

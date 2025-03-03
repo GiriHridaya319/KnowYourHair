@@ -8,7 +8,11 @@ def hair_fall_prediction(request):
 
 
 def blog(request):
-    return render(request, 'base/Blog.html', {'title': 'Prediction'})
+    return render(request, 'base/Blog.html', {'title': 'Blog'})
+
+
+def helpSupport(request):
+    return render(request, 'base/helpandsupport.html', {'title': 'FAQ&Help'})
 
 
 def About(request):
