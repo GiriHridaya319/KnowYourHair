@@ -54,7 +54,6 @@ class HairfallPredictor:
                 else:  # Medium Risk
                     predicted_age = current_age + 6  # Medium-term
 
-
             # Format age prediction
             age_prediction = {
                 'years': int(predicted_age),
