@@ -26,45 +26,41 @@
             <div class="survey-slides">
                 <!-- Gender Section -->
                 <section class="survey-section" id="gender-section">
-                    <h2><i class="fas fa-venus-mars"></i> Gender</h2>
-                    <div class="option-cards">
-                        <div class="option-card">
-                            <input type="radio" id="gender-0" name="Gender" value="0" required>
-                            <label for="gender-0">
-                                <img src="{% static 'hairfallprediction/images/female.png' %}" alt="Female">
-                                <span>Female</span>
-                            </label>
-                        </div>
-                        <div class="option-card">
-                            <input type="radio" id="gender-1" name="Gender" value="1">
-                            <label for="gender-1">
-                                <img src="{% static 'hairfallprediction/images/male.png' %}" alt="Male">
-                                <span>Male</span>
-                            </label>
-                        </div>
-                        <div class="option-card">
-                            <input type="radio" id="gender-2" name="Gender" value="2">
-                            <label for="gender-2">
-                                <img src="{% static 'hairfallprediction/images/other.png' %}" alt="other">
-                                <span>Other</span>
-                            </label>
-                        </div>
+                <h2><i class="fas fa-venus-mars"></i> Gender</h2>
+                <div class="option-cards">
+                    <div class="option-card">
+                        <input type="radio" id="gender-0" name="Gender" value="0" required>
+                        <label for="gender-0">
+                            <img src="{% static 'hairfallprediction/images/female.png' %}" alt="Female">
+                            <span>Female</span>
+                        </label>
                     </div>
-                </section>
+                    <div class="option-card">
+                        <input type="radio" id="gender-1" name="Gender" value="1">
+                        <label for="gender-1">
+                            <img src="{% static 'hairfallprediction/images/male.png' %}" alt="Male">
+                            <span>Male</span>
+                        </label>
+                    </div>
+                    <div class="option-card">
+                        <input type="radio" id="gender-2" name="Gender" value="2">
+                        <label for="gender-2">
+                            <img src="{% static 'hairfallprediction/images/other.png' %}" alt="other">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
 
                 <!-- Age Section -->
                 <section class="survey-section" id="age-section">
-                    <h2><i class="fas fa-user-clock"></i> Age</h2>
-                    <div class="range-input">
-                        <input type="range" id="Age" name="Age" min="1" max="100" value="25" required>
-                        <output for="Age">25</output>
-                        <div class="range-labels">
-                            <span>1</span>
-                            <span>50</span>
-                            <span>100</span>
-                        </div>
-                    </div>
-                </section>
+                <h2><i class="fas fa-user-clock"></i> Age</h2>
+                <div class="range-input">
+                    <input type="range" id="Age" name="Age" min="17" max="70" value="25" required>
+                    <output for="Age">25</output>
+
+                </div>
+            </section>
 
                 <!-- Hairline Pattern Section -->
                 <section class="survey-section" id="hairline-section">
@@ -118,14 +114,28 @@
                     </div>
                 </section>
 
+                <!-- Hairline Pattern Section for Females -->
+
+
 
                 <!-- Hair Fall Rate Section -->
                 <section class="survey-section" id="hairfall-section">
-                    <h2><i class="fas fa-chart-line"></i> Hair Fall Rate</h2>
-                    <div class="range-input">
-                        <input type="range" id="Hair_Fall_Rate" name="Hair_Fall_Rate" min="0" max="200" step="1" value="50" required>
-                        <output for="Hair_Fall_Rate">50 strands/day</output>
+                    <h2><i class="fas fa-chart-line"></i> Select Your Hair Fall Rate</h2>
+
+                    <div class="select-container">
+                        <select id="Hair_Fall_Rate" name="Hair_Fall_Rate" required>
+                            <option value="35">20-50 strands/day</option>
+                            <option value="65">50-80 strands/day</option>
+                            <option value="95">80-110 strands/day</option>
+                            <option value="125">110-140 strands/day</option>
+                            <option value="155">140-170 strands/day</option>
+                            <option value="185">170-200 strands/day</option>
+                            <option value="215">200-230 strands/day</option>
+                        </select>
                     </div>
+
+                    <p class="help-text">Select the average number of hair strands you notice falling daily</p>
+                    <p class="validation-message">Please select your hair fall rate</p>
                 </section>
 
 

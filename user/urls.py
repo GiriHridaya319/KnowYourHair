@@ -57,4 +57,6 @@ urlpatterns = [
     path('clinic/<int:pk>/reject/', user_view.reject_clinic, name='reject_clinic'),
     path('product/<int:pk>/approve/', user_view.approve_product, name='approve_product'),
     path('product/<int:pk>/reject/', user_view.reject_product, name='reject_product'),
+
+
 ]

@@ -72,6 +72,127 @@ body {
 
 }
 
+/* Hair Fall Section Styling */
+#hairfall-section {
+    padding: 2rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+#hairfall-section h2 {
+    font-size: 2rem;
+    color: #2d3748;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 3px solid;
+    border-image: var(--gradient-primary) 1;
+}
+
+#hairfall-section h2 i {
+    font-size: 2.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* Custom Select Styling */
+#hairfall-section select {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #4a5568;
+    background-color: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+#hairfall-section select:hover {
+    border-color: #2e86de;
+    transform: translateX(5px);
+}
+
+#hairfall-section select:focus {
+    outline: none;
+    border-color: #ff9f43;
+    background: #fff8f0;
+}
+
+/* Custom Select Arrow */
+.select-container {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.select-container::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff9f43;
+    pointer-events: none;
+    font-size: 1.2rem;
+}
+
+/* Help Text */
+.help-text {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-top: 0.8rem;
+    font-style: italic;
+}
+
+/* Validation */
+.validation-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+#hairfall-section.show-validation .validation-message {
+    display: block;
+}
+
+/* Hover States for Better UX */
+.select-container:hover::after {
+    color: #2e86de;
+}
+
+/* Animation */
+#hairfall-section select:focus + .select-container::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #hairfall-section h2 {
+        font-size: 1.5rem;
+    }
+
+    #hairfall-section h2 i {
+        font-size: 2rem;
+    }
+
+    #hairfall-section select {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+
 .survey-section.active {
     display: block;
 }

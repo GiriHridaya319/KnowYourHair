@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">eSewa Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'img/esewa_logo.png' %}" alt="eSewa Logo" height="60">
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h5>Order Details</h5>
+                        <p><strong>Order ID:</strong> ORD-{{ order.id }}</p>
+                        <p><strong>Amount:</strong> NPR {{ order.total_amount }}</p>
+                    </div>
+
+                    <p class="text-center">You will be redirected to eSewa to complete your payment.</p>
+
+                    <!-- Hidden form that will be submitted automatically -->
+                    <form id="esewa-form" action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+                        <input type="hidden" name="amount" value="{{ order.total_amount }}">
+                        <input type="hidden" name="tax_amount" value="0">
+                        <input type="hidden" name="total_amount" value="{{ order.total_amount }}">
+                        <input type="hidden" name="transaction_uuid" value="{{ transaction_uuid }}">
+                        <input type="hidden" name="product_code" value="{{ product_code }}">
+                        <input type="hidden" name="product_service_charge" value="0">
+                        <input type="hidden" name="product_delivery_charge" value="0">
+                        <input type="hidden" name="success_url" value="{{ success_url }}">
+                        <input type="hidden" name="failure_url" value="{{ failure_url }}">
+                        <input type="hidden" name="signed_field_names" value="{{ signed_field_names }}">
+                        <input type="hidden" name="signature" value="{{ signature }}">
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Proceed to Payment</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-submit after 3 seconds (optional)
+    // setTimeout(function() {
+    //     document.getElementById('esewa-form').submit();
+    // }, 3000);
+</script>
+</body>
+
+</html>

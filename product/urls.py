@@ -8,8 +8,10 @@ from .views import (
     ProductCreateView,
     ProductListView,
     ProductDetailView,
-    ProductSearch
+    ProductSearch,
+    EsewaRequestView
 )
+
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='KnowYourHair-product'),
@@ -35,6 +37,10 @@ urlpatterns = [
     # Add the payment_process with order_id parameter
     path('order/payment/', views.payment_process, name='payment_process'),
     path('order/<int:order_id>/payment/', views.payment_process, name='payment_process_with_id'),
+
+    path('esewa-request/', views.EsewaRequestView.as_view(), name='esewa_request'),
+    path('esewa-success/', views.esewa_success, name='esewa_success'),
+    path('esewa-failure/', views.esewa_failure, name='esewa_failure'),
 
     # Move the catch-all slug pattern to the end
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),

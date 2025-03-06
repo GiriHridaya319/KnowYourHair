@@ -12,12 +12,12 @@
 <div class="main-container">
   <form method="POST">
   {% csrf_token %}
-  
+
     <div class="payment-header">
       <h1>Complete Your Payment</h1>
       <p>Choose your preferred payment method</p>
     </div>
-    
+
     <div class="payment-content">
       <div class="amount-display">
         <div class="amount-label">Total Payable Amount</div>
@@ -26,7 +26,7 @@
       </div>
 
       <h2 class="section-title">Select Digital Wallet</h2>
-      
+
       <div class="wallet-options">
         <div class="wallet-grid">
           <label class="wallet-option selected">
@@ -48,7 +48,7 @@
           </label>
         </div>
       </div>
-      
+
       <div class="payment-instructions">
         <h3>Payment Instructions</h3>
         <ul>
@@ -58,18 +58,18 @@
           <li>After successful payment, you'll be returned to confirm your order</li>
         </ul>
       </div>
-      
+
       <div class="action-buttons">
         <button type="submit" name="action" value="cancel" class="btn btn-cancel">Cancel Order</button>
         <button type="submit" name="action" value="update" class="btn btn-update">Update Order</button>
         <button type="submit" name="action" value="pay" class="btn btn-pay">Pay Now</button>
       </div>
     </div>
-    
+
     <div class="secure-badge">
       Secure Payment | © 2025 KnowYourHair
     </div>
-  
+
   </form>
 </div>
 

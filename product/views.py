@@ -1,4 +1,9 @@
+import base64
+import hashlib
+import hmac
+import uuid
 from decimal import Decimal
+from multiprocessing import context
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -6,8 +11,10 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+
+from KnowYourHair import settings
 from hairfallprediction.models import Product
 from product import models
 from product.models import OrderDetail, Order
@@ -459,6 +466,13 @@ def payment_process(request, order_id=None):
         elif action == 'pay':
             # Process payment with selected wallet
             wallet = request.POST.get('wallet', 'esewa')
+            if wallet =='esewa':
+                return redirect(reverse('esewa_request') + f'?order_id={order.id}')
+            elif wallet =='khalti':
+                return redirect(reverse('khalti_request') + f'?order_id={order.id}')
+            else:
+                messages.error(request, "Invalid payment method selected")
+                return redirect('payment_process', order_id=order.id)
 
             # In a real implementation, you would redirect to the payment gateway here
             # For now, we'll simulate a successful payment
@@ -481,6 +495,153 @@ def payment_process(request, order_id=None):
         'total': order.total_amount,
         'order_id': f'ORD-{order.id}'
     })
+
+
+class EsewaRequestView(LoginRequiredMixin, TemplateView):
+    template_name = 'product/esewa_request.html'
+
+    def get(self, request, *args, **kwargs):
+        order_id = request.GET.get('order_id')
+
+        if not order_id:
+            messages.error(request, "No order specified for payment")
+            return redirect('my_orders')
+
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            messages.error(request, "Order not found")
+            return redirect('my_orders')
+
+        if order.status != 'Pending':
+            messages.warning(request, "This order is no longer pending payment")
+            return redirect('order_details', order_id=order.id)
+
+        # Store the order ID in session for the callback
+        request.session['pending_order_id'] = order.id
+
+        # Generate a unique transaction UUID
+        transaction_uuid = str(uuid.uuid4())
+
+        # Store the transaction UUID with the order
+        order.transaction_uuid = transaction_uuid
+        order.save()
+
+        # Fields to be signed
+        total_amount = str(order.total_amount)
+        product_code = settings.ESEWA_PRODUCT_CODE
+
+        # Create signature - HMAC-SHA256 encoding
+        secret_key = settings.ESEWA_SECRET_KEY
+        message = f"total_amount={total_amount},transaction_uuid={transaction_uuid},product_code={product_code}"
+        signature = hmac.new(
+            secret_key.encode(),
+            message.encode(),
+            hashlib.sha256
+        ).digest()
+        signature = base64.b64encode(signature).decode("utf-8")
+
+        # Success and failure URLs - no namespace
+        success_url = request.build_absolute_uri(reverse('esewa_success'))
+        failure_url = request.build_absolute_uri(reverse('esewa_failure'))
+
+        context = {
+            'order': order,
+            'transaction_uuid': transaction_uuid,
+            'product_code': product_code,
+            'signature': signature,
+            'success_url': success_url,
+            'failure_url': failure_url,
+            'signed_field_names': 'total_amount,transaction_uuid,product_code'
+        }
+
+        return render(request, self.template_name, context)
+
+
+@login_required
+def esewa_success(request):
+    # Get the parameters from eSewa callback
+    data_param = request.GET.get('data')
+
+    if data_param:
+        # Parse the base64 encoded data
+        import base64
+        import json
+        try:
+            decoded_data = base64.b64decode(data_param).decode('utf-8')
+            data = json.loads(decoded_data)
+        except Exception as e:
+            messages.error(request, f"Error decoding data: {str(e)}")
+            return redirect('my_orders')
+    else:
+        data = request.GET
+
+    # Extract the relevant data
+    transaction_code = data.get('transaction_code')
+    transaction_uuid = data.get('transaction_uuid')
+    status = data.get('status')
+
+    # Get the pending order ID from session
+    order_id = request.session.get('pending_order_id')
+
+    if not order_id:
+        # No order ID in session, try to find the most recent pending order
+        pending_orders = Order.objects.filter(
+            user=request.user,
+            status='Pending'
+        ).order_by('-created_at')
+
+        if pending_orders.exists():
+            order = pending_orders.first()
+        else:
+            messages.error(request, "No pending order found. Please contact support.")
+            return redirect('my_orders')
+    else:
+        # Get the specific order by ID
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            messages.error(request, "Order not found. Please contact support.")
+            return redirect('my_orders')
+
+    if status == 'COMPLETE':
+        # Update order details
+        order.status = 'Processing'
+        order.transaction_uuid = transaction_uuid
+        order.payment_ref = transaction_code
+        order.payment_method = 'esewa'
+        order.save()
+
+        # Clear the pending order ID from session
+        if 'pending_order_id' in request.session:
+            del request.session['pending_order_id']
+
+        messages.success(request, "Payment successful! Your order is now being processed.")
+    else:
+        messages.error(request, "Payment was not successful. Please try again.")
+
+    return redirect('order_details', order_id=order.id)
+
+
+@login_required
+def esewa_failure(request):
+    messages.error(request, "Payment was cancelled or failed. Please try again.")
+
+    # Try to get the order ID from the transaction_uuid if available
+    transaction_uuid = request.GET.get('transaction_uuid')
+    if transaction_uuid:
+        try:
+            order = Order.objects.get(transaction_uuid=transaction_uuid, user=request.user)
+            return redirect('payment_process', order_id=order.id)
+        except Order.DoesNotExist:
+            pass
+
+    # Fall back to session
+    order_id = request.session.get('pending_order_id')
+    if order_id:
+        return redirect('payment_process', order_id=order_id)
+
+    return redirect('my_orders')
 
 @login_required
 def update_order(request, order_id):

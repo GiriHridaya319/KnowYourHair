@@ -19,6 +19,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # New payment-related fields
+    transaction_uuid = models.CharField(max_length=100, blank=True, null=True)
+    payment_ref = models.CharField(max_length=100, blank=True, null=True)
+    payment_method = models.CharField(max_length=20, blank=True, null=True)
+
     def __str__(self):
         return f"Order {self.id} - {self.user.username} - {self.status}"
 
