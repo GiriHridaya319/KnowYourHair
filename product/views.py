@@ -3,20 +3,15 @@ import hashlib
 import hmac
 import uuid
 from decimal import Decimal
-from multiprocessing import context
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-
 from KnowYourHair import settings
 from hairfallprediction.models import Product
-from product import models
 from product.models import OrderDetail, Order
 
 
@@ -466,28 +461,34 @@ def payment_process(request, order_id=None):
         elif action == 'pay':
             # Process payment with selected wallet
             wallet = request.POST.get('wallet', 'esewa')
-            if wallet =='esewa':
+
+            # Handle each payment method separately
+            if wallet == 'esewa':
                 return redirect(reverse('esewa_request') + f'?order_id={order.id}')
-            elif wallet =='khalti':
+
+            elif wallet == 'khalti':
                 return redirect(reverse('khalti_request') + f'?order_id={order.id}')
+
+            elif wallet == 'cod':
+                # For Cash on Delivery, mark as processing immediately
+                order.status = 'Processing'
+                order.payment_method = 'cod'
+                order.save()
+
+                # Clear the pending order ID from session
+                if 'pending_order_id' in request.session:
+                    del request.session['pending_order_id']
+
+                messages.success(request, "Order placed successfully. Payment on delivery.")
+                return redirect('order_details', order_id=order.id)
+
             else:
                 messages.error(request, "Invalid payment method selected")
                 return redirect('payment_process', order_id=order.id)
 
-            # In a real implementation, you would redirect to the payment gateway here
-            # For now, we'll simulate a successful payment
-
-            # Update order status
-            order.status = 'Processing'
-            order.save()
-
-            # Clear the pending order ID from session
-            if 'pending_order_id' in request.session:
-                del request.session['pending_order_id']
-
-            messages.success(request,
-                             f"Payment successful with {wallet.capitalize()}. Your order is now being processed.")
-            return redirect('order_details', order_id=order.id)
+        else:
+            messages.error(request, "Invalid action")
+            return redirect('payment_process', order_id=order.id)
 
     # For GET request, display payment page with order details
     return render(request, 'product/payment_process.html', {
