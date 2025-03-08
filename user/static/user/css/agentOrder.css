@@ -1,0 +1,227 @@
+/* agent_order.css */
+
+/* Main color variables */
+:root {
+  --primary-blue: #1a73e8;
+  --secondary-blue: #4285f4;
+  --light-blue: #e8f0fe;
+  --dark-blue: #0d47a1;
+
+  --primary-orange: #ff7043;
+  --secondary-orange: #ff9800;
+  --light-orange: #fff3e0;
+  --dark-orange: #e65100;
+
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #757575;
+
+  --white: #ffffff;
+  --black: #333333;
+}
+
+
+.container-ag {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Headers */
+.agent-order-header h2 {
+  color: var(--primary-blue);
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--primary-orange);
+  margin-bottom: 20px;
+}
+
+/* Cards */
+.card, .agent-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  margin-bottom: 24px;
+  background-color: var(--white);
+}
+
+.card:hover, .agent-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card-header, .agent-card-header {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  font-weight: 500;
+  padding: 12px 20px;
+  border-bottom: none;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Tables */
+.table, .agent-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.agent-table {
+  margin-top: 10px;
+}
+
+.table th, .agent-table th {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
+  padding: 12px 15px;
+  font-weight: 600;
+  border-top: none;
+  text-align: left;
+}
+
+.table td, .agent-table td {
+  padding: 12px 15px;
+  border-top: 1px solid var(--medium-gray);
+  vertical-align: middle;
+}
+
+.table tr:hover, .agent-table tr:hover {
+  background-color: var(--light-orange);
+}
+
+/* Buttons */
+.btn-primary, .btn-agent-primary {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover, .btn-agent-primary:hover {
+  background-color: var(--dark-blue);
+  border-color: var(--dark-blue);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: var(--primary-orange);
+  border-color: var(--primary-orange);
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background-color: var(--dark-orange);
+  border-color: var(--dark-orange);
+  transform: translateY(-2px);
+}
+
+/* Status Badges */
+.badge, .badge-pending, .badge-processing, .badge-shipped, .badge-delivered, .badge-cancelled {
+  padding: 6px 10px;
+  font-weight: 500;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.bg-success, .badge-delivered {
+  background-color: #4caf50 !important;
+  color: white;
+}
+
+.bg-info, .badge-shipped {
+  background-color: var(--secondary-blue) !important;
+  color: white;
+}
+
+.bg-primary, .badge-processing {
+  background-color: var(--primary-blue) !important;
+  color: white;
+}
+
+.bg-danger, .badge-cancelled {
+  background-color: #f44336 !important;
+  color: white;
+}
+
+.bg-warning, .badge-pending {
+  background-color: var(--secondary-orange) !important;
+  color: white;
+}
+
+/* Alerts */
+.alert, .agent-alert {
+  border-radius: 8px;
+  border: none;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.alert-info, .agent-alert-info {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
+  border-left: 4px solid var(--primary-blue);
+}
+
+/* Order Detail Page Specific Styles */
+.order-total-row {
+  font-weight: bold;
+  background-color: var(--light-orange);
+}
+
+/* Form Controls */
+.form-select, .form-control {
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  padding: 8px 12px;
+  transition: border-color 0.2s;
+}
+
+.form-select:focus, .form-control:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.25);
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+/* Product Images */
+.product-image {
+  height: 60px;
+  width: auto;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .card, .agent-card {
+    margin-bottom: 16px;
+  }
+
+  .agent-order-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .agent-order-header h2 {
+    margin-bottom: 15px;
+  }
+}

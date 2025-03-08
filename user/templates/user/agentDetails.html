@@ -63,6 +63,17 @@
                     <div class="card-header">Total Bookings</div>
                     <div class="card-value">{{ bookings|length }}</div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">Orders</div>
+                    <div class="card-value">
+                        <button class="add-btn" onclick="window.location.href='{% url 'agent_orders'  %}'">
+                        View
+                    </button>
+
+                    </div>
+
+                </div>
             </div>
         </div>
 

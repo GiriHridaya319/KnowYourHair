@@ -1,0 +1,72 @@
+<!-- templates/orders/agent_orders.html -->
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block agentOrder_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/agentOrder.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-ag mt-4">
+    <div class="agent-order-header d-flex justify-content-between align-items-center">
+        <h2>Orders Containing Your Products</h2>
+    </div>
+
+    {% if orders_data %}
+        <div class="agent-card">
+            <div class="table-responsive">
+                <table class="agent-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Your Items</th>
+                            <th>Your Subtotal</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_data in orders_data %}
+                            <tr>
+                                <td>{{ order_data.order.id }}</td>
+                                <td>{{ order_data.order.created_at|date:"M d, Y" }}</td>
+                                <td>{{ order_data.order.user.username }}</td>
+                                <td>
+                                    {% for item in order_data.items %}
+                                        <div class="mb-1">
+                                            {{ item.quantity }} x {{ item.product.name }}
+                                            {% if forloop.counter > 2 and not forloop.last %}
+                                                {% if forloop.counter == 3 %}
+                                                    <div>+ {{ order_data.items.count|add:"-2" }} more</div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </td>
+                                <td>${{ order_data.agent_subtotal|floatformat:2 }}</td>
+                                <td>
+                                    <span class="badge-{{ order_data.order.status|lower }}">
+                                        {{ order_data.order.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'agent_order_detail' order_data.order.id %}" class="btn-agent-primary">View Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="agent-alert agent-alert-info">
+            <h4>No Orders Yet</h4>
+            <p>You don't have any orders containing your products yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

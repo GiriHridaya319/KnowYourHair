@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views as user_view
+from . import views as user_view, views
 from .views import AdminDashboardView, UserBookingView, UserDeleteView
 from django.contrib.auth import views as auth_views
 from .forms import CustomPasswordResetForm, CustomSetPasswordForm
@@ -58,5 +58,11 @@ urlpatterns = [
     path('product/<int:pk>/approve/', user_view.approve_product, name='approve_product'),
     path('product/<int:pk>/reject/', user_view.reject_product, name='reject_product'),
 
+    path('agent/payments/export/', views.agent_payments_export, name='agent_payments_export'),
+    path('agent/payment/<int:payment_id>/', views.payment_detail, name='payment_detail'),
+    path('agent/payment/<int:payment_id>/update/', views.update_payment_status, name='update_payment_status'),
 
+    path('agent/orders/', views.agent_orders, name='agent_orders'),
+    path('agent/orders/<int:order_id>/', views.agent_order_detail, name='agent_order_detail'),
+    path('agent/orders/<int:order_id>/update/', views.update_order_status, name='update_order_status'),
 ]
