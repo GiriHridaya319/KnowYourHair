@@ -12,7 +12,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from KnowYourHair import settings
 from hairfallprediction.models import Product
-from product.models import OrderDetail, Order
+from product.models import OrderDetail, Order, Payment
 
 
 def ProductSearch(request):
@@ -183,7 +183,6 @@ def get_cart(request):
 
 
 @login_required
-@customer_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, status='Approved')
     if request.method == 'POST':
@@ -215,7 +214,6 @@ def add_to_cart(request, product_id):
 
 
 @login_required
-@customer_required
 def remove_from_cart(request, product_id):
     cart = get_cart(request)
     if str(product_id) in cart:
@@ -227,7 +225,6 @@ def remove_from_cart(request, product_id):
 
 
 @login_required
-@customer_required
 def update_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -274,7 +271,6 @@ def update_cart(request):
 
 
 @login_required
-@customer_required
 def cart_detail(request):
     cart = get_cart(request)
     cart_items = []
@@ -300,7 +296,6 @@ def cart_detail(request):
 # order and payment
 
 @login_required
-@customer_required
 def checkout(request):
     cart = request.session.get('cart', {})
 
@@ -335,7 +330,6 @@ def checkout(request):
 
 
 @login_required
-@customer_required
 def order_review(request):
     if request.method == 'POST':
         cart = request.session.get('cart', {})
@@ -392,7 +386,6 @@ def order_review(request):
 
 
 @login_required
-@customer_required
 def create_order(request):
     if request.method == 'POST':
         cart = request.session.get('cart', {})
@@ -453,8 +446,17 @@ def create_order(request):
     return redirect('checkout')
 
 
+# Customer check mixin for class-based views
+class CustomerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return hasattr(self.request.user, 'profile') and hasattr(self.request.user.profile, 'customer')
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Access denied. Only customers can perform this action.")
+        return redirect('KnowYourHair-product')
+
+
 @login_required
-@customer_required
 def payment_process(request, order_id=None):
     # First try to get order_id from the URL parameter
     if order_id is None:
@@ -484,22 +486,36 @@ def payment_process(request, order_id=None):
             return redirect('update_order', order_id=order.id)
         elif action == 'pay':
             # Process payment with selected wallet
-            wallet = request.POST.get('wallet', 'esewa')
+            payment_method = request.POST.get('wallet', 'esewa')
+
+            # Create a new payment record
+            payment = Payment.objects.create(
+                order=order,
+                amount=order.total_amount,
+                payment_method=payment_method,
+                status='pending'
+            )
 
             # Handle each payment method separately
-            if wallet == 'esewa':
+            if payment_method == 'esewa':
+                # Store payment ID in session
+                request.session['pending_payment_id'] = payment.id
                 return redirect(reverse('esewa_request') + f'?order_id={order.id}')
 
-            elif wallet == 'khalti':
+            elif payment_method == 'khalti':
+                # Store payment ID in session
+                request.session['pending_payment_id'] = payment.id
                 return redirect(reverse('khalti_request') + f'?order_id={order.id}')
 
-            elif wallet == 'cod':
-                # For Cash on Delivery, mark as processing immediately
-                order.status = 'Processing'
+            elif payment_method == 'cod':
+                # For Cash on Delivery, mark as completed immediately
+                payment.mark_as_completed(transaction_id=f"COD-{order.id}")
+
+                # Update order
                 order.payment_method = 'cod'
                 order.save()
 
-                # Clear the pending order ID from session
+                # Clear session
                 if 'pending_order_id' in request.session:
                     del request.session['pending_order_id']
 
@@ -508,6 +524,7 @@ def payment_process(request, order_id=None):
 
             else:
                 messages.error(request, "Invalid payment method selected")
+                payment.mark_as_failed()
                 return redirect('payment_process', order_id=order.id)
 
         else:
@@ -522,17 +539,7 @@ def payment_process(request, order_id=None):
     })
 
 
-# Customer check mixin for class-based views
-class CustomerRequiredMixin(UserPassesTestMixin):
-    def test_func(self):
-        return hasattr(self.request.user, 'profile') and hasattr(self.request.user.profile, 'customer')
-
-    def handle_no_permission(self):
-        messages.error(self.request, "Access denied. Only customers can perform this action.")
-        return redirect('home')
-
-
-class EsewaRequestView(LoginRequiredMixin, CustomerRequiredMixin, TemplateView):
+class EsewaRequestView(LoginRequiredMixin, TemplateView):
     template_name = 'product/esewa_request.html'
 
     def get(self, request, *args, **kwargs):
@@ -548,19 +555,32 @@ class EsewaRequestView(LoginRequiredMixin, CustomerRequiredMixin, TemplateView):
             messages.error(request, "Order not found")
             return redirect('my_orders')
 
-        if order.status != 'Pending':
-            messages.warning(request, "This order is no longer pending payment")
-            return redirect('order_details', order_id=order.id)
+        # Get payment ID from session or create a new one
+        payment_id = request.session.get('pending_payment_id')
+        if payment_id:
+            try:
+                payment = Payment.objects.get(id=payment_id, order=order)
+            except Payment.DoesNotExist:
+                payment = Payment.objects.create(
+                    order=order,
+                    amount=order.total_amount,
+                    payment_method='esewa',
+                    status='pending'
+                )
+        else:
+            payment = Payment.objects.create(
+                order=order,
+                amount=order.total_amount,
+                payment_method='esewa',
+                status='pending'
+            )
+            request.session['pending_payment_id'] = payment.id
 
         # Store the order ID in session for the callback
         request.session['pending_order_id'] = order.id
 
         # Generate a unique transaction UUID
         transaction_uuid = str(uuid.uuid4())
-
-        # Store the transaction UUID with the order
-        order.transaction_uuid = transaction_uuid
-        order.save()
 
         # Fields to be signed
         total_amount = str(order.total_amount)
@@ -576,7 +596,7 @@ class EsewaRequestView(LoginRequiredMixin, CustomerRequiredMixin, TemplateView):
         ).digest()
         signature = base64.b64encode(signature).decode("utf-8")
 
-        # Success and failure URLs - no namespace
+        # Success and failure URLs
         success_url = request.build_absolute_uri(reverse('esewa_success'))
         failure_url = request.build_absolute_uri(reverse('esewa_failure'))
 
@@ -594,7 +614,6 @@ class EsewaRequestView(LoginRequiredMixin, CustomerRequiredMixin, TemplateView):
 
 
 @login_required
-@customer_required
 def esewa_success(request):
     # Get the parameters from eSewa callback
     data_param = request.GET.get('data')
@@ -614,75 +633,100 @@ def esewa_success(request):
 
     # Extract the relevant data
     transaction_code = data.get('transaction_code')
-    transaction_uuid = data.get('transaction_uuid')
     status = data.get('status')
 
-    # Get the pending order ID from session
+    # Get the pending payment ID from session
+    payment_id = request.session.get('pending_payment_id')
     order_id = request.session.get('pending_order_id')
 
-    if not order_id:
-        # No order ID in session, try to find the most recent pending order
-        pending_orders = Order.objects.filter(
-            user=request.user,
-            status='Pending'
-        ).order_by('-created_at')
-
-        if pending_orders.exists():
-            order = pending_orders.first()
-        else:
-            messages.error(request, "No pending order found. Please contact support.")
-            return redirect('my_orders')
-    else:
-        # Get the specific order by ID
+    if payment_id:
+        try:
+            payment = Payment.objects.get(id=payment_id)
+            order = payment.order
+        except Payment.DoesNotExist:
+            if order_id:
+                # If payment not found but order exists, create a new payment
+                try:
+                    order = Order.objects.get(id=order_id, user=request.user)
+                    payment = Payment.objects.create(
+                        order=order,
+                        amount=order.total_amount,
+                        payment_method='esewa',
+                        status='pending'
+                    )
+                except Order.DoesNotExist:
+                    messages.error(request, "Order not found. Please contact support.")
+                    return redirect('my_orders')
+            else:
+                messages.error(request, "Payment information not found. Please contact support.")
+                return redirect('my_orders')
+    elif order_id:
+        # If no payment ID in session but order ID exists
         try:
             order = Order.objects.get(id=order_id, user=request.user)
+            # Look for existing payment
+            payment = Payment.objects.filter(order=order, payment_method='esewa').first()
+            if not payment:
+                payment = Payment.objects.create(
+                    order=order,
+                    amount=order.total_amount,
+                    payment_method='esewa',
+                    status='pending'
+                )
         except Order.DoesNotExist:
             messages.error(request, "Order not found. Please contact support.")
             return redirect('my_orders')
+    else:
+        # No payment or order ID in session
+        messages.error(request, "Payment information not found. Please contact support.")
+        return redirect('my_orders')
 
     if status == 'COMPLETE':
+        # Mark payment as completed
+        payment.mark_as_completed(transaction_id=transaction_code)
+
         # Update order details
-        order.status = 'Processing'
-        order.transaction_uuid = transaction_uuid
-        order.payment_ref = transaction_code
         order.payment_method = 'esewa'
         order.save()
 
         # Clear the pending order ID from session
         if 'pending_order_id' in request.session:
             del request.session['pending_order_id']
+        if 'pending_payment_id' in request.session:
+            del request.session['pending_payment_id']
 
         messages.success(request, "Payment successful! Your order is now being processed.")
     else:
+        payment.mark_as_failed()
         messages.error(request, "Payment was not successful. Please try again.")
 
     return redirect('order_details', order_id=order.id)
 
 
 @login_required
-@customer_required
 def esewa_failure(request):
+    # Get the pending payment ID from session
+    payment_id = request.session.get('pending_payment_id')
+
+    if payment_id:
+        try:
+            payment = Payment.objects.get(id=payment_id)
+            payment.mark_as_failed()
+            order_id = payment.order.id
+        except Payment.DoesNotExist:
+            order_id = request.session.get('pending_order_id')
+    else:
+        order_id = request.session.get('pending_order_id')
+
     messages.error(request, "Payment was cancelled or failed. Please try again.")
 
-    # Try to get the order ID from the transaction_uuid if available
-    transaction_uuid = request.GET.get('transaction_uuid')
-    if transaction_uuid:
-        try:
-            order = Order.objects.get(transaction_uuid=transaction_uuid, user=request.user)
-            return redirect('payment_process', order_id=order.id)
-        except Order.DoesNotExist:
-            pass
-
-    # Fall back to session
-    order_id = request.session.get('pending_order_id')
     if order_id:
         return redirect('payment_process', order_id=order_id)
-
-    return redirect('my_orders')
+    else:
+        return redirect('my_orders')
 
 
 @login_required
-@customer_required
 def update_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
@@ -753,7 +797,6 @@ def update_order(request, order_id):
 
 
 @login_required
-@customer_required
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
@@ -775,7 +818,6 @@ def cancel_order(request, order_id):
 
 
 @login_required
-@customer_required
 def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     order_details = list(order.order_details.all())  # Fetch once, reuse
@@ -794,7 +836,6 @@ def order_details(request, order_id):
 
 
 @login_required
-@customer_required
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'product/my_orders.html', {'orders': orders})

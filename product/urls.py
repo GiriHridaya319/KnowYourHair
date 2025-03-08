@@ -36,6 +36,7 @@ urlpatterns = [
 
     # Add the payment_process with order_id parameter
     path('order/payment/', views.payment_process, name='payment_process'),
+    path('order/payment/<int:order_id>/', views.payment_process, name='payment_process'),
     path('order/<int:order_id>/payment/', views.payment_process, name='payment_process_with_id'),
 
     path('esewa-request/', views.EsewaRequestView.as_view(), name='esewa_request'),

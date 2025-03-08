@@ -6,66 +6,116 @@
 
 {% block agentOrder_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'user/css/agentOrder.css' %}">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<div class="container-ag mt-4">
-    <div class="agent-order-header d-flex justify-content-between align-items-center">
-        <h2>Orders Containing Your Products</h2>
+<br>
+<div class="container-ag mt-5">
+    <div class="order-header mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="order-title"><i class="fas fa-shopping-cart me-2"></i>Orders Containing Your Products</h2>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <!-- Optional: Add export or filter buttons here -->
+            </div>
+        </div>
     </div>
 
     {% if orders_data %}
-        <div class="agent-card">
-            <div class="table-responsive">
-                <table class="agent-table">
-                    <thead>
-                        <tr>
-                            <th>Order #</th>
-                            <th>Date</th>
-                            <th>Customer</th>
-                            <th>Your Items</th>
-                            <th>Your Subtotal</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order_data in orders_data %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-list me-2"></i>Orders List</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="agent-table">
+                        <thead>
                             <tr>
-                                <td>{{ order_data.order.id }}</td>
-                                <td>{{ order_data.order.created_at|date:"M d, Y" }}</td>
-                                <td>{{ order_data.order.user.username }}</td>
-                                <td>
-                                    {% for item in order_data.items %}
-                                        <div class="mb-1">
-                                            {{ item.quantity }} x {{ item.product.name }}
-                                            {% if forloop.counter > 2 and not forloop.last %}
-                                                {% if forloop.counter == 3 %}
-                                                    <div>+ {{ order_data.items.count|add:"-2" }} more</div>
-                                                {% endif %}
-                                            {% endif %}
-                                        </div>
-                                    {% endfor %}
-                                </td>
-                                <td>${{ order_data.agent_subtotal|floatformat:2 }}</td>
-                                <td>
-                                    <span class="badge-{{ order_data.order.status|lower }}">
-                                        {{ order_data.order.status }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{% url 'agent_order_detail' order_data.order.id %}" class="btn-agent-primary">View Details</a>
-                                </td>
+                                <th><i class="fas fa-hashtag me-1"></i>Order #</th>
+                                <th><i class="fas fa-calendar-alt me-1"></i>Date</th>
+                                <th><i class="fas fa-user me-1"></i>Customer</th>
+                                <th><i class="fas fa-box me-1"></i>Your Items</th>
+                                <th><i class="fas fa-dollar-sign me-1"></i>Your Subtotal</th>
+                                <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                <th><i class="fas fa-cog me-1"></i>Actions</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for order_data in orders_data %}
+                                <tr>
+                                    <td class="font-weight-bold">{{ order_data.order.id }}</td>
+                                    <td>{{ order_data.order.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user-circle me-2 text-secondary"></i>
+                                            {{ order_data.order.user.username }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="order-items-list">
+                                            {% for item in order_data.items %}
+                                                {% if forloop.counter <= 2 %}
+                                                    <div class="order-item mb-1">
+                                                        <span class="item-quantity">{{ item.quantity }}</span> x
+                                                        <span class="item-name">{{ item.product.name }}</span>
+                                                    </div>
+                                                {% elif forloop.counter == 3 %}
+                                                    <div class="more-items">
+                                                        <i class="fas fa-ellipsis-h me-1"></i>
+                                                        + {{ order_data.items.count|add:"-2" }} more items
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <span class="order-amount">${{ order_data.agent_subtotal|floatformat:2 }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge
+                                            {% if order_data.order.status == 'Delivered' %}bg-success
+                                            {% elif order_data.order.status == 'Shipped' %}bg-success
+                                            {% elif order_data.order.status == 'Processing' %}bg-info
+                                            {% elif order_data.order.status == 'Cancelled' %}bg-danger
+                                            {% else %}bg-warning{% endif %}">
+                                            <i class="fas
+                                                {% if order_data.order.status == 'Delivered' %}fa-check-circle
+                                                {% elif order_data.order.status == 'Shipped' %}fa-truck
+                                                {% elif order_data.order.status == 'Processing' %}fa-spinner fa-spin
+                                                {% elif order_data.order.status == 'Cancelled' %}fa-times-circle
+                                                {% else %}fa-clock{% endif %} me-1"></i>
+                                            {{ order_data.order.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'agent_order_detail' order_data.order.id %}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i> View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     {% else %}
-        <div class="agent-alert agent-alert-info">
-            <h4>No Orders Yet</h4>
-            <p>You don't have any orders containing your products yet.</p>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-exclamation-circle me-2"></i>No Orders Yet</h5>
+            </div>
+            <div class="card-body">
+                <div class="agent-alert-info">
+                    <i class="fas fa-info-circle me-2 fa-lg"></i>
+                    <div>
+                        <h6 class="mb-1">No Orders Found</h6>
+                        <p class="mb-0">You don't have any orders containing your products yet.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     {% endif %}
 </div>

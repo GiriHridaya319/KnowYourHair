@@ -1,0 +1,215 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block agentOrder_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/agentOrder.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-ag py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'agent_orders' %}"><i class="fas fa-list me-1"></i>My Orders</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'agent_order_detail' order_id=order.id %}"><i class="fas fa-file-invoice me-1"></i>Order #{{ order.id }}</a></li>
+        </ol>
+    </nav>
+
+    <!-- Order Header -->
+    <div class="order-header mb-4">
+        <h1 class="order-title mb-0">
+            <i class="fas fa-money-bill-wave me-2"></i> Payment Details
+        </h1>
+    </div>
+
+    <!-- Status Notifications -->
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="agent-alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            {{ message }}
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Payment Details -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-credit-card me-2"></i>Payment #{{ payment.id }}</h5>
+                    <span class="badge ms-auto {% if payment.status == 'completed' %}bg-success{% elif payment.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                        <i class="fas fa-{% if payment.status == 'completed' %}check-circle{% elif payment.status == 'pending' %}clock{% else %}times-circle{% endif %} me-1"></i>
+                        {{ payment.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">Amount:</span>
+                                <span class="info-value payment-amount">${{ payment.amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Method:</span>
+                                <span class="info-value">{{ payment.get_payment_method_display }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Transaction ID:</span>
+                                <span class="info-value transaction-id">
+                                    {% if payment.transaction_id %}
+                                        {{ payment.transaction_id }}
+                                    {% else %}
+                                        <span class="text-muted">Not available</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">Created:</span>
+                                <span class="info-value">{{ payment.created_at|date:"M d, Y H:i" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Last Updated:</span>
+                                <span class="info-value">{{ payment.updated_at|date:"M d, Y H:i" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">For Order:</span>
+                                <span class="info-value"><a href="{% url 'agent_order_detail' order_id=order.id %}">#{{ order.id }}</a></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Your Products in this Order -->
+                    <h3 class="h6 mb-3 border-bottom pb-2"><i class="fas fa-box me-2" style="color: var(--primary-orange);"></i>Your Products in This Order</h3>
+                    <div class="table-responsive mb-4">
+                        <table class="agent-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in agent_items %}
+                                <tr>
+                                    <td class="product-name">{{ item.product.name }}</td>
+                                    <td class="product-price">${{ item.price|floatformat:2 }}</td>
+                                    <td class="product-quantity">{{ item.quantity }}</td>
+                                    <td class="product-subtotal text-end">${{ item.subtotal|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr class="order-total-row">
+                                    <td colspan="3" class="text-end"><strong>Your Total:</strong></td>
+                                    <td class="text-end"><strong>${{ agent_subtotal|floatformat:2 }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Update Payment Status Form -->
+                    <div class="status-update-form">
+                        <h3 class="h6 mb-3"><i class="fas fa-edit me-2" style="color: var(--primary-blue);"></i>Update Payment Status</h3>
+                        <form method="post" action="{% url 'update_payment_status' payment_id=payment.id %}" class="row g-3">
+                            {% csrf_token %}
+                            <div class="col-md-5">
+                                <label for="status" class="form-label">New Status</label>
+                                <select name="status" id="status" class="form-select">
+                                    {% for status_code, status_name in status_choices %}
+                                        <option value="{{ status_code }}" {% if payment.status == status_code %}selected{% endif %}>
+                                            {{ status_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-7">
+                                <label for="reason" class="form-label">Reason for Change (optional)</label>
+                                <input type="text" name="reason" id="reason" class="form-control" placeholder="Why are you changing the status?">
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i> Update Status
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Information -->
+        <div class="col-lg-4">
+            <!-- Order Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-shopping-cart me-2"></i>Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <span class="badge
+                                {% if order.status == 'Delivered' %}bg-success
+                                {% elif order.status == 'Shipped' %}bg-info
+                                {% elif order.status == 'Processing' %}bg-primary
+                                {% elif order.status == 'Cancelled' %}bg-danger
+                                {% else %}bg-warning{% endif %}">
+                                <i class="fas fa-{% if order.status == 'Delivered' %}check-circle{% elif order.status == 'Shipped' %}truck{% elif order.status == 'Processing' %}cog{% elif order.status == 'Cancelled' %}times-circle{% else %}clock{% endif %} me-1"></i>
+                                {{ order.status }}
+                            </span>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <span class="text-muted">Order ID: </span>
+                            <strong>{{ order.id }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-user text-secondary me-2"></i> Customer:</span>
+                        <span class="info-value">{{ order.user.username }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-calendar text-secondary me-2"></i> Ordered:</span>
+                        <span class="info-value">{{ order.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-money-bill-wave text-secondary me-2"></i> Payments:</span>
+                        <span class="info-value">{{ order.payments.count }}</span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="{% url 'agent_order_detail' order_id=order.id %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-eye me-1"></i> View Complete Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-circle me-2"></i>Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">{{ order.user.get_full_name|default:order.user.username }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ order.user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Member Since:</span>
+                        <span class="info-value">{{ order.user.date_joined|date:"M Y" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

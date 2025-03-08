@@ -1,14 +1,22 @@
+import csv
+from datetime import datetime
+
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.paginator import Paginator
+from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.contrib import messages, admin
 from django.contrib.auth.models import User
 from django.template import context
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, TemplateView, DeleteView
+
+from product.models import Payment, Order, OrderDetail
 from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Profile, Agent, Customer
 from hairfallprediction.models import Product
@@ -505,3 +513,297 @@ def reject_product(request, pk):
     messages.success(request, f"product #{product.name} has been Rejected successfully.")
     return redirect('adminDash')
 
+
+def is_agent(user):
+    """Helper function to check if user is an agent"""
+    return user.is_authenticated and hasattr(user, 'profile') and hasattr(user.profile, 'agent')
+
+
+
+
+@login_required
+@user_passes_test(is_agent)
+def payment_detail(request, payment_id):
+    """View payment details for a specific payment"""
+    payment = get_object_or_404(Payment, id=payment_id)
+    order = payment.order
+
+    # Check if the agent has products in this order
+    agent_products_in_order = OrderDetail.objects.filter(
+        order=order,
+        product__author=request.user
+    ).exists()
+
+    if not agent_products_in_order:
+        return render(request, 'user/access_denied.html', {
+            'message': 'You do not have any products in this order.'
+        })
+
+    # Get other payments for this order
+    related_payments = Payment.objects.filter(order=order).exclude(id=payment_id)
+
+    # Get agent's items in this order
+    agent_items = OrderDetail.objects.filter(
+        order=order,
+        product__author=request.user
+    )
+
+    # Calculate agent's subtotal
+    agent_subtotal = agent_items.aggregate(Sum('subtotal'))['subtotal__sum'] or 0
+
+
+
+    context = {
+        'payment': payment,
+        'order': order,
+        'related_payments': related_payments,
+        'status_choices': Payment.STATUS_CHOICES,
+        'agent_items': agent_items,
+        'agent_subtotal': agent_subtotal,
+    }
+
+    return render(request, 'user/payment_detail.html', context)
+
+
+
+
+
+@login_required
+@user_passes_test(is_agent)
+def update_payment_status(request, payment_id):
+    """Update payment status if agent has products in the related order"""
+    if request.method != 'POST':
+        return redirect('agent_payments')
+
+    payment = get_object_or_404(Payment, id=payment_id)
+    order = payment.order
+
+    # Check if the agent has products in this order
+    agent_products_in_order = OrderDetail.objects.filter(
+        order=order,
+        product__author=request.user
+    ).exists()
+
+    if not agent_products_in_order:
+        messages.error(request, "You don't have permission to update this payment.")
+        return redirect('agent_payments')
+
+    new_status = request.POST.get('status')
+    reason = request.POST.get('reason', '')
+
+    if new_status not in [status[0] for status in Payment.STATUS_CHOICES]:
+        messages.error(request, "Invalid status")
+        return redirect('payment_detail', payment_id=payment_id)
+
+    # Record the old status for logging
+    old_status = payment.status
+
+    if new_status == 'completed':
+        payment.mark_as_completed()
+        messages.success(request, "Payment marked as completed")
+    elif new_status == 'failed':
+        payment.mark_as_failed()
+        messages.success(request, "Payment marked as failed")
+    else:
+        payment.status = new_status
+        payment.save()
+        messages.success(request, f"Payment status updated to {new_status}")
+
+    # Log the status change
+
+    return redirect('payment_detail', payment_id=payment_id)
+
+
+@login_required
+@user_passes_test(is_agent)
+def agent_payments_export(request):
+    """Export payments to CSV for the agent's orders only"""
+    # Get filter parameters
+    order_id = request.GET.get('order_id')
+    status = request.GET.get('status')
+    method = request.GET.get('method')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+
+    # Get all orders that contain any product by this agent
+    agent_orders = Order.objects.filter(
+        order_details__product__author=request.user
+    ).distinct()
+
+    # Get only payments related to orders containing this agent's products
+    payments = Payment.objects.filter(order__in=agent_orders).order_by('-created_at')
+
+    # Apply filters
+    if order_id:
+        payments = payments.filter(order__id=order_id)
+
+    if status:
+        payments = payments.filter(status=status)
+
+    if method:
+        payments = payments.filter(payment_method=method)
+
+    if date_from:
+        try:
+            date_from = datetime.strptime(date_from, '%Y-%m-%d')
+            payments = payments.filter(created_at__gte=date_from)
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            date_to = datetime.strptime(date_to, '%Y-%m-%d')
+            date_to = date_to.replace(hour=23, minute=59, second=59)
+            payments = payments.filter(created_at__lte=date_to)
+        except ValueError:
+            pass
+
+    response = HttpResponse(content_type='text/csv')
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    response['Content-Disposition'] = f'attachment; filename="agent_payments_{timestamp}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Payment ID', 'Order ID', 'Customer', 'Amount', 'Method', 'Status', 'Transaction ID', 'Date'])
+
+    for payment in payments:
+        writer.writerow([
+            payment.id,
+            payment.order.id,
+            payment.order.user.username,
+            payment.amount,
+            payment.get_payment_method_display(),
+            payment.get_status_display(),
+            payment.transaction_id or '',
+            payment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        ])
+
+    return response
+
+@login_required
+def agent_orders(request):
+    """Display all orders containing products by the logged-in agent"""
+    # Check if the user is an agent
+    try:
+        agent_profile = request.user.profile.agent
+        if agent_profile.status != 'approved':
+            return render(request, 'orders/access_denied.html', {
+                'message': 'Your agent account is not approved yet.'
+            })
+    except (Profile.DoesNotExist, Agent.DoesNotExist, AttributeError):
+        return render(request, 'orders/access_denied.html', {
+            'message': 'You do not have an agent account.'
+        })
+
+    # Get all orders that contain any product by this agent
+    agent_orders = Order.objects.filter(
+        order_details__product__author=request.user
+    ).distinct().order_by('-created_at')
+
+    orders_data = []
+    for order in agent_orders:
+        # Get only the order details for products by this agent
+        agent_items = OrderDetail.objects.filter(
+            order=order,
+            product__author=request.user
+        )
+
+        # Calculate subtotal for just this agent's items
+        agent_subtotal = agent_items.aggregate(Sum('subtotal'))['subtotal__sum'] or 0
+
+        orders_data.append({
+            'order': order,
+            'items': agent_items,
+            'agent_subtotal': agent_subtotal
+        })
+
+    return render(request, 'user/agent_orders.html', {
+        'orders_data': orders_data
+    })
+
+
+@login_required
+def agent_order_detail(request, order_id):
+    """Display detailed view of a specific order for the agent"""
+    # Check if the user is an agent
+    try:
+        agent_profile = request.user.profile.agent
+        if agent_profile.status != 'approved':
+            return render(request, 'orders/access_denied.html', {
+                'message': 'Your agent account is not approved yet.'
+            })
+    except (Profile.DoesNotExist, Agent.DoesNotExist, AttributeError):
+        return render(request, 'orders/access_denied.html', {
+            'message': 'You do not have an agent account.'
+        })
+
+    try:
+        order = Order.objects.get(id=order_id)
+
+        # Get only items for this agent's products
+        agent_items = OrderDetail.objects.filter(
+            order=order,
+            product__author=request.user
+        )
+
+        # If no items belong to this agent, they shouldn't see this order
+        if not agent_items.exists():
+            return render(request, 'orders/access_denied.html', {
+                'message': 'You do not have any products in this order.'
+            })
+
+        agent_subtotal = agent_items.aggregate(Sum('subtotal'))['subtotal__sum'] or 0
+
+        # Get payment information
+        payments = order.payments.all()
+
+        # Get customer profile information if available
+        try:
+            customer_profile = order.user.profile
+        except Profile.DoesNotExist:
+            customer_profile = None
+
+        context = {
+            'order': order,
+            'agent_items': agent_items,
+            'agent_subtotal': agent_subtotal,
+            'payments': payments,
+            'customer': order.user,
+            'customer_profile': customer_profile
+        }
+
+        return render(request, 'user/agent_order_detail.html', context)
+
+    except Order.DoesNotExist:
+        return render(request, 'user/order_not_found.html')
+
+
+@login_required
+def update_order_status(request, order_id):
+    """Allow agent to update status of their items in an order"""
+    # Check if the user is an approved agent
+    try:
+        agent_profile = request.user.profile.agent
+        if agent_profile.status != 'approved':
+            return render(request, 'user/access_denied.html', {
+                'message': 'Your agent account is not approved yet.'
+            })
+    except (Profile.DoesNotExist, Agent.DoesNotExist, AttributeError):
+        return render(request, 'user/access_denied.html', {
+            'message': 'You do not have an agent account.'
+        })
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status and new_status in [s[0] for s in Order.STATUS_CHOICES]:
+            try:
+                order = Order.objects.get(id=order_id)
+                # Verify agent has products in this order
+                agent_items = order.order_details.filter(product__author=request.user)
+                if agent_items.exists():
+                    order.status = new_status
+                    order.save()
+                    return redirect('agent_order_detail', order_id=order.id)
+            except Order.DoesNotExist:
+                pass
+
+    return redirect('agent_orders')
