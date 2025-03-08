@@ -4,7 +4,7 @@ import hmac
 import uuid
 from decimal import Decimal
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -161,12 +161,29 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # cart and order
 
+# Decorator to check if user is a customer
+def customer_required(function):
+    def check_customer(user):
+        # Check if user has a profile with customer role
+        return hasattr(user, 'profile') and hasattr(user.profile, 'customer')
+
+    decorated_view = user_passes_test(check_customer, login_url='access_denied')(function)
+    return decorated_view
+
+
+# View for access denied
+def access_denied(request):
+    messages.error(request, "Access denied. Only customers can perform this action.")
+    return redirect('KnowYourHair-product')  # Redirect to home or another appropriate page
+
+
 def get_cart(request):
     """Get or initialize the cart in session"""
     return request.session.get('cart', {})
 
 
 @login_required
+@customer_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, status='Approved')
     if request.method == 'POST':
@@ -198,6 +215,7 @@ def add_to_cart(request, product_id):
 
 
 @login_required
+@customer_required
 def remove_from_cart(request, product_id):
     cart = get_cart(request)
     if str(product_id) in cart:
@@ -209,6 +227,7 @@ def remove_from_cart(request, product_id):
 
 
 @login_required
+@customer_required
 def update_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -255,6 +274,7 @@ def update_cart(request):
 
 
 @login_required
+@customer_required
 def cart_detail(request):
     cart = get_cart(request)
     cart_items = []
@@ -280,6 +300,7 @@ def cart_detail(request):
 # order and payment
 
 @login_required
+@customer_required
 def checkout(request):
     cart = request.session.get('cart', {})
 
@@ -314,6 +335,7 @@ def checkout(request):
 
 
 @login_required
+@customer_required
 def order_review(request):
     if request.method == 'POST':
         cart = request.session.get('cart', {})
@@ -370,6 +392,7 @@ def order_review(request):
 
 
 @login_required
+@customer_required
 def create_order(request):
     if request.method == 'POST':
         cart = request.session.get('cart', {})
@@ -431,6 +454,7 @@ def create_order(request):
 
 
 @login_required
+@customer_required
 def payment_process(request, order_id=None):
     # First try to get order_id from the URL parameter
     if order_id is None:
@@ -498,7 +522,17 @@ def payment_process(request, order_id=None):
     })
 
 
-class EsewaRequestView(LoginRequiredMixin, TemplateView):
+# Customer check mixin for class-based views
+class CustomerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return hasattr(self.request.user, 'profile') and hasattr(self.request.user.profile, 'customer')
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Access denied. Only customers can perform this action.")
+        return redirect('home')
+
+
+class EsewaRequestView(LoginRequiredMixin, CustomerRequiredMixin, TemplateView):
     template_name = 'product/esewa_request.html'
 
     def get(self, request, *args, **kwargs):
@@ -560,6 +594,7 @@ class EsewaRequestView(LoginRequiredMixin, TemplateView):
 
 
 @login_required
+@customer_required
 def esewa_success(request):
     # Get the parameters from eSewa callback
     data_param = request.GET.get('data')
@@ -625,6 +660,7 @@ def esewa_success(request):
 
 
 @login_required
+@customer_required
 def esewa_failure(request):
     messages.error(request, "Payment was cancelled or failed. Please try again.")
 
@@ -644,7 +680,9 @@ def esewa_failure(request):
 
     return redirect('my_orders')
 
+
 @login_required
+@customer_required
 def update_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
@@ -681,7 +719,8 @@ def update_order(request, order_id):
                 # Handle stock availability
                 stock_difference = new_quantity - item.quantity
                 if stock_difference > 0 and stock_difference > item.product.stock:
-                    messages.error(request, f"Not enough stock for {item.product.name}. Available: {item.product.stock}")
+                    messages.error(request,
+                                   f"Not enough stock for {item.product.name}. Available: {item.product.stock}")
                     return redirect('update_order', order_id=order.id)
 
                 # Update stock and item quantity
@@ -714,6 +753,7 @@ def update_order(request, order_id):
 
 
 @login_required
+@customer_required
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
@@ -735,6 +775,7 @@ def cancel_order(request, order_id):
 
 
 @login_required
+@customer_required
 def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     order_details = list(order.order_details.all())  # Fetch once, reuse
@@ -753,6 +794,7 @@ def order_details(request, order_id):
 
 
 @login_required
+@customer_required
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'product/my_orders.html', {'orders': orders})

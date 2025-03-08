@@ -42,6 +42,8 @@ urlpatterns = [
     path('esewa-success/', views.esewa_success, name='esewa_success'),
     path('esewa-failure/', views.esewa_failure, name='esewa_failure'),
 
+    path('access-denied/', views.access_denied, name='access_denied'),
+
     # Move the catch-all slug pattern to the end
     path("<slug:slug>/", ProductDetailView.as_view(), name="product-detail"),
 ]
