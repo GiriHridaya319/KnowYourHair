@@ -165,12 +165,12 @@ def profile(request):
             messages.success(request, 'Your account has been updated successfully!')
 
             # Check the user's role and redirect accordingly
-            user_role = request.user.profile.role  # This uses the role property in Profile model
+            user_role = request.user.profile.role  #
 
             if user_role == "staff":  # Agent role
-                return redirect('agent-profile')  # Replace with the actual agent profile URL name
+                return redirect('agent-profile')
             else:
-                return redirect('profile')  # Regular user profile
+                return redirect('profile')
 
     else:
         u_form = UserUpdateForm(instance=request.user)
