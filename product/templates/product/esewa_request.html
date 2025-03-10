@@ -6,8 +6,145 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+
+.container-es {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.my-5 {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.col-md-8 {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Card styles */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1rem;
+  background-color: #1e56a0;
+  color: white;
+}
+
+.bg-primary {
+  background-color: #1e56a0 !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+/* Alert styles */
+.alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.alert-info {
+  background-color: #e6f2ff;
+  border-left: 4px solid #1e56a0;
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  border-radius: 6px;
+}
+
+.btn-success {
+  color: white;
+  background-color: #ff8c00;
+  border-color: #ff7b00;
+}
+
+.btn-success:hover {
+  background-color: #ff7300;
+  border-color: #ff6600;
+}
+
+/* Logo and images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Order details styling */
+.alert h5 {
+  margin-top: 0;
+  color: #1e56a0;
+}
+
+.alert p {
+  margin-bottom: 0.5rem;
+}
+
+strong {
+  color: #ff8c00;
+}
+</style>
 <body>
-<div class="container my-5">
+<div class="container-es my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -16,7 +153,7 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <img src="{% static 'img/esewa_logo.png' %}" alt="eSewa Logo" height="60">
+                        <img src="{% static 'product/images/esewa-logo.png' %}" alt="eSewa Logo" height="60">
                     </div>
 
                     <div class="alert alert-info">
@@ -46,6 +183,7 @@
 
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
