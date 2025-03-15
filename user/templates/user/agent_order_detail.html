@@ -125,11 +125,12 @@
 
                         {% if customer_profile.address %}
                             <div class="info-item">
-                                <span class="info-label">Address:</span>
+                                <span class="info-label">Customer Address:</span>
                                 <div class="info-value address-block">
-                                    <i class="fas fa-home me-1"></i> {{ customer_profile.address|linebreaks }}
+                                    <i class="fas fa-home me-1"></i> {{ order.city|linebreaks }}
                                 </div>
                             </div>
+
                         {% endif %}
                     {% else %}
                         <div class="info-item">
@@ -144,6 +145,20 @@
                         <span class="info-label">Shipping Address:</span>
                         <div class="info-value address-block">
                             <i class="fas fa-shipping-fast me-1"></i> {{ order.shipping_address|linebreaks }}
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Shipping City:</span>
+                        <div class="info-value address-block">
+                            {{ order.city|linebreaks }}
+                        </div>
+                    </div>
+
+                     <div class="info-item">
+                        <span class="info-label">Postal Code:</span>
+                        <div class="info-value address-block">
+                            {{ order.postal_code|linebreaks }}
                         </div>
                     </div>
                 </div>

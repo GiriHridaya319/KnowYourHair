@@ -5,13 +5,11 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, admin
 from django.contrib.auth.models import User
-from django.template import context
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, TemplateView, DeleteView
@@ -256,8 +254,6 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return context
 
 
-
-
 @login_required
 def password(request):
     if request.method == 'POST':
@@ -304,8 +300,6 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'image': agent.profile.image.url,
         } for agent in agents]
 
-
-
         # Get all customers with their profiles and users
         customers = Customer.objects.select_related('profile', 'profile__user').all()
         context['customers'] = [{
@@ -317,8 +311,6 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'gender': customer.profile.gender,
             'image': customer.profile.image.url,
         } for customer in customers]
-
-
 
         products = Product.objects.select_related('author').all()
         context['products'] = [{
@@ -468,7 +460,6 @@ def reject_booking(request, pk):
 @login_required
 def approve_clinic(request, pk):
     clinic = get_object_or_404(Clinic, pk=pk)
-
 
     # Update the booking status to confirmed
     clinic.status = 'Approved'

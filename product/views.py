@@ -339,10 +339,12 @@ def order_review(request):
             return redirect('KnowYourHair-product')
 
         # Get shipping information from form
-        shipping_address = request.POST.get('address', '')
         phone = request.POST.get('phone', '')
         first_name = request.POST.get('first_name', '')
         last_name = request.POST.get('last_name', '')
+        postal_code = request.POST.get('postal_code', '')
+        city = request.POST.get('city', '')
+        address = request.POST.get('address', '')
 
         # Process cart items
         cart_items = []
@@ -367,19 +369,24 @@ def order_review(request):
 
         # Save shipping info in session for order creation
         request.session['shipping_info'] = {
-            'address': shipping_address,
+            'address': address,
             'phone': phone,
             'first_name': first_name,
             'last_name': last_name,
+            'postal_code': postal_code,
+            'city': city
+
         }
 
         return render(request, 'product/order_review.html', {
             'cart_items': cart_items,
             'total': total,
-            'shipping_address': shipping_address,
+            'address': address,
             'phone': phone,
             'first_name': first_name,
-            'last_name': last_name
+            'last_name': last_name,
+            'postal_code': postal_code,
+            'city': city
         })
 
     return redirect('checkout')

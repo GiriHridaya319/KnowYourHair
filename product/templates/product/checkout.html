@@ -9,9 +9,9 @@
 
 
 {% block content %}
-
 <div class="container-check mt-4">
     <h2>Checkout</h2>
+
 
     <div class="row">
         <div class="col-md-8">
@@ -38,9 +38,9 @@
                                         {{ item.product.name }}
                                     </div>
                                 </td>
-                                <td>रु {{ item.price }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>रु {{ item.subtotal }}</td>
+                                <td data-label="Price">रु {{ item.price }}</td>
+                                <td data-label="Quantity">{{ item.quantity }}</td>
+                                <td data-label="Subtotal">रु {{ item.subtotal }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -63,35 +63,81 @@
                 <div class="card-body">
                     <form method="post" action="{% url 'order_review' %}">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="name" class="form-label">User ID</label>
-                            <input type="text" class="form-control" id="name" value="{{ request.user.username }}" readonly>
+
+                        <!-- Account Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fa fa-user-circle"></i> Account Information
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="form-label">User ID</label>
+                                <input type="text" class="form-control" id="username" value="{{ request.user.username }}" readonly>
+                                <span class="input-icon">👤</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" value="{{ request.user.email }}" readonly>
+                                <span class="input-icon">✉️</span>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label">First Name: </label>
-                            <input type="text" class="form-control" id="name" name="first_name">
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fa fa-address-card"></i> Personal Information
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="first_name" class="form-label required-field">First Name</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="last_name" class="form-label required-field">Last Name</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="form-label required-field">Phone</label>
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="e.g., +977-9XXXXXXXXX" required>
+                                <span class="input-icon">📱</span>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Last  Name: </label>
-                            <input type="text" class="form-control" id="name" name="last_name">
-                        </div>
+                        <!-- Shipping Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fa fa-truck"></i> Shipping Information
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" value="{{ request.user.email }}" readonly>
-                        </div>
+                            <div class="form-group">
+                                <label for="address" class="form-label required-field">Shipping Address</label>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Street, House No., Area" required>
+                                <span class="input-icon">🏠</span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Shipping Address</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="city" class="form-label required-field">City</label>
+                                        <input type="text" class="form-control" id="city" name="city" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="postal_code" class="form-label">Postal Code</label>
+                                        <input type="text" class="form-control" id="postal_code" name="postal_code">
+                                    </div>
+                                </div>
+                            </div>
 
-                            <input type="text" class="form-control" id="address" name="address" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 mt-3">Review Order</button>
