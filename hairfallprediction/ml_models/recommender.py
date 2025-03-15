@@ -5,30 +5,35 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from ..models import Product
 
-
 class ProductRecommender:
     def __init__(self):
         self.product_data = pd.DataFrame(
-            Product.objects.all().values('name', 'cost', 'feedback', 'details','image')
+            Product.objects.all().values('name', 'cost', 'feedback', 'details', 'image')
         )
         self.vectorizer = TfidfVectorizer(stop_words='english')
 
     def get_recommendations_risk(self, risk_level):
-        data = self.product_data['details']
+        # Enhanced keyword lists for each risk level
+        risk_keywords = self._get_enhanced_risk_keywords(risk_level)
+
+        # Transform product details into TF-IDF vectors
         product_vectors = self.vectorizer.fit_transform(self.product_data['details'])
-        risk_keywords = self._get_risk_keywords(risk_level)
+
+        # Transform risk keywords into TF-IDF vectors
         keyword_vector = self.vectorizer.transform(risk_keywords)
 
-        # Calculate similarity
+        # Calculate similarity between keywords and product details
         similarity_scores = cosine_similarity(keyword_vector, product_vectors)
         avg_scores = similarity_scores.mean(axis=0)
 
+        # Get top N products based on similarity scores
         n = 30
         top_indices = np.argsort(avg_scores)[::-1][:n]
 
         # Randomly select 5 products from the top N
         selected_indices = np.random.choice(top_indices, size=5, replace=False)
 
+        # Prepare recommendations
         recommendations = []
         for idx in selected_indices:
             product = self.product_data.iloc[idx]
@@ -162,41 +167,39 @@ class ProductRecommender:
 
         return final_recommendations.sort_values('HybridScore', ascending=False)
 
-    def _normalize_scores(self, scores):
-        """Normalize scores to 0-1 range"""
-        return (scores - scores.min()) / (scores.max() - scores.min())
-
-    def _get_risk_keywords(self, risk_level):
-        """Get keywords based on risk level"""
+    def _get_enhanced_risk_keywords(self, risk_level):
+        """Enhanced keyword lists for each risk level"""
         keywords = {
-            'Low Risk': ["shine enhancement", "scalp nourishment", "vitamin-rich", "gentle cleansin",
-                         "moisturizing", "uv protection", "split end repair", "natural oils",
-                         "hydration", "softening", "frizz control", "shine & gloss", "detangling",
-                         "smoothness", "manageability", "silky-smooth", "non-sticky formula",
-                         "humidity control", "lightweight", "heat protection", "color protection",
-                         "daily care", "split ends prevention", "anti-frizz", "straightening & smoothening",
-                         "conditioning", "nourishment", "volumizer", "styling"
-                         ],
-            'Medium Risk': ["thickening", "volume boost", "strengthening", "follicle stimulation", "anti-breakage",
-                            "scalp revitalization",
-                            "keratin repair", "protein treatment", "hair growth support", "reducing hair fall",
-                            "damage repair",
-                            "nourishment", "conditioning", "anti-frizz", "scalp health", "hair elasticity",
-                            "hair strength",
-                            "hair repair",
-                            "anti-hair fall",
-                            "growth stimulating"
-                            ],
+            'Low Risk': [
+                "shine enhancement", "scalp nourishment", "vitamin-rich", "gentle cleansing",
+                "moisturizing", "uv protection", "split end repair", "natural oils",
+                "hydration", "softening", "frizz control", "shine & gloss", "detangling",
+                "smoothness", "manageability", "silky-smooth", "non-sticky formula",
+                "humidity control", "lightweight", "heat protection", "color protection",
+                "daily care", "split ends prevention", "anti-frizz", "straightening & smoothening",
+                "conditioning", "nourishment", "volumizer", "styling", "hair health",
+                "shine serum", "scalp care", "hair mask", "leave-in conditioner"
+            ],
+            'Medium Risk': [
+                "thickening", "volume boost", "strengthening", "follicle stimulation", "anti-breakage",
+                "scalp revitalization", "keratin repair", "protein treatment", "hair growth support",
+                "reducing hair fall", "damage repair", "nourishment", "conditioning", "anti-frizz",
+                "scalp health", "hair elasticity", "hair strength", "hair repair", "anti-hair fall",
+                "growth stimulating", "hair thickening", "scalp treatment", "hair serum", "split end treatment",
+                "hair tonic", "scalp massage", "hair vitality", "hair density"
+            ],
             'High Risk': [
                 "follicle regeneration", "hair growth", "hair fall prevention", "nourishing repair",
-                "damaged hair repair",
-                "restorative", "regrowth", "scalp repair", "hair loss", "thinning hair", "hair restoration",
-                "hair rejuvenation",
-                "intensive care",
-                "split-ends",
-                "anti-hair fall",
-                "growth stimulating",
-                "hair revival", "regenerating serum", "hair reactivation"
+                "damaged hair repair", "restorative", "regrowth", "scalp repair", "hair loss",
+                "thinning hair", "hair restoration", "hair rejuvenation", "intensive care",
+                "split-ends", "anti-hair fall", "growth stimulating", "hair revival",
+                "regenerating serum", "hair reactivation", "hair fall control", "scalp renewal",
+                "hair thickening serum", "anti-thinning", "hair growth oil", "scalp therapy",
+                "hair fall treatment", "hair regrowth serum", "scalp nourishment", "hair recovery"
             ]
         }
         return keywords.get(risk_level, keywords['Low Risk'])
+
+    def _normalize_scores(self, scores):
+        """Normalize scores to 0-1 range"""
+        return (scores - scores.min()) / (scores.max() - scores.min())
