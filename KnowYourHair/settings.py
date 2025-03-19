@@ -156,3 +156,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hridayagiri78@gmail.com'
 EMAIL_HOST_PASSWORD = 'yncz dnky ctwc kgyv'
 DEFAULT_FROM_EMAIL = 'hridayagiri78@gmail.com'
+

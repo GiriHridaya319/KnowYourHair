@@ -34,13 +34,54 @@ def register(request):
         address = request.POST.get('address', '')
         age = request.POST.get('age', '')
 
-        if image is None:
-            image = 'default_user.jpg'
+        # Form validation
+        has_error = False
+
+        # Check if username already exists
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists!")
+            has_error = True
+
+        # Check if email already exists
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists!")
+            has_error = True
+
+        # Validate phone number (10 digits)
+        if phone_number and (not phone_number.isdigit() or len(phone_number) != 10):
+            messages.error(request, "Phone number must be 10 digits!")
+            has_error = True
+
+        # Validate age (between 18 and 100)
+        try:
+            age_int = int(age)
+            if age_int < 18 or age_int > 100:
+                messages.error(request, "Age must be between 18 and 100!")
+                has_error = True
+        except (ValueError, TypeError):
+            messages.error(request, "Please enter a valid age!")
+            has_error = True
+
+        # Validate image file type
+        if image and not image == 'default_user.jpg':
+            # Get the file extension
+            file_extension = image.name.split('.')[-1].lower()
+            if file_extension not in ['jpg', 'jpeg', 'png']:
+                messages.error(request, "Image must be in JPG, JPEG, or PNG format!")
+                has_error = True
 
         # Check if passwords match
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
+            has_error = True
+
+        # If there are validation errors, redirect back to the registration page
+        if has_error:
             return redirect('registration')
+
+        # Set default image if none provided
+        if image is None:
+            image = 'default_user.jpg'
 
         # Create the user
         user = User.objects.create_user(username=username, password=password, email=email)
@@ -66,7 +107,6 @@ def register(request):
         elif user_type == 'agent':
             agent = Agent(profile=profile, role='staff', status='pending')
             agent.save()
-
             return redirect('pending_approval')
 
     return render(request, 'user/register.html')
