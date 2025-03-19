@@ -1,9 +1,11 @@
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Clinic, Dermatologist, BookingClinic
 
@@ -153,21 +155,67 @@ class AllDermatologistListView(ListView):
         return Dermatologist.objects.all().select_related('clinic')
 
 
+class BookingClinicForm(forms.ModelForm):
+    class Meta:
+        model = BookingClinic
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'phone',
+            'country',
+            'dermatologist',
+            'appointment_time',
+            'subject',
+            'message'
+        ]
+        widgets = {
+            'appointment_time': forms.DateTimeInput(
+                attrs={'type': 'datetime-local'},
+                format='%Y-%m-%dT%H:%M'
+            ),
+        }
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if not first_name.isalpha():
+            raise forms.ValidationError("First name should contain only letters, no numbers or special characters.")
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if not last_name.isalpha():
+            raise forms.ValidationError("Last name should contain only letters, no numbers or special characters.")
+        return last_name
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if phone:  # Phone might be optional
+            if not phone.isdigit() or len(phone) != 10:
+                raise forms.ValidationError("Phone number must be exactly 10 digits.")
+        return phone
+
+    def clean_appointment_time(self):
+        appointment_time = self.cleaned_data.get('appointment_time')
+        if appointment_time:
+            now = timezone.now()
+            if appointment_time < now:
+                raise forms.ValidationError("Appointment time cannot be in the past.")
+
+            # Optional: Check if appointment is too far in the future (e.g., 3 months max)
+            max_date = now + timezone.timedelta(days=90)
+            if appointment_time > max_date:
+                raise forms.ValidationError("Appointments can only be scheduled up to 3 months in advance.")
+        return appointment_time
+
+
 class ClinicBookingView(LoginRequiredMixin, CreateView):
     model = BookingClinic
     template_name = 'clinic/clinicBooking.html'
-    fields = [
-        'first_name',
-        'last_name',
-        'email',
-        'phone',
-        'country',
-        'dermatologist',
-        'appointment_time',
-        'subject',
-        'message'
-    ]
-    success_url = 'success/'
+    form_class = BookingClinicForm
+
+    def get_success_url(self):
+        return reverse_lazy('booking-success', kwargs={'clinic_id': self.kwargs.get('clinic_id')})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -188,15 +236,23 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
             form.instance.user = self.request.user
             form.instance.clinic_id = self.kwargs.get('clinic_id')
             form.instance.status = 'pending'
-            return super().form_valid(form)
+            response = super().form_valid(form)
+            messages.success(self.request, 'Your appointment has been successfully booked!')
+            return response
         except Exception as e:
             messages.error(self.request, f'Booking failed: {str(e)}')
             return self.form_invalid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Please check your form entries.')
-        return super().form_invalid(form)
+        # Add form errors to messages for better visibility in the multi-step form
+        for field, errors in form.errors.items():
+            for error in errors:
+                field_name = field
+                if field in form.fields:
+                    field_name = form.fields[field].label or field
+                messages.error(self.request, f"{field_name}: {error}")
 
+        return super().form_invalid(form)
 
 class BookingSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'clinic/booking_success.html'
