@@ -8,319 +8,421 @@
 {% endblock %}
 
 {% block content %}
-<!-- Sidebar Navigation -->
-<div class="sidebar">
-    <div class="logo">AdminPanel</div>
-    <div class="nav-item active" onclick="showSection('dashboard')">
-        <i class="fas fa-home"></i>
-        Dashboard
-    </div>
-    <div class="nav-item" onclick="showSection('users')">
-        <i class="fas fa-users"></i>
-        Users & Agents
-    </div>
-    <div class="nav-item" onclick="showSection('products')">
-        <i class="fas fa-box"></i>
-        Products
-    </div>
-    <div class="nav-item" onclick="showSection('clinics')">
-        <i class="fas fa-clinic-medical"></i>
-        Clinics
-    </div>
-    <div class="nav-item" onclick="showSection('approvals')">
-        <i class="fas fa-check-circle"></i>
-        Approvals
-    </div>
-    <div class="nav-item" onclick="location.href='{% url 'agent_approval_list' %}'">
-        <i class="fas fa-user-check"></i>
-        Agent Approvals
-    </div>
-</div>
-
-<!-- Main Content -->
-<div class="main-content">
-    <!-- Top Navbar -->
-    <div class="top-navbar">
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>AdminPanel</span>
         </div>
-        <div class="admin-profile">
-            <span>{{ request.user.username }}</span>
-            <img src="{{ request.user.profile.image.url }}" alt="Admin Profile">
+        <div class="nav-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="showSection('users')">
+            <i class="fas fa-users"></i>
+            <span>Users & Agents</span>
+        </div>
+        <div class="nav-item" onclick="showSection('products')">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+        </div>
+        <div class="nav-item" onclick="showSection('clinics')">
+            <i class="fas fa-clinic-medical"></i>
+            <span>Clinics</span>
+        </div>
+        <div class="nav-item" onclick="showSection('approvals')">
+            <i class="fas fa-check-circle"></i>
+            <span>Approvals</span>
+        </div>
+        <div class="nav-item" onclick="location.href='{% url 'agent_approval_list' %}'">
+            <i class="fas fa-user-check"></i>
+            <span>Agent Approvals</span>
         </div>
     </div>
 
-    <!-- Dashboard Section -->
-    <div id="dashboard" class="section active">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Dashboard Overview</div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
             </div>
-            <div class="card-content">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Total Customers</h3>
-                        <p>{{ customers|length }}</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Agents</h3>
-                        <p>{{ agents|length }}</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Products</h3>
-                        <p>{{ products|length }}</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Clinics</h3>
-                        <p>{{ clinics|length }}</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Agent Approvals</h3>
-                        <p><a href="{% url 'agent_approval_list' %}">View Pending</a></p>
+            <div class="admin-profile">
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <span>{{ request.user.username }}</span>
+                <img src="{{ request.user.profile.image.url }}" alt="Admin Profile">
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Dashboard Overview</div>
+                </div>
+                <div class="card-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>Total Customers</h3>
+                            <p>{{ customers|length }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h3>Total Agents</h3>
+                            <p>{{ agents|length }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <h3>Total Products</h3>
+                            <p>{{ products|length }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hospital"></i>
+                            </div>
+                            <h3>Total Clinics</h3>
+                            <p>{{ clinics|length }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h3>Agent Approvals</h3>
+                            <p><a href="{% url 'agent_approval_list' %}">View Pending</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Users Section -->
-    <div id="users" class="section">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Users & Agents Management</div>
-                <div class="action-buttons">
-                    <button class="btn" onclick="location.href='{% url 'registration' %}'">Add New User</button>
-                    <button class="btn" onclick="location.href='{% url 'agent_approval_list' %}'">Agent Approvals</button>
+        <!-- Users Section -->
+        <div id="users" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Users & Agents Management</div>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="location.href='{% url 'registration' %}'">
+                            <i class="fas fa-plus"></i> Add New User
+                        </button>
+                        <button class="btn" onclick="location.href='{% url 'agent_approval_list' %}'">
+                            <i class="fas fa-user-check"></i> Agent Approvals
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="table-container">
-                <h3>Customers</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>Gender</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for customer in customers %}
-                        <tr>
-                            <td>{{ customer.username }}</td>
-                            <td>{{ customer.email }}</td>
-                            <td>{{ customer.phone }}</td>
-                            <td>{{ customer.address }}</td>
-                            <td>{{ customer.gender }}</td>
-                            <td>
-                                <button class="btn" onclick="location.href='{% url 'profile-update' %}'">Edit</button>
-                                <form action="{% url 'profile-delete' pk=customer.id %}" method="post" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <h3>Agents</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>Gender</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for agent in agents %}
-                        <tr>
-                            <td>{{ agent.username }}</td>
-                            <td>{{ agent.email }}</td>
-                            <td>{{ agent.phone }}</td>
-                            <td>{{ agent.address }}</td>
-                            <td>{{ agent.gender }}</td>
-                            <td>
-                                <button class="btn" onclick="location.href='{% url 'profile-update' %}'">Edit</button>
-                                <form action="{% url 'profile-delete' pk=agent.id %}" method="post" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this agent?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="products" class="section">
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">Product Management</div>
-            <button class="btn" onclick="location.href='{% url 'product-create' %}'">Add New Product</button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Cost</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th>Author</th>
-                        <th>Feedback</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for product in products %}
-                    <tr>
-                        <td>{{ product.name }}</td>
-                        <td>${{ product.cost }}</td>
-                        <td>{{ product.stock }}</td>
-                        <td>{{ product.status }}</td>
-                        <td>{{ product.author }}</td>
-                        <td>{{ product.feedback }}</td>
-                        <td>
-                            <button class="btn" onclick="location.href='{% url 'product-update' pk=product.id %}'">Edit</button>
-                            <a href="{% url 'product-delete' product.id %}" class="action-btn delete-btn">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Clinics Section -->
-<div id="clinics" class="section">
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">Clinic Management</div>
-            <button class="btn" onclick="location.href='{% url 'clinic-create' %}'">Add New Clinic</button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Opening Time</th>
-                        <th>Closing Time</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th>Author</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for clinic in clinics %}
-                    <tr>
-                        <td>{{ clinic.name }}</td>
-                        <td>{{ clinic.address }}</td>
-                        <td>{{ clinic.opening_time }}</td>
-                        <td>{{ clinic.closing_time }}</td>
-                        <td>{{ clinic.phoneNum }}</td>
-                        <td>{{ clinic.status }}</td>
-                        <td>{{ clinic.author }}</td>
-                        <td>
-                            <button class="btn" onclick="location.href='{% url 'clinic-update' pk=clinic.id %}'">Edit</button>
-                            <a href="{% url 'clinic-delete' clinic.id %}" class="action-btn delete-btn"><i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-    <!-- Approvals Section -->
-    <div id="approvals" class="section">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Pending Approvals</div>
-                <button class="btn" onclick="location.href='{% url 'agent_approval_list' %}'">Agent Approvals</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Details</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for approval in approvals %}
+                <div class="table-container">
+                    <h3>Customers</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{% if approval.cost %}Product{% else %}Clinic{% endif %}</td>
-                                <td>{{ approval.name }}</td>
-                                <td>{{ approval.author }}</td>
-                                <td>{{ approval.details }}</td>
-                                <td>{{ approval.status }}</td>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer.username }}</td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone }}</td>
+                                <td>{{ customer.address }}</td>
+                                <td>{{ customer.gender }}</td>
                                 <td>
-                                    {% if approval.cost %}
-                                    <!-- For Products -->
-                                    <form action="{% url 'approve_product' pk=approval.id %}" method="post" style="display:inline;">
+                                    <button class="btn" onclick="location.href='{% url 'profile-update' %}'">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="{% url 'profile-delete' pk=customer.id %}" method="post" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn">Approve</button>
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
                                     </form>
-                                    <form action="{% url 'reject_product' pk=approval.id %}" method="post" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Reject</button>
-                                    </form>
-                                    {% else %}
-                                    <!-- For Clinics -->
-                                    <form action="{% url 'approve_clinic' pk=approval.id %}" method="post" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn">Approve</button>
-                                    </form>
-                                    <form action="{% url 'reject_clinic' pk=approval.id %}" method="post" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Reject</button>
-                                    </form>
-                                    {% endif %}
                                 </td>
                             </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <h3>Agents</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for agent in agents %}
+                            <tr>
+                                <td>{{ agent.username }}</td>
+                                <td>{{ agent.email }}</td>
+                                <td>{{ agent.phone }}</td>
+                                <td>{{ agent.address }}</td>
+                                <td>{{ agent.gender }}</td>
+                                <td>
+                                    <button class="btn" onclick="location.href='{% url 'profile-update' %}'">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="{% url 'profile-delete' pk=agent.id %}" method="post" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this agent?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="products" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Product Management</div>
+                    <button class="btn" onclick="location.href='{% url 'product-create' %}'">
+                        <i class="fas fa-plus"></i> Add New Product
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Cost</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Author</th>
+                                <th>Feedback</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>रु{{ product.cost }}</td>
+                                <td>{{ product.stock }}</td>
+                                <td>
+                                    {% if product.status == 'Approved' %}
+                                    <span class="badge badge-success">{{ product.status }}</span>
+                                    {% elif product.status == 'Pending' %}
+                                    <span class="badge badge-warning">{{ product.status }}</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">{{ product.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ product.author }}</td>
+                                <td>{{ product.feedback }}</td>
+                                <td>
+                                    <button class="btn" onclick="location.href='{% url 'product-update' pk=product.id %}'">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <a href="{% url 'product-delete' product.id %}" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinics Section -->
+        <div id="clinics" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Clinic Management</div>
+                    <button class="btn" onclick="location.href='{% url 'clinic-create' %}'">
+                        <i class="fas fa-plus"></i> Add New Clinic
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Opening Time</th>
+                                <th>Closing Time</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Author</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for clinic in clinics %}
+                            <tr>
+                                <td>{{ clinic.name }}</td>
+                                <td>{{ clinic.address }}</td>
+                                <td>{{ clinic.opening_time }}</td>
+                                <td>{{ clinic.closing_time }}</td>
+                                <td>{{ clinic.phoneNum }}</td>
+                                <td>
+                                    {% if clinic.status == 'Approved' %}
+                                    <span class="badge badge-success">{{ clinic.status }}</span>
+                                    {% elif clinic.status == 'Pending' %}
+                                    <span class="badge badge-warning">{{ clinic.status }}</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">{{ clinic.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ clinic.author }}</td>
+                                <td>
+                                    <button class="btn" onclick="location.href='{% url 'clinic-update' pk=clinic.id %}'">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{% url 'clinic-delete' clinic.id %}" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approvals Section -->
+        <div id="approvals" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Pending Approvals</div>
+                    <button class="btn" onclick="location.href='{% url 'agent_approval_list' %}'">
+                        <i class="fas fa-user-check"></i> Agent Approvals
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Author</th>
+                                <th>Details</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for approval in approvals %}
+                                <tr>
+                                    <td>
+                                        {% if approval.cost %}
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-box"></i> Product
+                                        </span>
+                                        {% else %}
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-clinic-medical"></i> Clinic
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ approval.name }}</td>
+                                    <td>{{ approval.author }}</td>
+                                    <td>{{ approval.details }}</td>
+                                    <td>
+                                        {% if approval.status == 'Approved' %}
+                                        <span class="badge badge-success">{{ approval.status }}</span>
+                                        {% elif approval.status == 'Pending' %}
+                                        <span class="badge badge-warning">{{ approval.status }}</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">{{ approval.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if approval.cost %}
+                                        <!-- For Products -->
+                                        <form action="{% url 'approve_product' pk=approval.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                        </form>
+                                        <form action="{% url 'reject_product' pk=approval.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <!-- For Clinics -->
+                                        <form action="{% url 'approve_clinic' pk=approval.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                        </form>
+                                        <form action="{% url 'reject_clinic' pk=approval.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    function showSection(sectionId) {
-        // Hide all sections
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update active state in sidebar
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        // Mobile menu toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 576) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         });
-
-        // Show selected section
-        document.getElementById(sectionId).classList.add('active');
-
-        // Update active state in sidebar
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        event.currentTarget.classList.add('active');
-    }
-</script>
+    </script>
 {% endblock %}
