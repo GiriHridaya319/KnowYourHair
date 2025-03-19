@@ -1,6 +1,8 @@
 import csv
+import os
 from datetime import datetime
 
+from django import forms
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import check_password
@@ -221,6 +223,72 @@ def profile(request):
     return render(request, 'user/profile.html', context)  # Default render
 
 
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        self.initial_username = kwargs.get('instance').username if kwargs.get('instance') else None
+        self.initial_email = kwargs.get('instance').email if kwargs.get('instance') else None
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        # If username changed, check if it already exists
+        if username != self.initial_username:
+            if User.objects.filter(username=username).exists():
+                raise forms.ValidationError("Username already exists!")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # If email changed, check if it already exists
+        if email != self.initial_email:
+            if User.objects.filter(email=email).exists():
+                raise forms.ValidationError("Email already exists!")
+        return email
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image', 'phone_number', 'address', 'gender', 'age']
+        widgets = {
+            'age': forms.NumberInput(attrs={'min': 18, 'max': 100}),
+        }
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        if phone_number and (not phone_number.isdigit() or len(phone_number) != 10):
+            raise forms.ValidationError("Phone number must be 10 digits!")
+        return phone_number
+
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        try:
+            age_int = int(age)
+            if age_int < 18 or age_int > 100:
+                raise forms.ValidationError("Age must be between 18 and 100!")
+        except (ValueError, TypeError):
+            raise forms.ValidationError("Please enter a valid age!")
+        return age
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        # If no new image is uploaded, return the current image
+        if not image or image == self.instance.image:
+            return self.instance.image
+
+        # Validate image file type
+        file_extension = os.path.splitext(image.name)[1][1:].lower()
+        if file_extension not in ['jpg', 'jpeg', 'png']:
+            raise forms.ValidationError("Image must be in JPG, JPEG, or PNG format!")
+        return image
+
+
 @login_required
 def profile_update(request):
     if request.method == 'POST':
@@ -231,16 +299,15 @@ def profile_update(request):
             p_form.save()
             messages.success(request, f'Your account has been updated Successfully!')
             return redirect('profile')
-    # instance to get the current user information
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
+
     context = {
         'u_form': u_form,
         'p_form': p_form
     }
     return render(request, 'user/profile_update.html', context)
-
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
