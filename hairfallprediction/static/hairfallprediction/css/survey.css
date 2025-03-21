@@ -219,8 +219,8 @@ body {
 /* Enhanced Option Cards */
 .option-cards, .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 3rem;
 }
 
@@ -231,6 +231,11 @@ body {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
     box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem; /* Add padding to give some space inside the card */
+
 }
 
 .option-card::before, .pattern-card::before {
@@ -266,8 +271,9 @@ body {
 
 .option-card img, .pattern-card img {
     width: 100%;
-    height: 280px;
-    object-fit: cover;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
     border-radius: 1rem;
     margin-bottom: 2rem;
     transition: transform 0.4s ease;
