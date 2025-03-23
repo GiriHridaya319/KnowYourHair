@@ -309,21 +309,35 @@ def profile_update(request):
     }
     return render(request, 'user/profile_update.html', context)
 
+
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = 'user/profile_confirm_delete.html'
     success_url = reverse_lazy('login')
 
     def test_func(self):
-        """Verify that users can only delete their own accounts"""
+        """Verify that users can only delete their own accounts or admins can delete any account"""
         user = self.get_object()
+        # Allow admin users to delete any account
+        if self.request.user.is_superuser:
+            return True
+        # Regular users can only delete their own account
         return self.request.user == user
 
     def post(self, request, *args, **kwargs):
         """Handle the post request with password verification"""
         try:
-            password = request.POST.get('password')
             user = self.get_object()
+
+            # If admin is deleting another user's account, no password verification needed
+            if request.user.is_staff or request.user.is_superuser and request.user != user:
+                # Delete user account
+                response = super().delete(request, *args, **kwargs)
+                messages.success(request, f'Account for {user.username} has been successfully deleted.')
+                return response
+
+            # For users deleting their own accounts, verify password
+            password = request.POST.get('password')
 
             # Verify password
             if not password:
@@ -335,24 +349,18 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
                 return redirect('profile')
 
             # If password is correct, proceed with deletion
-            if user == request.user:
-                # Delete user account
-                response = super().delete(request, *args, **kwargs)
+            response = super().delete(request, *args, **kwargs)
 
-                # Log out the user
+            # Log out the user if they deleted their own account
+            if user == request.user:
                 logout(request)
 
-                messages.success(request, 'Your account has been successfully deleted.')
-                return response
+            messages.success(request, 'Your account has been successfully deleted.')
+            return response
 
         except Exception as e:
-            messages.error(request, 'An error occurred while deleting your account. Please try again.')
+            messages.error(request, f'An error occurred while deleting the account: {str(e)}')
             return redirect('profile')
-
-    def handle_no_permission(self):
-        """Handle unauthorized access attempts"""
-        messages.error(self.request, 'You do not have permission to delete this account.')
-        return redirect('profile')
 
     def get_context_data(self, **kwargs):
         """Add additional context data for the template"""
@@ -398,7 +406,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # Get all agents with their profiles and users
         agents = Agent.objects.select_related('profile', 'profile__user').all()
         context['agents'] = [{
-            'id': agent.id,
+            'id': agent.profile.user.id,
             'username': agent.profile.user.username,
             'email': agent.profile.user.email,
             'phone': agent.profile.phone_number,
@@ -410,7 +418,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # Get all customers with their profiles and users
         customers = Customer.objects.select_related('profile', 'profile__user').all()
         context['customers'] = [{
-            'id': customer.id,
+            'id': customer.profile.user.id,
             'username': customer.profile.user.username,
             'email': customer.profile.user.email,
             'phone': customer.profile.phone_number,

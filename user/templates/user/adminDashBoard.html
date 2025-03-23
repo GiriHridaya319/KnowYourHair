@@ -142,12 +142,9 @@
                                 <td>{{ customer.address }}</td>
                                 <td>{{ customer.gender }}</td>
                                 <td>
-                                    <button class="btn" onclick="location.href='{% url 'profile-update' %}'">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
                                     <form action="{% url 'profile-delete' pk=customer.id %}" method="post" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this customer?')">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </form>
@@ -178,9 +175,6 @@
                                 <td>{{ agent.address }}</td>
                                 <td>{{ agent.gender }}</td>
                                 <td>
-                                    <button class="btn" onclick="location.href='{% url 'profile-update' %}'">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
                                     <form action="{% url 'profile-delete' pk=agent.id %}" method="post" style="display:inline;">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this agent?')">
