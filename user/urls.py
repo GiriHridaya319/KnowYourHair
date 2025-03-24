@@ -51,6 +51,7 @@ urlpatterns = [
     path('user/agent/<int:pk>/reject/', user_view.reject_agent, name='reject_agent'),
 
     # Existing approval/rejection URLs
+    path('booking/<int:booking_id>/', views.booking_detail, name='booking_detail'),
     path('booking/<int:pk>/approve/', user_view.approve_booking, name='approve_booking'),
     path('booking/<int:pk>/reject/', user_view.reject_booking, name='reject_booking'),
     path('clinic/<int:pk>/approve/', user_view.approve_clinic, name='approve_clinic'),

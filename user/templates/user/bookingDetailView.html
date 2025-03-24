@@ -1,0 +1,99 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+
+{% block title %}Booking Details{% endblock %}
+
+
+{% block DetailBook_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/detailbook.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container-boo">
+    <div class="header">
+        <h1>Booking Details <span id="booking-id">#{{ booking.id }}</span></h1>
+    </div>
+    
+    <div class="booking-card">
+        <div class="status-bar">
+            <div class="appointment-date">
+                <div class="calendar-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <span id="appointment-time">{{ booking.appointment_time|date:"F d, Y - h:i A" }}</span>
+                {% if booking.is_today %}
+                    <span class="tag tag-today">Today</span>
+                {% endif %}
+            </div>
+            <span class="status {{ booking.status|lower }}" id="status">{{ booking.status|title }}</span>
+        </div>
+        
+        <div class="booking-details">
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h3 class="section-title">Patient Information</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">Patient Name:</div>
+                        <div class="detail-value" id="patient-name">{{ booking.first_name }} {{ booking.last_name }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value" id="patient-email">{{ booking.email }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Phone:</div>
+                        <div class="detail-value" id="patient-phone">{{ booking.phone|default:"Not provided" }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Country:</div>
+                        <div class="detail-value" id="patient-country">{{ booking.country }}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="section-title">Appointment Details</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">Subject:</div>
+                        <div class="detail-value" id="appointment-subject">{{ booking.subject }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Clinic:</div>
+                        <div class="detail-value" id="clinic-name">{{ booking.clinic.name }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Dermatologist:</div>
+                        <div class="detail-value" id="dermatologist-name">Dr. {{ booking.dermatologist.first_name }} {{ booking.dermatologist.last_name }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">User Account:</div>
+                        <div class="detail-value" id="user-account">{{ booking.user.username }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="section-title">Message</h3>
+                <div class="message-box">
+                    <div class="message-title">Patient's Notes</div>
+                    <div class="message-content" id="patient-message">
+                        {{ booking.message|default:"No additional notes provided." }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'agentDetails' %}" class="btn btn-outline">Back to Dashboard</a>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#messageModal">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

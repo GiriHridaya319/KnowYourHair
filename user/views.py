@@ -524,6 +524,32 @@ def agent_dashboard(request):
     return render(request, 'user/agentDetails.html', context)
 
 
+@login_required
+def booking_detail(request, booking_id):
+    """
+    View function to display details of a specific booking.
+    Only accessible to the agent who owns the clinic where the booking was made.
+    """
+    # Get the booking object or return 404 if not found
+    booking = get_object_or_404(BookingClinic, id=booking_id)
+
+    # Get all clinics owned by the current user
+    user_clinics = Clinic.objects.filter(author=request.user).values_list('id', flat=True)
+
+    # Check if the user is authorized to view this booking
+    if booking.clinic.id not in user_clinics:
+        # If not authorized, redirect to dashboard with error message
+        messages.error(request, "You do not have permission to view this booking.")
+        return redirect('agent_dashboard')
+
+    # If authorized, render the booking details
+    context = {
+        'booking': booking
+    }
+
+    return render(request, 'user/bookingDetailView.html', context)
+
+
 class UserBookingView(LoginRequiredMixin, TemplateView):
     template_name = 'user/user_booking.html'
 
