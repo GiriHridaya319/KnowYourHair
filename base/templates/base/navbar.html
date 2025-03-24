@@ -30,10 +30,14 @@
   <div class="nav__btns">
     {% if user.is_authenticated %}
         {% if request.user.is_superuser %}
-            <a href="{% url 'adminDash' %}" class="btn sign__up">Dashboard</a>
-        {% elif request.user.profile.agent %}
-            <a href="{% url 'profile' %}" class="btn sign__up">Profile</a>
-        {% elif request.user.profile.customer %}
+
+      <a href="{% url 'cart_detail' %}" class="cart-icon">
+                <img src="{% static 'base/images/cart.png' %}" alt="Cart" class="cart-image">
+
+            </a>
+      <a href="{% url 'adminDash' %}" class="btn sign__up">Dashboard</a>
+        {% else%}
+
             <a href="{% url 'cart_detail' %}" class="cart-icon">
                 <img src="{% static 'base/images/cart.png' %}" alt="Cart" class="cart-image">
                 <!-- Optional: Add text if needed -->
