@@ -1,9 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-import numpy as np
-import pandas as pd
 
-# Modify import statements to match your project structure
 from hairfallprediction.ml_models.predictor import HairfallPredictor
 from hairfallprediction.ml_models.recommender import ProductRecommender
 
