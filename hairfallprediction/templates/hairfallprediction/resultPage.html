@@ -5,6 +5,8 @@
 
 {% block result_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'hairfallprediction/css/result.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -17,7 +19,7 @@
         </div>
 
         {% if prediction_result == 'High Risk' %}
-        <div class="risk-showcase">
+        <div class="risk-showcase high-risk">
             <div class="risk-icon">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
@@ -25,34 +27,40 @@
             <p>Your assessment indicates a significant risk of hair loss</p>
         </div>
         {% elif prediction_result == 'Medium Risk' %}
-        <div class="risk-showcase">
+        <div class="risk-showcase medium-risk">
             <div class="risk-icon">
-                <i class="fas fa-exclamation" style="color: #ffbb33;"></i>
+                <i class="fas fa-exclamation"></i>
             </div>
             <div class="risk-level">MEDIUM RISK</div>
             <p>Your assessment indicates a medium risk of hair loss</p>
         </div>
         {% else %}
-        <div class="risk-showcase">
+        <div class="risk-showcase low-risk">
             <div class="risk-icon">
-                <i class="fas fa-info-circle" style="color: #00C851;"></i>
+                <i class="fas fa-info-circle"></i>
             </div>
             <div class="risk-level">LOW RISK</div>
-            <p>Your assessment indicates a Low risk of hair loss</p>
+            <p>Your assessment indicates a low risk of hair loss</p>
         </div>
         {% endif %}
 
         {% if prediction_result != 'Low Risk' %}
         <div class="age-prediction">
-            <i class="fas fa-calendar-alt" style="font-size: 1.5em; color: #4682b4;"></i>
+            <div class="age-icon-container">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
             <h2>Predicted Hair Loss Onset</h2>
             <div class="age-number">Age {{ age_prediction.years }}</div>
             <p>Based on current hair health patterns</p>
         </div>
         {% else %}
         <div class="low-risk-message">
-    <p>Based on your current hair health patterns, you are at a low risk for hair loss and in a safe zone. Keep up the good care!</p>
-</div>
+            <div class="safe-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>You're in the Safe Zone</h2>
+            <p>Based on your current hair health patterns, you are at a low risk for hair loss. Keep up the good care!</p>
+        </div>
         {% endif %}
 
         <div class="risk-metrics">
@@ -133,135 +141,139 @@
             <p>Recommended actions for your hair care routine</p>
         </div>
 
-        {% if prediction_result == 'High Risk' %}
-        <div class="tip-item">
-            <i class="fas fa-user-md tip-icon"></i>
-            <div>
-                <h3>Consult Specialist</h3>
-                <p>Schedule an appointment with a trichologist</p>
-            </div>
-        </div>
-        <div class="tip-item">
-            <i class="fas fa-pills tip-icon"></i>
-            <div>
-                <h3>Medical Treatment</h3>
-                <p>Consider prescribed medications and treatments</p>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="tip-item">
-            <i class="fas fa-utensils tip-icon"></i>
-            <div>
-                <h3>Balanced Diet</h3>
-                {% if prediction_result == 'High Risk' %}
-                <p>Include biotin, iron, and protein-rich foods daily</p>
-                {% elif prediction_result == 'Medium Risk' %}
-                <p>Focus on hair-healthy nutrients and vitamins</p>
-                {% else %}
-                <p>Maintain a healthy diet with balanced nutrients</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="tip-item">
-            <i class="fas fa-ban tip-icon"></i>
-            <div>
-                <h3>Avoid Chemicals</h3>
-                {% if prediction_result == 'High Risk' %}
-                <p>Strictly avoid chemical treatments and harsh styling</p>
-                {% elif prediction_result == 'Medium Risk' %}
-                <p>Minimize use of chemical treatments and heat styling</p>
-                {% else %}
-                <p>Use natural products and gentle styling methods</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="tip-item">
-            <i class="fas fa-spa tip-icon"></i>
-            <div>
-                <h3>Stress Management</h3>
-                {% if prediction_result == 'High Risk' %}
-                <p>Implement daily stress-reduction techniques</p>
-                {% elif prediction_result == 'Medium Risk' %}
-                <p>Regular exercise and relaxation practices</p>
-                {% else %}
-                <p>Maintain a balanced lifestyle and good sleep habits</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="export-section">
-    <h3>Export Your Survey Results</h3>
-    <div class="export-options">
-        <form method="POST" action="{% url 'export_survey_pdf' %}">
-            {% csrf_token %}
-            <!-- Pass all form data from the original survey -->
-            {% for key, value in request.POST.items %}
-                {% if key != 'csrfmiddlewaretoken' %}
-                <input type="hidden" name="{{ key }}" value="{{ value }}">
-                {% endif %}
-            {% endfor %}
-
-            <!-- Add the prediction result and age prediction -->
-            <input type="hidden" name="prediction_result" value="{{ prediction_result }}">
-            {% if prediction_result != 'Low Risk' and age_prediction %}
-                <input type="hidden" name="age_prediction_years" value="{{ age_prediction.years }}">
-            {% endif %}
-
-            <button type="submit" class="export-btn pdf-btn">
-                <i class="fas fa-file-pdf"></i> Export as PDF
-            </button>
-        </form>
-    </div>
-</div>
-    </div>
-</div>
-
-<!-- Export pdf button-->
-
-
-
-        <!-- Bottom: Product Recommendations -->
-        <div class="products-section">
-            <div class="products-header">
-                <h2>Recommended Products</h2>
-                <p>Specially selected for your {{ prediction_result }} profile</p>
-                <div class="risk-tag">
-                    <i class="fas fa-tag"></i> {{ prediction_result }} Treatment Plan
+        <div class="tips-container">
+            {% if prediction_result == 'High Risk' %}
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Consult Specialist</h3>
+                    <p>Schedule an appointment with a trichologist</p>
                 </div>
             </div>
-
-             <div class="products-grid">
-            {% for product in recommendations %}
-                 <a href="{% url 'recom-product-detail' product.slug %}" class="item">
-            <div class="product-card">
-                <span class="recommendation-badge">
-                    {% if forloop.first %}
-                    <i class="fas fa-star"></i> Top Recommended
-                    {% elif forloop.counter == 2 %}
-                    <i class="fas fa-check-circle"></i> Essential
-                    {% elif forloop.counter == 3 %}
-                    <i class="fas fa-leaf"></i> Natural Care
-                    {% else %}
-                    <i class="fas fa-pills"></i> Daily Support
-                    {% endif %}
-                </span>
-               {% if product.image %}
-    <img src="{{ product.image }}" alt="{{ product.name }}">
-{% else %}
-    <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="profile-picture">
-{% endif %}
-
-                <h3>{{ product.name |truncatewords:5  }}</h3>
-
-                <p class="product-price">₹{{ product.cost }}</p>
-
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Medical Treatment</h3>
+                    <p>Consider prescribed medications and treatments</p>
+                </div>
             </div>
-                     </a>
-            {% endfor %}
+            {% endif %}
+
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Balanced Diet</h3>
+                    {% if prediction_result == 'High Risk' %}
+                    <p>Include biotin, iron, and protein-rich foods daily</p>
+                    {% elif prediction_result == 'Medium Risk' %}
+                    <p>Focus on hair-healthy nutrients and vitamins</p>
+                    {% else %}
+                    <p>Maintain a healthy diet with balanced nutrients</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Avoid Chemicals</h3>
+                    {% if prediction_result == 'High Risk' %}
+                    <p>Strictly avoid chemical treatments and harsh styling</p>
+                    {% elif prediction_result == 'Medium Risk' %}
+                    <p>Minimize use of chemical treatments and heat styling</p>
+                    {% else %}
+                    <p>Use natural products and gentle styling methods</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Stress Management</h3>
+                    {% if prediction_result == 'High Risk' %}
+                    <p>Implement daily stress-reduction techniques</p>
+                    {% elif prediction_result == 'Medium Risk' %}
+                    <p>Regular exercise and relaxation practices</p>
+                    {% else %}
+                    <p>Maintain a balanced lifestyle and good sleep habits</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <h3>Export Your Survey Results</h3>
+            <div class="export-options">
+                <form method="POST" action="{% url 'export_survey_pdf' %}">
+                    {% csrf_token %}
+                    <!-- Pass all form data from the original survey -->
+                    {% for key, value in request.POST.items %}
+                        {% if key != 'csrfmiddlewaretoken' %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Add the prediction result and age prediction -->
+                    <input type="hidden" name="prediction_result" value="{{ prediction_result }}">
+                    {% if prediction_result != 'Low Risk' and age_prediction %}
+                        <input type="hidden" name="age_prediction_years" value="{{ age_prediction.years }}">
+                    {% endif %}
+
+                    <button type="submit" class="export-btn pdf-btn">
+                        <i class="fas fa-file-pdf"></i> Export as PDF
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
+    <!-- Bottom: Product Recommendations -->
+    <div class="products-section">
+        <div class="products-header">
+            <h2>Recommended Products</h2>
+            <p>Specially selected for your {{ prediction_result }} profile</p>
+            <div class="risk-tag">
+                <i class="fas fa-tag"></i> {{ prediction_result }} Treatment Plan
+            </div>
+        </div>
 
-
-
+        <div class="products-grid">
+            {% for product in recommendations %}
+            <a href="{% url 'recom-product-detail' product.slug %}" class="product-link">
+                <div class="product-card">
+                    <span class="recommendation-badge">
+                        {% if forloop.first %}
+                        <i class="fas fa-star"></i> Top Recommended
+                        {% elif forloop.counter == 2 %}
+                        <i class="fas fa-check-circle"></i> Essential
+                        {% elif forloop.counter == 3 %}
+                        <i class="fas fa-leaf"></i> Natural Care
+                        {% else %}
+                        <i class="fas fa-pills"></i> Daily Support
+                        {% endif %}
+                    </span>
+                    <div class="product-image-container">
+                        {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                        <img src="/media/product_images/default.jpg" alt="Default Profile Picture" class="product-image">
+                        {% endif %}
+                    </div>
+                    <h3>{{ product.name |truncatewords:5 }}</h3>
+                    <p class="product-price">₹{{ product.cost }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock content %}
