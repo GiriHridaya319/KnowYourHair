@@ -2,6 +2,8 @@ from ..models import HairfallData
 import numpy as np
 import joblib
 import pandas as pd
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 class HairfallPredictor:
@@ -80,7 +82,7 @@ class HairfallPredictor:
             months = age_prediction['months']
             details.append(f"Estimated Age of Hair Loss Onset: {years} years")
             if months > 0:
-                details.append(f"                              and {months} months")
+                details.append(f"and {months} months")
 
             if contributing_factors:
                 details.append("\nTop factors influencing the prediction:")

@@ -189,8 +189,37 @@
                 {% endif %}
             </div>
         </div>
+        <div class="export-section">
+    <h3>Export Your Survey Results</h3>
+    <div class="export-options">
+        <form method="POST" action="{% url 'export_survey_pdf' %}">
+            {% csrf_token %}
+            <!-- Pass all form data from the original survey -->
+            {% for key, value in request.POST.items %}
+                {% if key != 'csrfmiddlewaretoken' %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+
+            <!-- Add the prediction result and age prediction -->
+            <input type="hidden" name="prediction_result" value="{{ prediction_result }}">
+            {% if prediction_result != 'Low Risk' and age_prediction %}
+                <input type="hidden" name="age_prediction_years" value="{{ age_prediction.years }}">
+            {% endif %}
+
+            <button type="submit" class="export-btn pdf-btn">
+                <i class="fas fa-file-pdf"></i> Export as PDF
+            </button>
+        </form>
     </div>
 </div>
+    </div>
+</div>
+
+<!-- Export pdf button-->
+
+
+
         <!-- Bottom: Product Recommendations -->
         <div class="products-section">
             <div class="products-header">

@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from ..models import Product
 
+
 class ProductRecommender:
     def __init__(self):
         self.product_data = pd.DataFrame(
@@ -199,6 +200,7 @@ class ProductRecommender:
             ]
         }
         return keywords.get(risk_level, keywords['Low Risk'])
+
 
     def _normalize_scores(self, scores):
         """Normalize scores to 0-1 range"""
