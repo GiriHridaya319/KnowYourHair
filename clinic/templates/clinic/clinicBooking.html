@@ -12,149 +12,150 @@
         <h1>Clinic Booking</h1>
         <p>Schedule your appointment with our expert dermatologists</p>
     </div>
-        <div class="steps-container">
-            <div class="step active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-title">Personal Info</div>
+    <div class="steps-container">
+        <div class="step active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-title">Personal Info</div>
+        </div>
+        <div class="step" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-title">Appointment</div>
+        </div>
+        <div class="step" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-title">Details</div>
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'clinic-booking' clinic.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="forms-container">
+            <!-- Step 1: Personal Information -->
+            <div class="form-step" id="step1">
+                <div class="form-group">
+                    <label for="first_name">First Name*</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name*</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email*</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
             </div>
-            <div class="step" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-title">Appointment</div>
+
+            <!-- Step 2: Appointment Details -->
+            <div class="form-step" id="step2">
+                <div class="form-group">
+                    <label for="clinic">Clinic</label>
+                    <input type="text" id="clinic" value="{{ clinic.name }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country*</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+                <div class="form-group">
+                    <label for="dermatologist">Select Dermatologist*</label>
+                    <select id="dermatologist" name="dermatologist" required>
+                        <option value="">Choose a dermatologist...</option>
+                        {% for derm in dermatologists %}
+                            <option value="{{ derm.id }}">{{ derm.first_name }} {{ derm.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointment_time">Appointment Date & Time*</label>
+                    <input type="datetime-local" id="appointment_time" name="appointment_time" required>
+                </div>
             </div>
-            <div class="step" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-title">Details</div>
+
+            <!-- Step 3: Additional Details -->
+            <div class="form-step" id="step3">
+                <div class="form-group">
+                    <label for="subject">Subject*</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="hair_report_pdf">Hair Fall Prediction Report (PDF)</label>
+                    <input type="file" id="hair_report_pdf" name="hair_report_pdf" accept=".pdf">
+                    <p class="file-info">Upload your hair fall prediction report (PDF format, max 5MB)</p>
+                </div>
             </div>
         </div>
 
-        <form method="POST" action="{% url 'clinic-booking' clinic.id %}">
+        <div class="form-navigation">
+            <button type="button" class="btn btn-prev" onclick="prevStep()" style="display: none;">Previous</button>
+            <button type="button" class="btn btn-next" onclick="nextStep()">Next</button>
+            <button type="submit" class="btn btn-submit" style="display: none;">Book Appointment</button>
+        </div>
+    </form>
+</div>
 
-            {% csrf_token %}
-            <div class="forms-container">
-                <!-- Step 1: Personal Information -->
-                <div class="form-step" id="step1">
-                    <div class="form-group">
-                        <label for="first_name">First Name*</label>
-                        <input type="text" id="first_name" name="first_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Last Name*</label>
-                        <input type="text" id="last_name" name="last_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email*</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-                </div>
+<script>
+    let currentStep = 1;
+    const totalSteps = 3;
 
-                <!-- Add this in Step 1 of the form -->
+    function updateFormDisplay() {
+        const container = document.querySelector('.forms-container');
+        const translateValue = (currentStep - 1) * -33.33;
+        container.style.transform = `translateX(${translateValue}%)`;
 
-
-                <!-- Step 2: Appointment Details -->
-                <div class="form-step" id="step2">
-                    <div class="form-group">
-                        <label for="clinic">Clinic</label>
-                        <input type="text" id="clinic" value="{{ clinic.name }}" readonly>
-                    </div>
-                    <div class="form-group">
-                    <label for="country">Country*</label>
-                    <input type="text" id="country" name="country" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dermatologist">Select Dermatologist*</label>
-                        <select id="dermatologist" name="dermatologist" required>
-                            <option value="">Choose a dermatologist...</option>
-                            {% for derm in dermatologists %}
-                                <option value="{{ derm.id }}">{{ derm.first_name }} {{ derm.last_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="appointment_time">Appointment Date & Time*</label>
-                        <input type="datetime-local" id="appointment_time" name="appointment_time" required>
-                    </div>
-                </div>
-
-                <!-- Step 3: Additional Details -->
-                <div class="form-step" id="step3">
-                    <div class="form-group">
-                        <label for="subject">Subject*</label>
-                        <input type="text" id="subject" name="subject" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-navigation">
-                <button type="button" class="btn btn-prev" onclick="prevStep()" style="display: none;">Previous</button>
-                <button type="button" class="btn btn-next" onclick="nextStep()">Next</button>
-                <button type="submit" class="btn btn-submit" style="display: none;">Book Appointment</button>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        let currentStep = 1;
-        const totalSteps = 3;
-
-        function updateFormDisplay() {
-            const container = document.querySelector('.forms-container');
-            const translateValue = (currentStep - 1) * -33.33;
-            container.style.transform = `translateX(${translateValue}%)`;
-
-            // Update steps
-            document.querySelectorAll('.step').forEach((step, index) => {
-                if (index + 1 === currentStep) {
-                    step.classList.add('active');
-                } else {
-                    step.classList.remove('active');
-                }
-            });
-
-            // Update buttons
-            const prevButton = document.querySelector('.btn-prev');
-            const nextButton = document.querySelector('.btn-next');
-            const submitButton = document.querySelector('.btn-submit');
-
-            prevButton.style.display = currentStep === 1 ? 'none' : 'block';
-            nextButton.style.display = currentStep === totalSteps ? 'none' : 'block';
-            submitButton.style.display = currentStep === totalSteps ? 'block' : 'none';
-        }
-
-        function nextStep() {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                updateFormDisplay();
+        // Update steps
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index + 1 === currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
             }
-        }
+        });
 
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
-                updateFormDisplay();
-            }
-        }
+        // Update buttons
+        const prevButton = document.querySelector('.btn-prev');
+        const nextButton = document.querySelector('.btn-next');
+        const submitButton = document.querySelector('.btn-submit');
 
-        // Initialize datetime picker restrictions
-        const appointmentTime = document.getElementById('appointment_time');
-        if (appointmentTime) {
-            // Set min date to today
-            const today = new Date();
-            const minDateTime = today.toISOString().slice(0, 16);
-            appointmentTime.min = minDateTime;
+        prevButton.style.display = currentStep === 1 ? 'none' : 'block';
+        nextButton.style.display = currentStep === totalSteps ? 'none' : 'block';
+        submitButton.style.display = currentStep === totalSteps ? 'block' : 'none';
+    }
 
-            // Set max date to 3 months from now
-            const maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 3);
-            const maxDateTime = maxDate.toISOString().slice(0, 16);
-            appointmentTime.max = maxDateTime;
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateFormDisplay();
         }
-    </script>
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateFormDisplay();
+        }
+    }
+
+    // Initialize datetime picker restrictions
+    const appointmentTime = document.getElementById('appointment_time');
+    if (appointmentTime) {
+        // Set min date to today
+        const today = new Date();
+        const minDateTime = today.toISOString().slice(0, 16);
+        appointmentTime.min = minDateTime;
+
+        // Set max date to 3 months from now
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        const maxDateTime = maxDate.toISOString().slice(0, 16);
+        appointmentTime.max = maxDateTime;
+    }
+</script>
 {% endblock content %}

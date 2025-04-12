@@ -64,28 +64,31 @@ class BookingClinic(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dermatologist = models.ForeignKey(Dermatologist, on_delete=models.CASCADE)
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)  # Clinic where the dermatologist works
-    appointment_time = models.DateTimeField()  # The scheduled appointment time
-    country = models.CharField(max_length=255)  # User's country for booking
-    first_name = models.CharField(max_length=255)  # User's first name for booking
-    last_name = models.CharField(max_length=255)  # User's last name for booking
-    email = models.EmailField()  # User's email for communication
-    phone = models.CharField(max_length=20, blank=True, null=True)  # Optional phone number
-    subject = models.CharField(max_length=255)  # Subject of the appointment
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+    appointment_time = models.DateTimeField()
+    country = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    subject = models.CharField(max_length=255)
     status = models.CharField(
         max_length=20,
         choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')],
         default='pending'
-    )  # Appointment status
-    message = models.TextField(blank=True, null=True)  # Optional notes or reason for the appointment
+    )
+    message = models.TextField(blank=True, null=True)
+    hair_report_pdf = models.FileField(upload_to='hair_reports/', blank=True, null=True)  # New field for PDF upload
 
     def __str__(self):
         return f"Appointment with {self.dermatologist.first_name} on {self.appointment_time} in {self.clinic}"
 
-    # Automatically calculate whether appointment is today or upcoming
     def is_today(self):
         return self.appointment_time.date() == timezone.now().date()
 
     def is_upcoming(self):
         return self.appointment_time > timezone.now()
 
+    # Add a method to check if the file exists
+    def has_hair_report(self):
+        return bool(self.hair_report_pdf)

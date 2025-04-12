@@ -167,7 +167,8 @@ class BookingClinicForm(forms.ModelForm):
             'dermatologist',
             'appointment_time',
             'subject',
-            'message'
+            'message',
+            'hair_report_pdf'  # Add the new PDF field
         ]
         widgets = {
             'appointment_time': forms.DateTimeInput(
@@ -208,6 +209,17 @@ class BookingClinicForm(forms.ModelForm):
                 raise forms.ValidationError("Appointments can only be scheduled up to 3 months in advance.")
         return appointment_time
 
+    def clean_hair_report_pdf(self):
+        hair_report_pdf = self.cleaned_data.get('hair_report_pdf')
+        if hair_report_pdf:
+            # Check if the file is a PDF
+            if not hair_report_pdf.name.endswith('.pdf'):
+                raise forms.ValidationError("Only PDF files are allowed.")
+            # Check file size (limit to 5MB)
+            if hair_report_pdf.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("File size must be under 5MB.")
+        return hair_report_pdf
+
 
 class ClinicBookingView(LoginRequiredMixin, CreateView):
     model = BookingClinic
@@ -219,8 +231,7 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        clinic_id = self.kwargs.get('clinic_id')  # Get clinic ID from URL
-
+        clinic_id = self.kwargs.get('clinic_id')
         try:
             clinic = Clinic.objects.get(id=clinic_id)
             context['clinic'] = clinic
@@ -228,7 +239,6 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
         except Clinic.DoesNotExist:
             context['clinic'] = None
             context['dermatologists'] = []
-
         return context
 
     def form_valid(self, form):
@@ -244,15 +254,14 @@ class ClinicBookingView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
     def form_invalid(self, form):
-        # Add form errors to messages for better visibility in the multi-step form
         for field, errors in form.errors.items():
             for error in errors:
                 field_name = field
                 if field in form.fields:
                     field_name = form.fields[field].label or field
                 messages.error(self.request, f"{field_name}: {error}")
-
         return super().form_invalid(form)
+
 
 class BookingSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'clinic/booking_success.html'

@@ -170,15 +170,12 @@ class RecomProductDetailView(DetailView):
 
 @require_POST
 def export_survey_pdf(request):
-    # Create a file-like buffer to receive PDF data
     buffer = io.BytesIO()
 
-    # Create the PDF object using the buffer as its "file"
     doc = SimpleDocTemplate(buffer, pagesize=letter,
                             rightMargin=72, leftMargin=72,
                             topMargin=72, bottomMargin=72)
 
-    # Create a list to store our elements
     elements = []
 
     # Define styles
@@ -208,8 +205,7 @@ def export_survey_pdf(request):
     # Get prediction result and age prediction from POST data
     prediction_result = request.POST.get('prediction_result')
     if not prediction_result:
-        # If not directly provided, we can add fallback logic here
-        # This assumes you're storing it in session or recalculating
+
         prediction_result = "Not Available"
 
     elements.append(Paragraph(f"Hair Fall Risk Level: {prediction_result}", risk_style))
