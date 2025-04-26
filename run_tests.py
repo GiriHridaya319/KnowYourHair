@@ -2,9 +2,6 @@ import unittest
 import sys
 import os
 
-# Add the project root to the path if needed
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from test_hairfall_predictor import TestHairfallPredictor
 from test_product_recommender import TestProductRecommender
 

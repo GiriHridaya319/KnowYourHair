@@ -3,10 +3,6 @@
 
 {% block footer %}{% endblock %}
 
-<!--{% block survey_js %}-->
-<!--<script src="{% static 'hairfallprediction/js/survey.js' %}"></script>-->
-<!--{% endblock %}-->
-
 {% block survey_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'hairfallprediction/css/survey.css' %}">
 {% endblock %}
@@ -15,7 +11,6 @@
 <div class="container">
     <br>
     <br>
-
         <form id="hairAnalysisForm" method="POST" action="{% url 'result' %}">
             {% csrf_token %}
             <!-- Progress Bar -->

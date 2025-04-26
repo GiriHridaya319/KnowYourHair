@@ -818,11 +818,11 @@ def agent_orders(request):
     try:
         agent_profile = request.user.profile.agent
         if agent_profile.status != 'approved':
-            return render(request, 'orders/access_denied.html', {
+            return render(request, 'user/access_denied.html', {
                 'message': 'Your agent account is not approved yet.'
             })
     except (Profile.DoesNotExist, Agent.DoesNotExist, AttributeError):
-        return render(request, 'orders/access_denied.html', {
+        return render(request, 'user/access_denied.html', {
             'message': 'You do not have an agent account.'
         })
 
@@ -860,11 +860,11 @@ def agent_order_detail(request, order_id):
     try:
         agent_profile = request.user.profile.agent
         if agent_profile.status != 'approved':
-            return render(request, 'orders/access_denied.html', {
+            return render(request, 'user/access_denied.html', {
                 'message': 'Your agent account is not approved yet.'
             })
     except (Profile.DoesNotExist, Agent.DoesNotExist, AttributeError):
-        return render(request, 'orders/access_denied.html', {
+        return render(request, 'user/access_denied.html', {
             'message': 'You do not have an agent account.'
         })
 
@@ -879,7 +879,7 @@ def agent_order_detail(request, order_id):
 
         # If no items belong to this agent, they shouldn't see this order
         if not agent_items.exists():
-            return render(request, 'orders/access_denied.html', {
+            return render(request, 'user/access_denied.html', {
                 'message': 'You do not have any products in this order.'
             })
 

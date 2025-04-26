@@ -7,7 +7,7 @@ import pandas as pd
 import django
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'KnowYourHair.settings')  # Update this to your project's settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'KnowYourHair.settings')
 django.setup()
 
 import joblib

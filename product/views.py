@@ -159,9 +159,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-# cart and order
 
-# Decorator to check if user is a customer
 def customer_required(function):
     def check_customer(user):
         # Check if user has a profile with customer role
@@ -173,8 +171,8 @@ def customer_required(function):
 
 # View for access denied
 def access_denied(request):
-    messages.error(request, "Access denied. Only customers can perform this action.")
-    return redirect('KnowYourHair-product')  # Redirect to home or another appropriate page
+    messages.error(request, "Access denied. You can't perform this action.")
+    return redirect('KnowYourHair-home')  # Redirect to home or another appropriate page
 
 
 def get_cart(request):
