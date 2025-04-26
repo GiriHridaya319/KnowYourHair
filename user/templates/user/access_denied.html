@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<style>
+        .denied_container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .access-denied-container {
+            text-align: center;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .access-denied-icon {
+            font-size: 5rem;
+            color: #ff7b00; /* orange color */
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: #1e5f91; /* blue color */
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #333;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .home-button {
+            background-color: #ff7b00; /* orange button */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-button:hover {
+            background-color: #e86f00;
+            transform: translateY(-2px);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        .border-top {
+            border-top: 4px solid #1e5f91; /* blue top border */
+        }
+    </style>
+<div class="denied_container">
+
+
+    <div class="access-denied-container border-top">
+        <div class="access-denied-icon">
+            <span>🔒</span>
+        </div>
+        <h1>Access Denied</h1>
+        <p>Sorry, you don't have permission to access this page. Please check your credentials or contact the administrator for assistance.</p>
+        <a href="{% url 'KnowYourHair-home' %}" class="home-button">Return to Home</a>
+    </div>
+    </div>
+{% endblock %}
