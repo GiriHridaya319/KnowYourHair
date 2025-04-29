@@ -9,7 +9,6 @@ import django
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'KnowYourHair.settings')
 django.setup()
-
 import joblib
 from hairfallprediction.ml_models.predictor import HairfallPredictor
 
@@ -98,6 +97,7 @@ class TestHairfallPredictor(unittest.TestCase):
             'Sleep Disturbance', 'Water Quality Issue', 'Stress', 'Food Habit',
             'Hormonal Changes', 'Hair Care Habits', 'Smoking', 'Label'
         ]
+
 
         user_data = {
             'Gender': 1, 'Age': 30, 'Hairline Pattern': 2, 'Hair Fall Rate': 2,
