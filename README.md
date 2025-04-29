@@ -56,3 +56,33 @@ To develop a **web application** that predicts hair loss risk early and provides
 - **Data Handling:** Pandas, NumPy  
 - **ML Model:** Random forest
 
+
+# KnowYourHair 💇‍♀️💡
+
+KnowYourHair is a machine learning–powered web application designed to help users predict hair fall issues and recommend personalized hair care products based on survey data. The system also includes features for clinic and user management, survey exports, and access control.
+
+---
+
+## 🚀 Features
+
+- 🧠 **Hair Fall Prediction** using machine learning models  
+- 🧴 **Product Recommendations** tailored to hair type and condition  
+- 📝 **User Survey Exporting**  
+- 🏥 **Clinic Management** module  
+- 🔒 **Secure User Access Control**
+
+---
+
+## 📁 Project Structure
+
+```bash
+KnowYourHair/             # Core app files (registration, validations)
+base/                     # Common logic for all user types
+clinic/                   # Clinic dashboard and tools
+dataset/                  # Survey data and model inputs
+hairfallprediction/       # ML model and prediction logic
+media/                    # Media assets and static files
+notebook/                 # Jupyter notebooks for model training and testing
+product/                  # Recommendation system
+user/                     # Authentication, user profile, and access control
+
