@@ -57,6 +57,11 @@ To develop a **web application** that predicts hair loss risk early and provides
 - **ML Model:** Random forest
 
 
+Great! Based on your repo name `KnowYourHair`, here's the updated `README.md` file tailored for your GitHub repository:
+
+---
+
+```markdown
 # KnowYourHair 💇‍♀️💡
 
 KnowYourHair is a machine learning–powered web application designed to help users predict hair fall issues and recommend personalized hair care products based on survey data. The system also includes features for clinic and user management, survey exports, and access control.
@@ -85,4 +90,70 @@ media/                    # Media assets and static files
 notebook/                 # Jupyter notebooks for model training and testing
 product/                  # Recommendation system
 user/                     # Authentication, user profile, and access control
+```
+
+---
+
+## ⚙️ Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/GiriHridaya319/KnowYourHair.git
+cd KnowYourHair
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the application:
+```bash
+python manage.py runserver
+```
+
+---
+
+## 🧪 Running Tests
+
+Use the following to run unit tests:
+
+```bash
+python run_tests.py
+```
+
+Or run individual test files:
+```bash
+python test_hairfall_predictor.py
+python test_product_recommender.py
+```
+
+
+## 📂 Database
+
+- SQLite database file: `db.sqlite3`  
+- No setup needed—comes pre-configured for testing purposes
+
+
+## 📄 Requirements
+
+All dependencies are listed in `requirements.txt`.
+
+
+## 📌 Notes
+
+- Make sure Python 3.x is installed.
+- Consider setting up a virtual environment to avoid dependency conflicts.
+- You can export survey results from the `dataset/` module.
+
+
+## 🧑‍💻 Contributing
+
+Feel free to open issues or pull requests! Contributions are welcome.
+
+
+## 📃 License
+
+This project is licensed under the MIT License.
+
 
