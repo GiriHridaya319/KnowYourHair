@@ -170,7 +170,7 @@ class RecomProductDetailView(DetailView):
 
 @require_POST
 def export_survey_pdf(request):
-    buffer = io.BytesIO()
+    buffer = io.BytesIO()  # creates temp space in memory
 
     doc = SimpleDocTemplate(buffer, pagesize=letter,
                             rightMargin=72, leftMargin=72,

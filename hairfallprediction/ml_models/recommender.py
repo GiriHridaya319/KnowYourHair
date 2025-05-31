@@ -23,13 +23,13 @@ class ProductRecommender:
         # Transform risk keywords into TF-IDF vectors
         keyword_vector = self.vectorizer.transform(risk_keywords)
 
-        # Calculate similarity between keywords and product details
+        # Calculate similarity between keywords and product details (how close the relation of two vector is)
         similarity_scores = cosine_similarity(keyword_vector, product_vectors)
         avg_scores = similarity_scores.mean(axis=0)
 
         # Get top N products based on similarity scores
         n = 30
-        top_indices = np.argsort(avg_scores)[::-1][:n]
+        top_indices = np.argsort(avg_scores)[::-1][:n]  # highest score first 30
 
         # Randomly select 5 products from the top N
         selected_indices = np.random.choice(top_indices, size=5, replace=False)
@@ -86,21 +86,22 @@ class ProductRecommender:
     def _get_content_recommendations(self, product_name, n_recommendations=5):
         """Content-based recommendations"""
         item_features = self.vectorizer.fit_transform(self.product_data['details'])
-        item_similarity = cosine_similarity(item_features)
+        item_similarity = cosine_similarity(item_features)  # each product similarity with every other product
 
         item_similarity_df = pd.DataFrame(
             item_similarity,
             index=self.product_data['name'],
             columns=self.product_data['name']
-        )
+        )  # to see how similar the products are in dataframe format
 
-        similar_scores = item_similarity_df[product_name].sort_values(ascending=False)
-        similar_products = similar_scores.index[1:n_recommendations + 1].tolist()
+        similar_scores = item_similarity_df[product_name].sort_values(ascending=False)  # sort product similarity score
+        # with every other product in descending order
+        similar_products = similar_scores.index[1:n_recommendations + 1].tolist()  # ignore the first one and top 5
 
         recommendations = self.product_data[
             self.product_data['name'].isin(similar_products)
-        ].copy()
-        recommendations['SimilarityScore'] = recommendations['name'].map(similar_scores)
+        ].copy()  # get all data of the similar products
+        recommendations['SimilarityScore'] = recommendations['name'].map(similar_scores)  # add new column for sim score
 
         return recommendations
 
@@ -127,9 +128,9 @@ class ProductRecommender:
 
         return recommendations
 
-    def _combine_recommendations(self, content_recs, collab_recs, weight_content=0.5):
+    def _combine_recommendations(self, content_recs, collab_recs, weight_content=0.5):  # equal importance to both
         """Combine content and collaborative recommendations"""
-        # Normalize scores
+        # Normalize scores because both might have value in different ranges
         content_recs['NormalizedContentScore'] = self._normalize_scores(
             content_recs['SimilarityScore']
         )
@@ -143,7 +144,7 @@ class ProductRecommender:
             collab_recs[['name', 'NormalizedCollabScore']]
         ], axis=0)
 
-        # Calculate hybrid score
+        # Calculate hybrid score ( linear combination)
         hybrid_recommendations['HybridScore'] = (
                 hybrid_recommendations['NormalizedContentScore'].fillna(0) * weight_content +
                 hybrid_recommendations['NormalizedCollabScore'].fillna(0) * (1 - weight_content)
